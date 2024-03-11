@@ -9,7 +9,11 @@ import java.util.List;
 
 public interface CustomerAttributeJpaRepository extends JpaRepository<CustomerAttributes, Long>, CustomerAttributesRepository {
 
-    @Query
-    List<CustomerAttributeDTO> getCustomerAttributes(Long customerId);
-
+    @Query("SELECT ca, COALESCE(tv.value, lv.value, dv.value) AS value " +
+            "FROM CustomerAttributes ca " +
+            "LEFT JOIN CustomerTextValue tv ON ca.id = tv.customerAttributes.id AND ca.customer.id = tv.customer.id " +
+            "LEFT JOIN CustomerLongValue lv ON ca.id = lv.customerAttributes.id AND ca.customer.id = lv.customer.id " +
+            "LEFT JOIN CustomerDateValue dv ON ca.id = dv.customerAttributes.id AND ca.customer.id = dv.customer.id " +
+            "WHERE ca.customer.id = :customerId")
+    List<CustomerAttributes> getCustomerAttributes(Long customerId);
 }

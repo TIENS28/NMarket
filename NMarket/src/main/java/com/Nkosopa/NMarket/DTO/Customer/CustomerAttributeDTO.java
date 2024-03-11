@@ -14,10 +14,6 @@ import java.util.List;
 @Builder
 public class CustomerAttributeDTO {
 
-    private String entity_code;
-
-    private Long type_id;
-
     private String attribute_code;
 
     private String attribute_name;
