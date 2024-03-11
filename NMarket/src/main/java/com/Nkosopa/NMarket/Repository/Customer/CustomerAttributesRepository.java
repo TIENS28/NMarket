@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CustomerAttributesRepository extends JpaRepository<CustomerAttributes, Long>{
-    List<CustomerAttributeDTO> getCustomerAttributes(Long customerId);
+//    List<CustomerAttributeDTO> getCustomerAttributes(Long customerId);
 }

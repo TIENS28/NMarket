@@ -25,25 +25,25 @@ public class CustomerAttributeRepositoryImpl extends BaseRepositoryImpl<Customer
 	}
 
 
-	@Override
-	public List<CustomerAttributeDTO> getCustomerAttributes(Long customerId) {
-		QCustomerAttributes ca = QCustomerAttributes.customerAttributes;
-		QCustomerTextValue tv = QCustomerTextValue.customerTextValue;
-		QCustomerLongValue lv = QCustomerLongValue.customerLongValue;
-		QCustomerDateValue dv = QCustomerDateValue.customerDateValue;
-
-		return queryFactory
-				.select(Projections.constructor(CustomerAttributeDTO.class,
-						ca.attribute_code,
-						ca.attribute_name,
-						new Coalesce<>(tv.value, lv.value, dv.value).as("value")))
-				.from(ca)
-				.leftJoin(tv).on(ca.id.eq(tv.customerAttributes.id).and(ca.customer.id.eq(tv.customer.id)))
-				.leftJoin(lv).on(ca.id.eq(lv.customerAttributes.id).and(ca.customer.id.eq(lv.customer.id)))
-				.leftJoin(dv).on(ca.id.eq(dv.customerAttributes.id).and(ca.customer.id.eq(dv.customer.id)))
-				.where(ca.customer.id.eq(customerId))
-				.fetch();
-	}
+//	@Override
+//	public List<CustomerAttributeDTO> getCustomerAttributes(Long customerId) {
+//		QCustomerAttributes ca = QCustomerAttributes.customerAttributes;
+//		QCustomerTextValue tv = QCustomerTextValue.customerTextValue;
+//		QCustomerLongValue lv = QCustomerLongValue.customerLongValue;
+//		QCustomerDateValue dv = QCustomerDateValue.customerDateValue;
+//
+//		return queryFactory
+//				.select(Projections.constructor(CustomerAttributeDTO.class,
+//						ca.attribute_code,
+//						ca.attribute_name,
+//						new Coalesce<>(tv.value, lv.value, dv.value).as("value")))
+//				.from(ca)
+//				.leftJoin(tv).on(ca.id.eq(tv.customerAttributes.id).and(ca.customer.id.eq(tv.customer.id)))
+//				.leftJoin(lv).on(ca.id.eq(lv.customerAttributes.id).and(ca.customer.id.eq(lv.customer.id)))
+//				.leftJoin(dv).on(ca.id.eq(dv.customerAttributes.id).and(ca.customer.id.eq(dv.customer.id)))
+//				.where(ca.customer.id.eq(customerId))
+//				.fetch();
+//	}
 
 
 }
