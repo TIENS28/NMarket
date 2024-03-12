@@ -3,7 +3,7 @@ package com.Nkosopa.NMarket.Services.Other;
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationResponse;
 import com.Nkosopa.NMarket.DTO.Authentication.RegistrationRequest;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
-import com.Nkosopa.NMarket.Repository.Customer.CustomerJPARepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerJPARepository;
 import com.Nkosopa.NMarket.Services.Customer.impl.RegistrationServiceImpl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

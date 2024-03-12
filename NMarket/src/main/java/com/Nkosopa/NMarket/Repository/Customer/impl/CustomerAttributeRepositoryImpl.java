@@ -44,6 +44,4 @@ public class CustomerAttributeRepositoryImpl extends BaseRepositoryImpl<Customer
 //				.where(ca.customer.id.eq(customerId))
 //				.fetch();
 //	}
-
-
 }

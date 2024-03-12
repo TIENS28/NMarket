@@ -10,4 +10,9 @@ public class CustomerTextValueRepositoryImpl extends BaseRepositoryImpl<Customer
     public CustomerTextValueRepositoryImpl(EntityManager entityManager) {
         super(CustomerTextValue.class, entityManager);
     }
+
+    @Override
+    public void deleteByCustomerId(Long customerId) {
+
+    }
 }

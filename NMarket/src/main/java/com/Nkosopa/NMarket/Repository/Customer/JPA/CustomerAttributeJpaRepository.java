@@ -1,7 +1,8 @@
-package com.Nkosopa.NMarket.Repository.Customer;
+package com.Nkosopa.NMarket.Repository.Customer.JPA;
 
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
+import com.Nkosopa.NMarket.Repository.Customer.CustomerAttributesRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +17,6 @@ public interface CustomerAttributeJpaRepository extends JpaRepository<CustomerAt
             "LEFT JOIN CustomerDateValue dv ON ca.id = dv.customerAttributes.id AND ca.customer.id = dv.customer.id " +
             "WHERE ca.customer.id = :customerId")
     List<CustomerAttributes> getCustomerAttributes(Long customerId);
+
+    void deleteByCustomerId(Long customerId);
 }

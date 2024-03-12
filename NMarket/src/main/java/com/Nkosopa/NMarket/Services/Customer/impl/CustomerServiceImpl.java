@@ -1,9 +1,14 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
+import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
 import com.Nkosopa.NMarket.DTO.Customer.*;
 import com.Nkosopa.NMarket.Entity.Customer.*;
 import com.Nkosopa.NMarket.Entity.DataType;
 import com.Nkosopa.NMarket.Repository.Customer.*;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerDateValueJpaRepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerLongValueJpaRepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerTextValueJpaRepository;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements iCustomerService {
@@ -24,16 +28,19 @@ public class CustomerServiceImpl implements iCustomerService {
     private CustomerAttributeJpaRepository customerAttributeJpaRepository;
 
     @Autowired
-    private CustomerTextValueRepository customerTextValueRepository;
+    private CustomerTextValueJpaRepository customerTextValueRepository;
 
     @Autowired
-    private CustomerLongValueRepository customerLongValueRepository;
+    private CustomerLongValueJpaRepository customerLongValueRepository;
 
     @Autowired
-    private CustomerDateTimeRepository customerDateTimeRepository;
+    private CustomerDateValueJpaRepository customerDateTimeRepository;
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private CustomerConverter customerConverter;
 
     @Override
     public void newCustomer(CustomerDTO customerDTO) {
@@ -118,12 +125,13 @@ public class CustomerServiceImpl implements iCustomerService {
         }
     }
 
+    @Override
     public Optional<CustomerDTO> findCustomerById(Long customerId) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
 
         return customerOptional.map(customer -> {
             List<CustomerAttributes> customerAttributesList = customerAttributeJpaRepository.getCustomerAttributes(customerId);
-            List<CustomerAttributeDTO> attributeDTOs = mapAttributesToDTOs(customerAttributesList);
+            List<CustomerAttributeDTO> attributeDTOs = customerConverter.mapAttributesToDTOs(customerAttributesList);
 
             return CustomerDTO.builder()
                     .firstName(customer.getFirstName())
@@ -136,40 +144,12 @@ public class CustomerServiceImpl implements iCustomerService {
         });
     }
 
-    private List<CustomerAttributeDTO> mapAttributesToDTOs(List<CustomerAttributes> customerAttributesList) {
-        return customerAttributesList.stream()
-                .map(this::mapAttributeToDTO)
-                .collect(Collectors.toList());
-    }
-
-    private CustomerAttributeDTO mapAttributeToDTO(CustomerAttributes customerAttributes) {
-        return CustomerAttributeDTO.builder()
-                .attribute_code(customerAttributes.getAttribute_code())
-                .attribute_name(customerAttributes.getAttribute_name())
-                .textValues(mapTextValuesToDTOs(customerAttributes.getTextValues()))
-                .intValues(mapIntValuesToDTOs(customerAttributes.getIntValues()))
-                .dateValues(mapDateValuesToDTOs(customerAttributes.getDateValues()))
-                .dataType(customerAttributes.getDataType())
-                .customer_id(customerAttributes.getCustomer().getId())
-                .build();
-    }
-
-
-    private List<CustomerTextValueDTO> mapTextValuesToDTOs(List<CustomerTextValue> textValues) {
-        return textValues.stream()
-                .map(textValue -> new CustomerTextValueDTO(textValue.getValue()))
-                .collect(Collectors.toList());
-    }
-
-    private List<CustomerLongValueDTO> mapIntValuesToDTOs(List<CustomerLongValue> intValues) {
-        return intValues.stream()
-                .map(intValue -> new CustomerLongValueDTO(intValue.getValue()))
-                .collect(Collectors.toList());
-    }
-
-    private List<CustomerDateValueDTO> mapDateValuesToDTOs(List<CustomerDateValue> dateValues) {
-        return dateValues.stream()
-                .map(dateValue -> new CustomerDateValueDTO(dateValue.getValue()))
-                .collect(Collectors.toList());
+    @Override
+    public void deleteUser(Long customerId){
+//        customerTextValueRepository.deleteByCustomerId(customerId);
+//        customerLongValueRepository.deleteByCustomerId(customerId);
+//        customerDateTimeRepository.deleteByCustomerId(customerId);
+        customerAttributeJpaRepository.deleteByCustomerId(customerId);
+        customerRepository.deleteById(customerId);
     }
 }

@@ -1,7 +1,7 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
-import com.Nkosopa.NMarket.Repository.Customer.CustomerJPARepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

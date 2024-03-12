@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Repository.Customer;
+package com.Nkosopa.NMarket.Repository.Customer.JPA;
 
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Repository.Customer.CustomerRepository;
