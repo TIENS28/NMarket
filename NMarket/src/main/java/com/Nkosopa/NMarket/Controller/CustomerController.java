@@ -28,6 +28,7 @@ public class CustomerController {
             return new ResponseEntity<>("Error adding customer", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/addAttribute")
     public ResponseEntity<String> addAttribute(@RequestBody CustomerAttributeDTO attributeDTO) {
         try {
@@ -37,6 +38,7 @@ public class CustomerController {
             return new ResponseEntity<>("Error adding attribute", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/{customerAttributeId}/addValue")
     public ResponseEntity<String> addValueToCustomerAttribute(
             @PathVariable Long customerAttributeId,
@@ -58,5 +60,17 @@ public class CustomerController {
         return customerDTOOptional
                 .map(customerDTO -> new ResponseEntity<>(customerDTO, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/delete/{customerId}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable long customerId) {
+        customerService.deleteUser(customerId);
+        return ResponseEntity.ok("Delete customer successfully");
+    }
+
+    @DeleteMapping("/attributes/delete/{customerId}")
+    public ResponseEntity<String> deleteAttributes(@PathVariable long customerId) {
+        customerService.deleteUser(customerId);
+        return ResponseEntity.ok("Delete customer successfully");
     }
 }

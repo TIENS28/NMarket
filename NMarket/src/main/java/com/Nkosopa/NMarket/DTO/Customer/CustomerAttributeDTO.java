@@ -14,9 +14,9 @@ import java.util.List;
 @Builder
 public class CustomerAttributeDTO {
 
-    private String attribute_code;
+    private String attributeCode;
 
-    private String attribute_name;
+    private String attributeName;
 
     private List<CustomerTextValueDTO> textValues;
 
@@ -26,5 +26,5 @@ public class CustomerAttributeDTO {
 
     private DataType dataType;
 
-    private Long customer_id;
+    private Long customerId;
 }

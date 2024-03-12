@@ -58,10 +58,10 @@ public class CustomerServiceImpl implements iCustomerService {
     @Override
     public void addAttribute(CustomerAttributeDTO attributeDTO) {
         CustomerAttributes attributes = new CustomerAttributes();
-        attributes.setAttribute_name(attributeDTO.getAttribute_name());
-        attributes.setAttribute_code(attributeDTO.getAttribute_code());
+        attributes.setAttribute_name(attributeDTO.getAttributeName());
+        attributes.setAttribute_code(attributeDTO.getAttributeCode());
 
-        Optional<Customer> customerOptional = customerRepository.findById(attributeDTO.getCustomer_id());
+        Optional<Customer> customerOptional = customerRepository.findById(attributeDTO.getCustomerId());
 
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
@@ -69,7 +69,7 @@ public class CustomerServiceImpl implements iCustomerService {
             attributes.setDataType(attributeDTO.getDataType());
             customerAttributeJpaRepository.save(attributes);
         } else {
-            throw new EntityNotFoundException("Customer not found with ID: " + attributeDTO.getCustomer_id());
+            throw new EntityNotFoundException("Customer not found with ID: " + attributeDTO.getCustomerId());
         }
 
         attributes.setDataType(attributeDTO.getDataType());
@@ -149,7 +149,7 @@ public class CustomerServiceImpl implements iCustomerService {
 //        customerTextValueRepository.deleteByCustomerId(customerId);
 //        customerLongValueRepository.deleteByCustomerId(customerId);
 //        customerDateTimeRepository.deleteByCustomerId(customerId);
-        customerAttributeJpaRepository.deleteByCustomerId(customerId);
+        customerTextValueRepository.deleteValueByCustomerId(customerId);
         customerRepository.deleteById(customerId);
     }
 }

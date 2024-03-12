@@ -11,8 +11,4 @@ public class CustomerTextValueRepositoryImpl extends BaseRepositoryImpl<Customer
         super(CustomerTextValue.class, entityManager);
     }
 
-    @Override
-    public void deleteByCustomerId(Long customerId) {
-
-    }
 }

@@ -23,13 +23,13 @@ public class CustomerConverter {
 
     private CustomerAttributeDTO mapAttributeToDTO(CustomerAttributes customerAttributes) {
         return CustomerAttributeDTO.builder()
-                .attribute_code(customerAttributes.getAttribute_code())
-                .attribute_name(customerAttributes.getAttribute_name())
+                .attributeCode(customerAttributes.getAttribute_code())
+                .attributeName(customerAttributes.getAttribute_name())
                 .textValues(mapTextValuesToDTOs(customerAttributes.getTextValues()))
                 .intValues(mapIntValuesToDTOs(customerAttributes.getIntValues()))
                 .dateValues(mapDateValuesToDTOs(customerAttributes.getDateValues()))
                 .dataType(customerAttributes.getDataType())
-                .customer_id(customerAttributes.getCustomer().getId())
+                .customerId(customerAttributes.getCustomer().getId())
                 .build();
     }
 
