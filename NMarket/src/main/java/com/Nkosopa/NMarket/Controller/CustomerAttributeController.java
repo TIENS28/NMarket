@@ -1,12 +1,10 @@
 package com.Nkosopa.NMarket.Controller;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerAttributeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController

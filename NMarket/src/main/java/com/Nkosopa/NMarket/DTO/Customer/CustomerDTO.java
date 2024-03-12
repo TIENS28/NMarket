@@ -1,6 +1,5 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
-import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
 import lombok.*;
 
 import java.util.List;

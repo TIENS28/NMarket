@@ -1,7 +1,5 @@
 package com.Nkosopa.NMarket.Services.Customer;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
-
 import java.util.List;
 
 public interface iCustomerAttributeService {

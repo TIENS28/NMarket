@@ -1,7 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
 import com.Nkosopa.NMarket.Entity.DataType;
-import com.querydsl.core.Tuple;
 import lombok.*;
 
 import java.util.List;

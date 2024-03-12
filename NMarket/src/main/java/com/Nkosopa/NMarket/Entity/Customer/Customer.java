@@ -1,15 +1,13 @@
 package com.Nkosopa.NMarket.Entity.Customer;
 
-import java.util.Date;
-import java.util.List;
-
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter

@@ -1,8 +1,5 @@
 package com.Nkosopa.NMarket.Repository.Customer.JPA;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
-import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
-import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
 import com.Nkosopa.NMarket.Repository.Customer.CustomerAttributesRepository;
 import jakarta.transaction.Transactional;
@@ -12,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CustomerAttributeJpaRepository extends JpaRepository<CustomerAttributes, Long>, CustomerAttributesRepository {
 
