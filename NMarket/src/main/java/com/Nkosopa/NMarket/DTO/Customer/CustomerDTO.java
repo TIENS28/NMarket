@@ -1,6 +1,9 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
+import jakarta.annotation.Nullable;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -10,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class CustomerDTO {
+public class CustomerDTO extends BaseDTO<CustomerDTO> {
 
     private String firstName;
 
@@ -19,6 +22,9 @@ public class CustomerDTO {
     private String userName;
 
     private String password;
+
+    @Nullable
+    private MultipartFile avatar;
 
     private String email; //for account registration
 

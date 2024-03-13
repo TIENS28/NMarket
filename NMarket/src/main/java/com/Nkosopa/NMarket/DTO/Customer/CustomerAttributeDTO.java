@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class CustomerAttributeDTO {
+public class CustomerAttributeDTO extends BaseDTO<CustomerAttributeDTO> {
 
     private String attributeCode;
 

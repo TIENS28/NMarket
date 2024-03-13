@@ -79,11 +79,6 @@
 			<version>${querydsl.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.NkosopaForum</groupId>
-			<artifactId>NkosopaForum</artifactId>
-			<version>1.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

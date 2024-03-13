@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import lombok.*;
 
 import java.util.Date;
@@ -9,6 +10,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CustomerDateValueDTO {
+public class CustomerDateValueDTO extends BaseDTO<CustomerDateValueDTO> {
     private Date value;
 }

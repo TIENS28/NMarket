@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import lombok.*;
 
 @Getter
@@ -7,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CustomerLongValueDTO {
+public class CustomerLongValueDTO extends BaseDTO<CustomerLongValueDTO> {
     private Long value;
 }

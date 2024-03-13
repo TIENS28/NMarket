@@ -10,7 +10,9 @@ import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerDateValueJpaRepositor
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerLongValueJpaRepository;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerTextValueJpaRepository;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerService;
+import com.Nkosopa.NMarket.Services.Other.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,9 @@ public class CustomerServiceImpl implements iCustomerService {
 
     @Autowired
     private CustomerConverter customerConverter;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     public void newCustomer(CustomerDTO customerDTO) {
@@ -146,10 +151,39 @@ public class CustomerServiceImpl implements iCustomerService {
 
     @Override
     public void deleteUser(Long customerId){
-//        customerTextValueRepository.deleteByCustomerId(customerId);
-//        customerLongValueRepository.deleteByCustomerId(customerId);
-//        customerDateTimeRepository.deleteByCustomerId(customerId);
         customerTextValueRepository.deleteValueByCustomerId(customerId);
         customerRepository.deleteById(customerId);
     }
+
+    @Override
+    @Transactional
+    public void updateCustomerProfile(CustomerDTO customerDTO, List<CustomerValueDTO> valueDTOList) {
+        Long customerId = customerDTO.getId();
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+
+            if (customerDTO.getAvatar() != null) {
+                String avatarUrl = authenticationService.uploadImageToCloudinary(customerDTO.getAvatar());
+                customer.setAvatarUrl(avatarUrl);
+            }
+
+            customer.setFirstName(customerDTO.getFirstName());
+            customer.setLastName(customerDTO.getLastName());
+            customer.setEmail(customerDTO.getEmail());
+            customer.setPassword(customerDTO.getPassword());
+            customer.setDOB(customer.getDOB());
+            customerRepository.save(customer);
+
+            for(CustomerValueDTO valueDTO : valueDTOList){
+                addValueToCustomerAttribute(valueDTO.getAttributeId(), valueDTO);
+            }
+
+        } else {
+            // Handle customer not found
+            // e.g., throw new NotFoundException("Customer not found with id: " + customerId);
+        }
+    }
+
 }

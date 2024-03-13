@@ -10,12 +10,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Builder
-public class CustomerValueDTO {
+public class CustomerValueDTO{
+
+    private Long attributeId;
+
     private String value;
-//
-//    private Long intValue;
-//
-//    private Date dateValue;
 
     private Long customerId;
 }
