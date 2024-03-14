@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import lombok.*;
 
 import java.util.Date;
@@ -10,7 +11,8 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Builder
-public class CustomerValueDTO{
+public class CustomerValueDTO extends BaseDTO<CustomerValueDTO> {
+    private String attributeCode;
 
     private Long attributeId;
 

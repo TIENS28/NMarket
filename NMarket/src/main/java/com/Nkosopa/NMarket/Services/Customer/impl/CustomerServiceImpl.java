@@ -61,27 +61,6 @@ public class CustomerServiceImpl implements iCustomerService {
     }
 
     @Override
-    public void addAttribute(CustomerAttributeDTO attributeDTO) {
-        CustomerAttributes attributes = new CustomerAttributes();
-        attributes.setAttribute_name(attributeDTO.getAttributeName());
-        attributes.setAttribute_code(attributeDTO.getAttributeCode());
-
-        Optional<Customer> customerOptional = customerRepository.findById(attributeDTO.getCustomerId());
-
-        if (customerOptional.isPresent()) {
-            Customer customer = customerOptional.get();
-            attributes.setCustomer(customer);
-            attributes.setDataType(attributeDTO.getDataType());
-            customerAttributeJpaRepository.save(attributes);
-        } else {
-            throw new EntityNotFoundException("Customer not found with ID: " + attributeDTO.getCustomerId());
-        }
-
-        attributes.setDataType(attributeDTO.getDataType());
-        customerAttributeJpaRepository.save(attributes);
-    }
-
-    @Override
     public void addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO) {
         CustomerAttributes customerAttribute = customerAttributeJpaRepository.findById(customerAttributeId)
                 .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
@@ -117,8 +96,14 @@ public class CustomerServiceImpl implements iCustomerService {
 
                 throw new IllegalArgumentException("Unsupported data type");
         }
-    }
+    }//add value to one attribute
 
+    @Override
+    public void addValuesToCustomerAttributes(List<CustomerValueDTO> valueDTOs) {
+        for (CustomerValueDTO valueDTO : valueDTOs) {
+            addValueToCustomerAttribute(valueDTO.getAttributeId(), valueDTO);
+        }
+    }//add multiple value to multiple attributes
 
     private Date parseStringToDate(String value) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -176,14 +161,13 @@ public class CustomerServiceImpl implements iCustomerService {
             customer.setDOB(customer.getDOB());
             customerRepository.save(customer);
 
-            for(CustomerValueDTO valueDTO : valueDTOList){
-                addValueToCustomerAttribute(valueDTO.getAttributeId(), valueDTO);
-            }
+            addValuesToCustomerAttributes(valueDTOList);
 
         } else {
-            // Handle customer not found
-            // e.g., throw new NotFoundException("Customer not found with id: " + customerId);
+            throw new EntityNotFoundException("User not found with ID: " + customerId);
         }
     }
+
+    //view
 
 }

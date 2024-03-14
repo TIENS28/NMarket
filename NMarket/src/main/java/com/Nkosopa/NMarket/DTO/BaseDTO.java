@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
 public class BaseDTO<T> {
 
     protected Long id;

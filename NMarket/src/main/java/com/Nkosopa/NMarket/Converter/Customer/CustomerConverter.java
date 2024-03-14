@@ -4,10 +4,9 @@ import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDateValueDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerLongValueDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerTextValueDTO;
-import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
-import com.Nkosopa.NMarket.Entity.Customer.CustomerDateValue;
-import com.Nkosopa.NMarket.Entity.Customer.CustomerLongValue;
-import com.Nkosopa.NMarket.Entity.Customer.CustomerTextValue;
+import com.Nkosopa.NMarket.Entity.Customer.*;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,13 +14,17 @@ import java.util.stream.Collectors;
 
 @Component
 public class CustomerConverter {
+
+    @Autowired
+    private CustomerAttributeJpaRepository customerAttributeJpaRepository;
+
     public List<CustomerAttributeDTO> mapAttributesToDTOs(List<CustomerAttributes> customerAttributesList) {
         return customerAttributesList.stream()
                 .map(this::mapAttributeToDTO)
                 .collect(Collectors.toList());
     }
 
-    private CustomerAttributeDTO mapAttributeToDTO(CustomerAttributes customerAttributes) {
+    public CustomerAttributeDTO mapAttributeToDTO(CustomerAttributes customerAttributes) {
         return CustomerAttributeDTO.builder()
                 .attributeCode(customerAttributes.getAttribute_code())
                 .attributeName(customerAttributes.getAttribute_name())
@@ -34,21 +37,32 @@ public class CustomerConverter {
     }
 
 
-    private List<CustomerTextValueDTO> mapTextValuesToDTOs(List<CustomerTextValue> textValues) {
+    public List<CustomerTextValueDTO> mapTextValuesToDTOs(List<CustomerTextValue> textValues) {
         return textValues.stream()
                 .map(textValue -> new CustomerTextValueDTO(textValue.getValue()))
                 .collect(Collectors.toList());
     }
 
-    private List<CustomerLongValueDTO> mapIntValuesToDTOs(List<CustomerLongValue> intValues) {
+    public List<CustomerLongValueDTO> mapIntValuesToDTOs(List<CustomerLongValue> intValues) {
         return intValues.stream()
                 .map(intValue -> new CustomerLongValueDTO(intValue.getValue()))
                 .collect(Collectors.toList());
     }
 
-    private List<CustomerDateValueDTO> mapDateValuesToDTOs(List<CustomerDateValue> dateValues) {
+    public List<CustomerDateValueDTO> mapDateValuesToDTOs(List<CustomerDateValue> dateValues) {
         return dateValues.stream()
                 .map(dateValue -> new CustomerDateValueDTO(dateValue.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    public void convertAttributeDTOtoEntity(List<CustomerAttributeDTO> attributeDTOs, Customer customer) {
+        for (CustomerAttributeDTO attributeDTO : attributeDTOs) {
+            CustomerAttributes attributes = new CustomerAttributes();
+            attributes.setAttribute_name(attributeDTO.getAttributeName());
+            attributes.setAttribute_code(attributeDTO.getAttributeCode());
+            attributes.setCustomer(customer);
+            attributes.setDataType(attributeDTO.getDataType());
+            customerAttributeJpaRepository.save(attributes);
+        }
     }
 }

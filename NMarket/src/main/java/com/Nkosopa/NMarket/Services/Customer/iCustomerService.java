@@ -11,9 +11,11 @@ import java.util.Optional;
 public interface iCustomerService {
     void newCustomer(CustomerDTO customerDTO);
 
-    void addAttribute(CustomerAttributeDTO attributeDTO);
 
     void addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO);
+
+    void addValuesToCustomerAttributes(List<CustomerValueDTO> valueDTOs)//add multiple value to multiple attributes
+    ;
 
     Optional<CustomerDTO> findCustomerById(Long customerId);
 

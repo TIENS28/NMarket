@@ -29,6 +29,7 @@ public interface CustomerAttributeJpaRepository extends JpaRepository<CustomerAt
     List<CustomerAttributes> findByCustomerId(Long customerId);
 
 
+
     @Query("SELECT ca " +
             "FROM CustomerAttributes ca " +
             "WHERE ca.customer.id = :customerId " +

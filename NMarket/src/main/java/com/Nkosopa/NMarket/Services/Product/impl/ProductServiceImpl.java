@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.Services.Product.impl;
 
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.ProductAttributesRepository;
