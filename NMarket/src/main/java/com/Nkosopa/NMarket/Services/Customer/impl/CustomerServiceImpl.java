@@ -177,7 +177,7 @@ public class CustomerServiceImpl implements iCustomerService {
 
     //view
     @Override
-    public List<CustomerDTO> findAll() {
+    public List<CustomerDTO> getAllCustomer() {
         return customerJPARepository.findAll().stream()
                 .map(customerConverter::mapEntityToDTO)
                 .collect(Collectors.toList());
@@ -193,5 +193,6 @@ public class CustomerServiceImpl implements iCustomerService {
             return null;
         }
     }
+
 
 }

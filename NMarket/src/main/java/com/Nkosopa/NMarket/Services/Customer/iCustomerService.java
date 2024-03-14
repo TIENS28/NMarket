@@ -25,7 +25,7 @@ public interface iCustomerService {
     void updateCustomerProfile(CustomerDTO customerDTO, List<CustomerValueDTO> valueDTOList);
 
     //view
-    List<CustomerDTO> findAll();
+    List<CustomerDTO> getAllCustomer();
 
     CustomerDTO getOneCustomer(Long customerId);
 }

@@ -1,6 +1,5 @@
 package com.Nkosopa.NMarket.Controller;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerServiceImpl;
@@ -76,5 +75,17 @@ public class CustomerController {
     public ResponseEntity<String> deleteAttributes(@PathVariable long customerId) {
         customerService.deleteUser(customerId);
         return ResponseEntity.ok("Delete customer successfully");
+    }
+
+    @GetMapping("/allCustomer")
+    public ResponseEntity<List<CustomerDTO>> getAllCustomer() {
+        List<CustomerDTO> customerDTOs = customerService.getAllCustomer();
+        return ResponseEntity.ok(customerDTOs);
+    }
+
+    @GetMapping("/{customerId}/information")
+    public ResponseEntity<CustomerDTO> getCustomerInformation(@PathVariable Long customerId){
+        CustomerDTO customerDTO = customerService.getOneCustomer(customerId);
+        return ResponseEntity.ok(customerDTO);
     }
 }
