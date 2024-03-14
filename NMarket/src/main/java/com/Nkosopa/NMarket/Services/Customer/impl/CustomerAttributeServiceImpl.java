@@ -1,6 +1,6 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
-import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
+import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
@@ -32,7 +32,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
     private CustomerJPARepository customerJPARepository;
 
     @Autowired
-    private CustomerConverter customerConverter;
+    private CustomerAttributeConverter customerAttributeConverter;
 
     @Override
     public void addAttributeToOneCustomer(Long customerId, List<CustomerAttributeDTO> attributeDTOs) {
@@ -44,7 +44,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
 
         Customer customer = customerOptional.get();
 
-        customerConverter.convertAttributeDTOtoEntity(attributeDTOs, customer);
+        customerAttributeConverter.convertAttributeDTOtoEntity(attributeDTOs, customer);
     }//add attribute to one customer
 
     @Override
@@ -52,7 +52,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
         List<Customer> customers = customerJPARepository.findAll();
 
         for (Customer customer : customers) {
-            customerConverter.convertAttributeDTOtoEntity(attributeDTOs, customer);
+            customerAttributeConverter.convertAttributeDTOtoEntity(attributeDTOs, customer);
         }
     }//add attribute to all customers
 

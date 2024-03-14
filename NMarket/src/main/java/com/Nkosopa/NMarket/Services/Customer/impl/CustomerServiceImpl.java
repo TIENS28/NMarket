@@ -1,20 +1,21 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
+import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
-import com.Nkosopa.NMarket.DTO.Customer.*;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
 import com.Nkosopa.NMarket.Entity.Customer.*;
 import com.Nkosopa.NMarket.Entity.DataType;
-import com.Nkosopa.NMarket.Repository.Customer.*;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerDateValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerLongValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerTextValueJpaRepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerService;
 import com.Nkosopa.NMarket.Services.Other.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements iCustomerService {
@@ -39,13 +41,18 @@ public class CustomerServiceImpl implements iCustomerService {
     private CustomerDateValueJpaRepository customerDateTimeRepository;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerJPARepository customerJPARepository;
 
     @Autowired
     private CustomerConverter customerConverter;
 
     @Autowired
+    private CustomerAttributeConverter customerAttributeConverter;
+
+    @Autowired
     private AuthenticationService authenticationService;
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     @Override
     public void newCustomer(CustomerDTO customerDTO) {
@@ -57,7 +64,7 @@ public class CustomerServiceImpl implements iCustomerService {
         newCustomer.setEmail(customerDTO.getEmail());
         newCustomer.setAttributes(new ArrayList<>());
 
-        customerRepository.save(newCustomer);
+        customerJPARepository.save(newCustomer);
     }
 
     @Override
@@ -110,18 +117,18 @@ public class CustomerServiceImpl implements iCustomerService {
         try {
             return dateFormat.parse(value);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("invalid value");
             return null;
         }
     }
 
     @Override
     public Optional<CustomerDTO> findCustomerById(Long customerId) {
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
 
         return customerOptional.map(customer -> {
             List<CustomerAttributes> customerAttributesList = customerAttributeJpaRepository.getCustomerAttributes(customerId);
-            List<CustomerAttributeDTO> attributeDTOs = customerConverter.mapAttributesToDTOs(customerAttributesList);
+            List<CustomerAttributeDTO> attributeDTOs = customerAttributeConverter.mapAttributesToDTOs(customerAttributesList);
 
             return CustomerDTO.builder()
                     .firstName(customer.getFirstName())
@@ -135,16 +142,16 @@ public class CustomerServiceImpl implements iCustomerService {
     }
 
     @Override
-    public void deleteUser(Long customerId){
+    public void deleteUser(Long customerId) {
         customerTextValueRepository.deleteValueByCustomerId(customerId);
-        customerRepository.deleteById(customerId);
+        customerJPARepository.deleteById(customerId);
     }
 
     @Override
     @Transactional
     public void updateCustomerProfile(CustomerDTO customerDTO, List<CustomerValueDTO> valueDTOList) {
         Long customerId = customerDTO.getId();
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        Optional<Customer> optionalCustomer = customerJPARepository.findById(customerId);
 
         if (optionalCustomer.isPresent()) {
             Customer customer = optionalCustomer.get();
@@ -159,7 +166,7 @@ public class CustomerServiceImpl implements iCustomerService {
             customer.setEmail(customerDTO.getEmail());
             customer.setPassword(customerDTO.getPassword());
             customer.setDOB(customer.getDOB());
-            customerRepository.save(customer);
+            customerJPARepository.save(customer);
 
             addValuesToCustomerAttributes(valueDTOList);
 
@@ -169,5 +176,22 @@ public class CustomerServiceImpl implements iCustomerService {
     }
 
     //view
+    @Override
+    public List<CustomerDTO> findAll() {
+        return customerJPARepository.findAll().stream()
+                .map(customerConverter::mapEntityToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomerDTO getOneCustomer(Long customerId) {
+        Optional<Customer> optionalCustomer = customerJPARepository.findById(customerId);
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            return customerConverter.mapEntityToDTO(customer);
+        } else {
+            return null;
+        }
+    }
 
 }
