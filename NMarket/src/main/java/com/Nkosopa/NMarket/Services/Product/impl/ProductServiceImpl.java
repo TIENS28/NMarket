@@ -24,8 +24,10 @@ public class ProductServiceImpl implements iProductService {
         Product newProduct = new Product();
         newProduct.setName(productDTO.getName());
         newProduct.setAttributes(new ArrayList<>());
-
+        newProduct.setSku(productDTO.getSku());
+        newProduct.setStock(productDTO.getStock());
         productJpaRepository.save(newProduct);
     }//add new customer manually
+
 
 }
