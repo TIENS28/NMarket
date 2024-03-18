@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.Converter.Customer;
 
+import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDateValueDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerLongValueDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerTextValueDTO;
@@ -17,14 +18,14 @@ public class CustomerAttributeConverter {
     @Autowired
     private CustomerAttributeJpaRepository customerAttributeJpaRepository;
 
-    public List<com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO> mapAttributesToDTOs(List<CustomerAttributes> customerAttributesList) {
+    public List<CustomerAttributeDTO> mapAttributesToDTOs(List<CustomerAttributes> customerAttributesList) {
         return customerAttributesList.stream()
                 .map(this::mapAttributeToDTO)
                 .collect(Collectors.toList());
     }
 
-    public com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO mapAttributeToDTO(CustomerAttributes customerAttributes) {
-        return com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO.builder()
+    public CustomerAttributeDTO mapAttributeToDTO(CustomerAttributes customerAttributes) {
+        return CustomerAttributeDTO.builder()
                 .attributeCode(customerAttributes.getAttribute_code())
                 .attributeName(customerAttributes.getAttribute_name())
                 .textValues(mapTextValuesToDTOs(customerAttributes.getTextValues()))
@@ -54,7 +55,7 @@ public class CustomerAttributeConverter {
                 .collect(Collectors.toList());
     }
 
-    public void convertAttributeDTOtoEntity(List<com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO> attributeDTOs, Customer customer) {
+    public void convertCustomerAttributeDTOtoEntity(List<CustomerAttributeDTO> attributeDTOs, Customer customer) {
         for (com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO attributeDTO : attributeDTOs) {
             CustomerAttributes attributes = new CustomerAttributes();
             attributes.setAttribute_name(attributeDTO.getAttributeName());

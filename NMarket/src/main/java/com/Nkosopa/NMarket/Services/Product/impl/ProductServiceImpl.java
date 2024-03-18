@@ -22,26 +22,7 @@ public class ProductServiceImpl implements iProductService {
     @Autowired
     private ProductAttributesRepository productAttributesRepository;
 
-    @Override
-    public void addProductAttribute(ProductAttributesDTO productAttributesDTO) {
-        ProductAttributes attributes = new ProductAttributes();
-        attributes.setAttribute_name(productAttributesDTO.getAttribute_name());
-        attributes.setAttribute_code(productAttributesDTO.getAttribute_code());
 
-        Optional<Product> productOptional = productJpaRepository.findById(productAttributesDTO.getProductId());
-
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            attributes.setProduct(product);
-            attributes.setDataType(productAttributesDTO.getDataType());
-            productAttributesRepository.save(attributes);
-        } else {
-            throw new EntityNotFoundException("Product not found with ID: " + productAttributesDTO.getProductId());
-        }
-
-        attributes.setDataType(productAttributesDTO.getDataType());
-        productAttributesRepository.save(attributes);
-    }
 
 
 }

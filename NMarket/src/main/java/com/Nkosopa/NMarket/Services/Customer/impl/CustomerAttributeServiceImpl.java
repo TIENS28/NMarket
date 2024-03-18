@@ -44,7 +44,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
 
         Customer customer = customerOptional.get();
 
-        customerAttributeConverter.convertAttributeDTOtoEntity(attributeDTOs, customer);
+        customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
     }//add attribute to one customer
 
     @Override
@@ -52,7 +52,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
         List<Customer> customers = customerJPARepository.findAll();
 
         for (Customer customer : customers) {
-            customerAttributeConverter.convertAttributeDTOtoEntity(attributeDTOs, customer);
+            customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
         }
     }//add attribute to all customers
 

@@ -1,4 +1,14 @@
 package com.Nkosopa.NMarket.DTO.Product;
 
-public class ProductTextValueDTO {
+import com.Nkosopa.NMarket.DTO.BaseDTO;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
+public class ProductTextValueDTO extends BaseDTO<ProductTextValueDTO> {
+    private String value;
 }
