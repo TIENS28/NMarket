@@ -38,7 +38,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
     public void addAttributeToOneCustomer(Long customerId, List<CustomerAttributeDTO> attributeDTOs) {
         Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
 
-        if (!customerOptional.isPresent()) {
+        if (customerOptional.isEmpty()) {
             throw new EntityNotFoundException("Customer not found with ID: " + customerId);
         }
 

@@ -1,8 +1,9 @@
 package com.Nkosopa.NMarket.Services.Product;
 
-import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
+import org.springframework.stereotype.Service;
 
-public interface iProductService {
+@Service
+public interface iProductService{
 
 
 }

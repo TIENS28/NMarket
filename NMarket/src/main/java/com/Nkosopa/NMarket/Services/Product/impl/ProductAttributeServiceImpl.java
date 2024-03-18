@@ -23,8 +23,8 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
     @Override
     public void addProductAttribute(ProductAttributesDTO productAttributesDTO) {
         ProductAttributes attributes = new ProductAttributes();
-        attributes.setAttribute_name(productAttributesDTO.getAttribute_name());
-        attributes.setAttribute_code(productAttributesDTO.getAttribute_code());
+        attributes.setAttribute_name(productAttributesDTO.getAttributeName());
+        attributes.setAttribute_code(productAttributesDTO.getAttributeCode());
 
         Optional<Product> productOptional = productJpaRepository.findById(productAttributesDTO.getProductId());
 
