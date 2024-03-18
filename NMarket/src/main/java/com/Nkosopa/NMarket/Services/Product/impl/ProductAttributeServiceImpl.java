@@ -2,7 +2,6 @@ package com.Nkosopa.NMarket.Services.Product.impl;
 
 import com.Nkosopa.NMarket.Converter.Product.ProductAttributeConverter;
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
-import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.JPA.*;
@@ -57,6 +56,7 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
         productAttributesJpaRepository.save(attributes);
     }
 
+    @Override
     public void addAttributeToAllProduct(List<ProductAttributesDTO> productAttributeDTOList){
         List<Product> products = productJpaRepository.findAll();
 
@@ -65,10 +65,18 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
         }
     }
 
+    @Override
     public void deleteSingleProductAttribute(Long productId, List<String> attributeCodes){
         List<ProductAttributes> productAttributes = productAttributesJpaRepository.findByProductIdAndAttributeCode(productId, attributeCodes);
         productAttributes.forEach(this::deleteAssociatedValues);
         productAttributesJpaRepository.deleteProductAttributeByIdAndAttributeCode(productId, attributeCodes);
+    }
+
+    @Override
+    public void deleteAttributesOfAllProduct(List<String> attributeCodes) {
+        List<ProductAttributes> productAttributes = productAttributesJpaRepository.findByAttributeCode(attributeCodes);
+        productAttributes.forEach(this::deleteAssociatedValues);
+        productAttributesJpaRepository.deleteProductAttributeByAttributeCode(attributeCodes);
     }
 
     private void deleteAssociatedValues(ProductAttributes productAttributes) {
@@ -76,5 +84,6 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
         productLongValueJpaRepository.deleteAll(productAttributes.getIntValues());
         productDateValueJpaRepository.deleteAll(productAttributes.getDateValues());
     }//delete value for each customerAttributes
+
 
 }

@@ -34,11 +34,6 @@ public class CustomerServiceImpl implements iCustomerService {
     @Autowired
     private CustomerTextValueJpaRepository customerTextValueRepository;
 
-    @Autowired
-    private CustomerLongValueJpaRepository customerLongValueRepository;
-
-    @Autowired
-    private CustomerDateValueJpaRepository customerDateTimeRepository;
 
     @Autowired
     private CustomerJPARepository customerJPARepository;
@@ -52,7 +47,8 @@ public class CustomerServiceImpl implements iCustomerService {
     @Autowired
     private AuthenticationService authenticationService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
+    @Autowired
+    private CustomerValueServiceImpl customerValueService;
 
     @Override
     public void newCustomer(CustomerDTO customerDTO) {
@@ -65,62 +61,8 @@ public class CustomerServiceImpl implements iCustomerService {
         newCustomer.setAttributes(new ArrayList<>());
 
         customerJPARepository.save(newCustomer);
-    }
+    }//add new customer manually
 
-    @Override
-    public void addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO) {
-        CustomerAttributes customerAttribute = customerAttributeJpaRepository.findById(customerAttributeId)
-                .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
-
-        DataType dataType = customerAttribute.getDataType();
-
-        switch (dataType) {
-            case STRING:
-                CustomerTextValue textValue = new CustomerTextValue();
-                textValue.setValue(valueDTO.getValue());
-                textValue.setCustomerAttributes(customerAttribute);
-                textValue.setCustomer(customerAttribute.getCustomer());
-                customerTextValueRepository.save(textValue);
-                break;
-
-            case LONG:
-                CustomerLongValue longValue = new CustomerLongValue();
-                longValue.setValue(Long.parseLong(valueDTO.getValue()));
-                longValue.setCustomerAttributes(customerAttribute);
-                longValue.setCustomer(customerAttribute.getCustomer());
-                customerLongValueRepository.save(longValue);
-                break;
-
-            case DATE:
-                CustomerDateValue dateValue = new CustomerDateValue();
-                dateValue.setValue(parseStringToDate(valueDTO.getValue()));
-                dateValue.setCustomerAttributes(customerAttribute);
-                dateValue.setCustomer(customerAttribute.getCustomer());
-                customerDateTimeRepository.save(dateValue);
-                break;
-
-            default:
-
-                throw new IllegalArgumentException("Unsupported data type");
-        }
-    }//add value to one attribute
-
-    @Override
-    public void addValuesToCustomerAttributes(List<CustomerValueDTO> valueDTOs) {
-        for (CustomerValueDTO valueDTO : valueDTOs) {
-            addValueToCustomerAttribute(valueDTO.getAttributeId(), valueDTO);
-        }
-    }//add multiple value to multiple attributes
-
-    private Date parseStringToDate(String value) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            return dateFormat.parse(value);
-        } catch (ParseException e) {
-            logger.error("invalid value");
-            return null;
-        }
-    }
 
     @Override
     public Optional<CustomerDTO> findCustomerById(Long customerId) {
@@ -168,7 +110,7 @@ public class CustomerServiceImpl implements iCustomerService {
             customer.setDOB(customer.getDOB());
             customerJPARepository.save(customer);
 
-            addValuesToCustomerAttributes(valueDTOList);
+            customerValueService.addValuesToCustomerAttributes(valueDTOList);
 
         } else {
             throw new EntityNotFoundException("User not found with ID: " + customerId);

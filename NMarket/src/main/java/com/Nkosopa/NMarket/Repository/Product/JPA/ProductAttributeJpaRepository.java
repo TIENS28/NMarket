@@ -24,4 +24,16 @@ public interface ProductAttributeJpaRepository extends JpaRepository<ProductAttr
             "WHERE product_id = :productId " +
             "AND attribute_code IN :attributeCodes", nativeQuery = true)
     void deleteProductAttributeByIdAndAttributeCode(Long productId, List<String> attributeCodes);
+
+    @Query("SELECT pa " +
+            "FROM ProductAttributes pa " +
+            "WHERE pa.attribute_code IN :attributeCodes")
+    List<ProductAttributes> findByAttributeCode(List<String> attributeCodes);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE " +
+            "FROM product_attribute " +
+            "WHERE attribute_code IN :attributeCodes", nativeQuery = true)
+    void deleteProductAttributeByAttributeCode(List<String> attributeCodes);
 }

@@ -3,6 +3,7 @@ package com.Nkosopa.NMarket.Controller;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerServiceImpl;
+import com.Nkosopa.NMarket.Services.Customer.impl.CustomerValueServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,33 +27,6 @@ public class CustomerController {
             return new ResponseEntity<>("Customer added successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error adding customer", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping("/{customerAttributeId}/addValue")
-    public ResponseEntity<String> addValueToCustomerAttribute(
-            @PathVariable Long customerAttributeId,
-            @RequestBody CustomerValueDTO valueDTO
-    ) {
-        try {
-            customerService.addValueToCustomerAttribute(customerAttributeId, valueDTO);
-            return new ResponseEntity<>("Value added successfully", HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>("CustomerAttribute not found", HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("/addValues")
-    public ResponseEntity<String> addValuesToCustomerAttributes(@RequestBody List<CustomerValueDTO> valueDTOs) {
-        try {
-            customerService.addValuesToCustomerAttributes(valueDTOs);
-            return ResponseEntity.ok("Values added to customer attributes successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding values to customer attributes");
         }
     }
 
