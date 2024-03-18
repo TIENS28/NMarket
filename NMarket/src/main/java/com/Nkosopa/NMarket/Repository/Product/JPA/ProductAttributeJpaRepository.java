@@ -36,4 +36,12 @@ public interface ProductAttributeJpaRepository extends JpaRepository<ProductAttr
             "FROM product_attribute " +
             "WHERE attribute_code IN :attributeCodes", nativeQuery = true)
     void deleteProductAttributeByAttributeCode(List<String> attributeCodes);
+
+    @Query("SELECT pa, COALESCE(tv.value, lv.value, dv.value) AS value " +
+            "FROM ProductAttributes pa " +
+            "LEFT JOIN ProductTextValue tv ON pa.id = tv.productAttributes.id AND pa.product.id = tv.productAttributes.id " +
+            "LEFT JOIN ProductLongValue lv ON pa.id = lv.productAttributes.id AND pa.product.id = lv.product.id " +
+            "LEFT JOIN ProductDateValue dv ON pa.id = dv.productAttributes.id AND pa.product.id = dv.product.id " +
+            "WHERE pa.product.id = :productId")
+    List<ProductAttributes> getProductAtribute(Long productId);
 }
