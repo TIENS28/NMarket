@@ -10,6 +10,8 @@ import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
 import com.Nkosopa.NMarket.Services.Product.iProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -64,6 +66,20 @@ public class ProductServiceImpl implements iProductService {
     }
 
     //search product
+
+
+    @Override
+    public Page<ProductDTO> searchProduct(String query, Pageable pageable) {
+        return productJpaRepository.searchProducts(query, pageable)
+                .map(productConverter::mapEntityToDTO);
+    }
+
+
+    @Override
+    public Page<ProductDTO> listProduct(Pageable pageable){
+        return productJpaRepository.listProduct(pageable)
+                .map(productConverter::mapEntityToDTO);
+    }
 
 
 }

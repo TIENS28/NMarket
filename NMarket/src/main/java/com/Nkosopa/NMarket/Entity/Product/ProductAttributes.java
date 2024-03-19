@@ -25,8 +25,6 @@ public class ProductAttributes extends BaseEntity<ProductAttributes> {
 
 	private String attribute_name;
 
-	private Long type_id;
-
 	@Enumerated(EnumType.STRING)
 	private DataType dataType;
 

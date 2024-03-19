@@ -42,4 +42,8 @@ public class Customer extends BaseEntity<Customer>{
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private CustomerType customerType;
+
+	@OneToMany(mappedBy = "customer")
+	private List<CustomerOrder> orders;
+
 }
