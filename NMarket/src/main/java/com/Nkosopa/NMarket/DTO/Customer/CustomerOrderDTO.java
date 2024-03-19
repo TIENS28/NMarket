@@ -1,9 +1,10 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
 import com.Nkosopa.NMarket.DTO.BaseDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import lombok.*;
 
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,13 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 @Builder
-public class CustomerValueDTO extends BaseDTO<CustomerValueDTO> {
-
-    private String attributeCode;
-
-    private Long attributeId;
-
-    private String value;
+public class CustomerOrderDTO extends BaseDTO<CustomerOrderDTO> {
 
     private Long customerId;
+
+    private List<ProductDTO> productDTOList;
 }
