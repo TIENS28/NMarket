@@ -11,9 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProductJpaRepository extends JpaRepository<Product, Long>, ProductRepository {
-//
-//    @Query("SELECT DISTINCT p FROM Product p WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%")
-//    public List<Product> searchProduct(@Param("query") String query); //search product
+
 
     @Query(value = "SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
             "FROM Product p " +

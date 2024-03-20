@@ -66,8 +66,6 @@ public class ProductServiceImpl implements iProductService {
     }
 
     //search product
-
-
     @Override
     public Page<ProductDTO> searchProduct(String query, Pageable pageable) {
         return productJpaRepository.searchProducts(query, pageable)
