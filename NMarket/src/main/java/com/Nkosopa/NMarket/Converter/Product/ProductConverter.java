@@ -21,14 +21,17 @@ public class ProductConverter {
     public ProductDTO mapEntityToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
 
-        if (product != null && product.getId() != null){
+        if (product.getId() != null) {
             productDTO.setId(product.getId());
-            productDTO.setName(product.getName());
-            productDTO.setSku(product.getSku());
-            productDTO.setStock(product.getStock());
-            productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
-            productDTO.setProductTypeDTOS(productTypeConverter.mapEntityToDTO(product.getProductType()));
         }
+
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setSku(product.getSku());
+        productDTO.setStock(product.getStock());
+        productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
+        productDTO.setProductTypeDTOS(productTypeConverter.mapEntityToDTO(product.getProductType()));
+
 
         return productDTO;
     }
