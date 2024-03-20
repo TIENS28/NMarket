@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Product;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ProductAttributesDTO {
+public class ProductAttributesDTO extends BaseDTO<ProductAttributesDTO> {
 
     private Long productId;
 

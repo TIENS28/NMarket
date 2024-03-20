@@ -94,4 +94,39 @@ public class ProductValueServiceImpl implements iProductValueService {
             return null;
         }
     }
+
+    @Override
+    public void updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO) {
+        ProductAttributes productAttribute = productAttributesJpaRepository.findById(productAttributeId)
+                .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
+
+        DataType dataType = productAttribute.getDataType();
+
+        switch (dataType) {
+            case STRING:
+                ProductTextValue textValue = productTextValueJpaRepository.findByProductAttributesId(productAttributeId)
+                        .orElseThrow(() -> new EntityNotFoundException("Text value not found"));
+                textValue.setValue(valueDTO.getValue());
+                productTextValueJpaRepository.save(textValue);
+                break;
+
+            case LONG:
+                ProductLongValue longValue = productLongValueJpaRepository.findByProductAttributesId(productAttributeId)
+                        .orElseThrow(() -> new EntityNotFoundException("Long value not found"));
+                longValue.setValue(Long.parseLong(valueDTO.getValue()));
+                productLongValueJpaRepository.save(longValue);
+                break;
+
+            case DATE:
+                ProductDateValue dateValue = productDateValueJpaRepository.findByProductAttributesId(productAttributeId)
+                        .orElseThrow(() -> new EntityNotFoundException("Date value not found"));
+                dateValue.setValue(parseStringToDate(valueDTO.getValue()));
+                productDateValueJpaRepository.save(dateValue);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unsupported data type");
+        }
+    }// update value of one attribute
+
 }

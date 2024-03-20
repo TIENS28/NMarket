@@ -1,6 +1,5 @@
 package com.Nkosopa.NMarket.Controller;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Services.Product.impl.ProductValueServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -44,4 +43,17 @@ public class ProductValueController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding values to customer attributes");
         }
     }
+
+    @PutMapping("/{productAttributeId}/value")
+    public ResponseEntity<String> updateProductAttributeValue(@PathVariable Long productAttributeId,
+                                                              @RequestBody ProductValueDTO valueDTO) {
+        try {
+            productValueService.updateValueOfProductAttribute(productAttributeId, valueDTO);
+            return new ResponseEntity<>("Product attribute value updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to update product attribute value: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

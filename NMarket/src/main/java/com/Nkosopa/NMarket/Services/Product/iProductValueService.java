@@ -12,4 +12,7 @@ public interface iProductValueService {
 
     void addValuesToProductAttributes(List<ProductValueDTO> valueDTOs)//add multiple value to multiple attributes
     ;
+
+    void updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO)// update value of one attribute
+    ;
 }

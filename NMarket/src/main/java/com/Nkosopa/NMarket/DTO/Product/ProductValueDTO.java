@@ -10,6 +10,7 @@ import lombok.*;
 @Data
 @Builder
 public class ProductValueDTO extends BaseDTO<ProductValueDTO> {
+
     private Long attributeId;
 
     private String value;

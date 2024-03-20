@@ -44,4 +44,6 @@ public interface ProductAttributeJpaRepository extends JpaRepository<ProductAttr
             "LEFT JOIN ProductDateValue dv ON pa.id = dv.productAttributes.id AND pa.product.id = dv.product.id " +
             "WHERE pa.product.id = :productId")
     List<ProductAttributes> getProductAtribute(Long productId);
+
+
 }
