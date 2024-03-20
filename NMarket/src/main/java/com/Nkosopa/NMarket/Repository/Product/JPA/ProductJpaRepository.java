@@ -15,33 +15,31 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
 //    @Query("SELECT DISTINCT p FROM Product p WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%")
 //    public List<Product> searchProduct(@Param("query") String query); //search product
 
-    @Query("SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
+    @Query(value = "SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
             "FROM Product p " +
             "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
             "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +
             "LEFT JOIN ProductLongValue lv ON lv.productAttributes.id = pa.id " +
             "LEFT JOIN ProductTextValue tv ON tv.productAttributes.id = pa.id " +
             "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id " +
-            "WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%")
+            "WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%",
+            countQuery = "SELECT COUNT(DISTINCT p.id) " +
+                    "FROM Product p " +
+                    "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
+                    "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +
+                    "LEFT JOIN ProductLongValue lv ON lv.productAttributes.id = pa.id " +
+                    "LEFT JOIN ProductTextValue tv ON tv.productAttributes.id = pa.id " +
+                    "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id " +
+                    "WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%")
     public Page<Product> searchProducts(@Param("query") String query, Pageable pageable);
 
-//
-//    @Query("SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
-//            "FROM Product p " +
-//            "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
-//            "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +
-//            "LEFT JOIN ProductLongValue lv ON lv.productAttributes.id = pa.id " +
-//            "LEFT JOIN ProductTextValue tv ON tv.productAttributes.id = pa.id " +
-//            "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id " +
-//            "WHERE p.productType.pType LIKE %:type%")
-//    public List<Product> productFilter(@Param("type") String type);
-
-    @Query("SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
+    @Query(value = "SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
             "FROM Product p " +
             "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
             "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +
             "LEFT JOIN ProductLongValue lv ON lv.productAttributes.id = pa.id " +
             "LEFT JOIN ProductTextValue tv ON tv.productAttributes.id = pa.id " +
-            "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id ")
-    public Page<Product> listProduct(Pageable pageable);
+            "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id ",
+            countQuery = "SELECT COUNT(DISTINCT p.id) FROM Product p")
+    public Page<Product> findAllProduct(Pageable pageable);
 }

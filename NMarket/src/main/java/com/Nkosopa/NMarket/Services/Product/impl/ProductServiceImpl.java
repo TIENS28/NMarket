@@ -76,8 +76,8 @@ public class ProductServiceImpl implements iProductService {
 
 
     @Override
-    public Page<ProductDTO> listProduct(Pageable pageable){
-        return productJpaRepository.listProduct(pageable)
+    public Page<ProductDTO> listProduct(Pageable pageable) {
+        return productJpaRepository.findAllProduct(pageable)
                 .map(productConverter::mapEntityToDTO);
     }
 

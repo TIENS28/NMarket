@@ -15,6 +15,9 @@ public class ProductConverter {
     @Autowired
     private ProductAttributeConverter productAttributeConverter;
 
+    @Autowired
+    private ProductTypeConverter productTypeConverter;
+
     public ProductDTO mapEntityToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
 
@@ -24,6 +27,7 @@ public class ProductConverter {
             productDTO.setSku(product.getSku());
             productDTO.setStock(product.getStock());
             productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
+            productDTO.setProductTypeDTOS(productTypeConverter.mapEntityToDTO(product.getProductType()));
         }
 
         return productDTO;

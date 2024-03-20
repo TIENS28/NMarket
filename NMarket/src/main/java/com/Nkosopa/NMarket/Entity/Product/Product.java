@@ -31,4 +31,5 @@ public class Product extends BaseEntity<Product>{
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private ProductType productType;
+
 }

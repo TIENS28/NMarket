@@ -2,10 +2,7 @@ package com.Nkosopa.NMarket.Entity.Customer;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
 import com.Nkosopa.NMarket.Entity.Product.Product;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,7 @@ import java.util.List;
 @Entity
 public class CustomerOrder extends BaseEntity<CustomerOrder> {
 
-    @OneToMany(mappedBy = "order")
+    @ManyToMany
     private List<Product> productList;
 
     private Date oderDate;

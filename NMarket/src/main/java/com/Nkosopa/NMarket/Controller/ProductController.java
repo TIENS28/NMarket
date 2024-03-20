@@ -8,8 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
-
 @RestController
 @RequestMapping("/api/auth/products")
 public class ProductController {
@@ -19,7 +17,6 @@ public class ProductController {
 
     @GetMapping("/findProduct/{query}")
     public ResponseEntity<Page<ProductDTO>> searchProducts
-
             (
                     @PathVariable String query,
                     @RequestParam(defaultValue = "0") int page,
@@ -27,12 +24,15 @@ public class ProductController {
         Page<ProductDTO> productDTOPage = productService.searchProduct(query, PageRequest.of(page, size));
         return ResponseEntity.ok(productDTOPage);
     }
+
     @GetMapping("/allProduct")
     public ResponseEntity<Page<ProductDTO>> allProduct(@RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "30") int size) {
         Page<ProductDTO> productDTOsPage = productService.listProduct(PageRequest.of(page, size));
         return ResponseEntity.ok(productDTOsPage);
     }
+
+
 }
 
 
