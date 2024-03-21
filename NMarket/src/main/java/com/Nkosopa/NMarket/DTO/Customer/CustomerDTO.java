@@ -29,4 +29,6 @@ public class CustomerDTO extends BaseDTO<CustomerDTO> {
     private String email; //for account registration
 
     private List<CustomerAttributeDTO> attributesDTO;
+
+    private ShopingCartDTO shopingCartDTO;
 }

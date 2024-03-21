@@ -10,4 +10,6 @@ public interface iCustomerValueService {
 
     void addValuesToCustomerAttributes(List<CustomerValueDTO> valueDTOs)//add multiple value to multiple attributes
     ;
+
+    void updateCustomerAttributeValue(Long attributeId, CustomerValueDTO customerValueDTO);
 }

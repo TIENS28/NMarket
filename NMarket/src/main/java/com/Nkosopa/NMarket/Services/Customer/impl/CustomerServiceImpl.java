@@ -110,8 +110,7 @@ public class CustomerServiceImpl implements iCustomerService {
             customer.setDOB(customer.getDOB());
             customerJPARepository.save(customer);
 
-            customerValueService.addValuesToCustomerAttributes(valueDTOList);
-
+            //chua xong
         } else {
             throw new EntityNotFoundException("User not found with ID: " + customerId);
         }
@@ -135,4 +134,5 @@ public class CustomerServiceImpl implements iCustomerService {
             return null;
         }
     }
+
 }

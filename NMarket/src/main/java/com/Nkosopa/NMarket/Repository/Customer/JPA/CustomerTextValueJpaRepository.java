@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface CustomerTextValueJpaRepository extends JpaRepository<CustomerTextValue, Long>, CustomerTextValueRepository {
 
     @Transactional
@@ -30,6 +32,8 @@ public interface CustomerTextValueJpaRepository extends JpaRepository<CustomerTe
             + "LEFT JOIN customer_date_value dv ON tv.customer_id = dv.customer_id "
             + "WHERE tv.customer_attribute_id = :customerId", nativeQuery = true)
     void deleteAttributeValueByCustomerId(@Param("customerId") Long customerId);
+
+    Optional<CustomerTextValue> findByCustomerAttributesId(Long id);
 }
 
 

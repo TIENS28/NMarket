@@ -19,8 +19,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProductAttributes extends BaseEntity<ProductAttributes> {
 
-	private String entity_code;
-
 	private String attribute_code;
 
 	private String attribute_name;

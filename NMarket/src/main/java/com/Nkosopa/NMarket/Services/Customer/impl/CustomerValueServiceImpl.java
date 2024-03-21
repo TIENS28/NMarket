@@ -40,7 +40,7 @@ public class CustomerValueServiceImpl implements iCustomerValueService {
     private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     @Override
-    public void addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO) {
+    public void     addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO) {
         CustomerAttributes customerAttribute = customerAttributeJpaRepository.findById(customerAttributeId)
                 .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
 
@@ -92,5 +92,50 @@ public class CustomerValueServiceImpl implements iCustomerValueService {
             logger.error("invalid value");
             return null;
         }
+    }
+
+    @Override
+    public void updateCustomerAttributeValue(Long attributeId, CustomerValueDTO customerValueDTO) {
+        CustomerAttributes customerAttribute = customerAttributeJpaRepository.findById(attributeId)
+                .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
+
+        DataType dataType = customerAttribute.getDataType();
+        switch (dataType) {
+            case STRING:
+                updateTextValue(customerAttribute, customerValueDTO);
+                break;
+            case LONG:
+                updateLongValue(customerAttribute, customerValueDTO);
+                break;
+            case DATE:
+                updateDateValue(customerAttribute, customerValueDTO);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported data type");
+        }
+    }
+
+    private void updateTextValue(CustomerAttributes customerAttribute, CustomerValueDTO customerValueDTO) {
+        customerTextValueJpaRepository.findByCustomerAttributesId(customerAttribute.getId())
+                .ifPresent(textValue -> {
+                    textValue.setValue(customerValueDTO.getValue());
+                    customerTextValueJpaRepository.save(textValue);
+                });
+    }
+
+    private void updateLongValue(CustomerAttributes customerAttribute, CustomerValueDTO customerValueDTO) {
+        customerLongValueJpaRepository.findByCustomerAttributesId(customerAttribute.getId())
+                .ifPresent(longValue -> {
+                    longValue.setValue(Long.parseLong(customerValueDTO.getValue()));
+                    customerLongValueJpaRepository.save(longValue);
+                });
+    }
+
+    private void updateDateValue(CustomerAttributes customerAttribute, CustomerValueDTO customerValueDTO) {
+        customerDateValueJpaRepository.findByCustomerAttributesId(customerAttribute.getId())
+                .ifPresent(dateValue -> {
+                    dateValue.setValue(parseStringToDate(customerValueDTO.getValue()));
+                    customerDateValueJpaRepository.save(dateValue);
+                });
     }
 }
