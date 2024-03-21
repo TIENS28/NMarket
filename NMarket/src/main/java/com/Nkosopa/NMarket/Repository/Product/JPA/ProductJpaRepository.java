@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductJpaRepository extends JpaRepository<Product, Long>, ProductRepository {
 
 
-    @Query(value = "SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
+    @Query(value = "SELECT DISTINCT p " +
             "FROM Product p " +
             "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
             "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +
@@ -31,7 +31,7 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
                     "WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%")
     public Page<Product> searchProducts(@Param("query") String query, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT p, pa, pt.pType, COALESCE(tv.value, lv.value, dv.value) AS value " +
+    @Query(value = "SELECT DISTINCT p " +
             "FROM Product p " +
             "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
             "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +

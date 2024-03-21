@@ -78,6 +78,4 @@ public class ProductServiceImpl implements iProductService {
         return productJpaRepository.findAllProduct(pageable)
                 .map(productConverter::mapEntityToDTO);
     }
-
-
 }

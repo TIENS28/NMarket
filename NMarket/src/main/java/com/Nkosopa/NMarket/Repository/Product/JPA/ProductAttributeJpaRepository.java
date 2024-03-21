@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.Repository.Product.JPA;
 
+import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.ProductAttributesRepository;
 import jakarta.transaction.Transactional;
@@ -46,4 +47,9 @@ public interface ProductAttributeJpaRepository extends JpaRepository<ProductAttr
     List<ProductAttributes> getProductAtribute(Long productId);
 
 
+    @Query("SELECT pa " +
+            "FROM ProductAttributes pa " +
+            "INNER JOIN Product p ON p.id = pa.product.id " +
+            "WHERE p.id = :id")
+    List<ProductAttributesDTO> findByProductId(Long id);
 }
