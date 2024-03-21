@@ -25,7 +25,7 @@ public interface CustomerTextValueJpaRepository extends JpaRepository<CustomerTe
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE tv, lv, dv"
+    @Query(value = "DELETE tv, lv, dv "
             + "FROM customer_entity_text tv "
             + "LEFT JOIN customer_attribute ca ON tv.customer_id = ca.customer_id "
             + "LEFT JOIN customer_entity_int lv ON tv.customer_id = lv.customer_id "

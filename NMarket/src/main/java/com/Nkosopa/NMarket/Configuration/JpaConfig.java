@@ -14,7 +14,6 @@ import java.util.Optional;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableJpaRepositories(basePackages = "com.Nkosopa.NMarket.Repository")
 public class JpaConfig {
-
     @Bean
     public AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();

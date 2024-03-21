@@ -1,15 +1,20 @@
 package com.Nkosopa.NMarket.Entity.Product;
 
-import java.util.List;
-
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-
 import com.Nkosopa.NMarket.Entity.DataType;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "product_attribute")
