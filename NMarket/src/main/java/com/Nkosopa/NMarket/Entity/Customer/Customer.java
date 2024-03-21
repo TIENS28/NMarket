@@ -1,10 +1,7 @@
 package com.Nkosopa.NMarket.Entity.Customer;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -32,6 +29,9 @@ public class Customer extends BaseEntity<Customer>{
 	private String verificationToken;
 
 	private String DOB;
+
+	@OneToOne
+	private ShoppingCart shoppingCart;
 
 	@Builder.Default
 	private boolean status =  false;
