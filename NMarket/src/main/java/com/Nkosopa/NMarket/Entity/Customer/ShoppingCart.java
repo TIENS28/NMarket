@@ -3,6 +3,7 @@ package com.Nkosopa.NMarket.Entity.Customer;
 import com.Nkosopa.NMarket.Entity.BaseEntity;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class ShoppingCart extends BaseEntity<ShoppingCart> {
     private List<Product> productList;
 
     @OneToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     private Long totalPrice;

@@ -17,4 +17,6 @@ public class AuthenticationResponse {
     private Long avatarFileSize;
     private String avatarUrl;
     private String message;
+    private String address;
+    private String gender;
 }

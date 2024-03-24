@@ -23,6 +23,12 @@ public class CustomerDTO extends BaseDTO<CustomerDTO> {
 
     private String password;
 
+    private String gender;
+
+    private String role;
+
+    private String address;
+
     @Nullable
     private MultipartFile avatar;
 

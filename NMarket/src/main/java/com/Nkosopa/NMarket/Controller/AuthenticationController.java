@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.Controller;
 
+import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationRequest;
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationResponse;
 import com.Nkosopa.NMarket.DTO.Authentication.RegistrationRequest;
 import com.Nkosopa.NMarket.Services.Customer.impl.RegistrationServiceImpl;
@@ -37,6 +38,11 @@ public class AuthenticationController {
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired token.");
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
 }
