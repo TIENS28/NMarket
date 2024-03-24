@@ -75,7 +75,7 @@ public class CustomerServiceImpl implements iCustomerService {
             return CustomerDTO.builder()
                     .firstName(customer.getFirstName())
                     .lastName(customer.getLastName())
-                    .userName(customer.getUserName())
+                    .userName(customer.getUsername())
                     .password(customer.getPassword())
                     .email(customer.getEmail())
                     .attributesDTO(attributeDTOs)

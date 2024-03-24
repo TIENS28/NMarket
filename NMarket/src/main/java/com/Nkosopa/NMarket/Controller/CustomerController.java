@@ -14,21 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/auth/customer")
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
 
     @Autowired
     private CustomerServiceImpl customerService;
 
-    @PostMapping("/newCustomer")
-    public ResponseEntity<String> addCustomer(@RequestBody CustomerDTO customerDTO) {
-        try {
-            customerService.newCustomer(customerDTO);
-            return new ResponseEntity<>("Customer added successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error adding customer", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/admin/newCustomer")
+//    public ResponseEntity<String> addCustomer(@RequestBody CustomerDTO customerDTO) {
+//        try {
+//            customerService.newCustomer(customerDTO);
+//            return new ResponseEntity<>("Customer added successfully", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Error adding customer", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @GetMapping("/{customerId}")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long customerId) {
@@ -39,19 +39,19 @@ public class CustomerController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/delete/{customerId}")
+    @DeleteMapping("/admin/delete/{customerId}")
     public ResponseEntity<String> deleteCustomer(@PathVariable long customerId) {
         customerService.deleteUser(customerId);
         return ResponseEntity.ok("Delete customer successfully");
     }
 
-    @DeleteMapping("/attributes/delete/{customerId}")
+    @DeleteMapping("/admin/attributes/delete/{customerId}")
     public ResponseEntity<String> deleteAttributes(@PathVariable long customerId) {
         customerService.deleteUser(customerId);
         return ResponseEntity.ok("Delete customer successfully");
     }
 
-    @GetMapping("/allCustomer")
+    @GetMapping("/admin/allCustomer")
     public ResponseEntity<List<CustomerDTO>> getAllCustomer() {
         List<CustomerDTO> customerDTOs = customerService.getAllCustomer();
         return ResponseEntity.ok(customerDTOs);

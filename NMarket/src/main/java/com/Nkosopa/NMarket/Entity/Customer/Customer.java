@@ -34,6 +34,7 @@ public class Customer extends BaseEntity<Customer> implements UserDetails {
 
 	private String DOB;
 
+	@Enumerated(EnumType.STRING)
 	private Role role;
 
 	@OneToOne(mappedBy = "customer")

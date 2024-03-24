@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth/value")
+@RequestMapping("/api/v1/value")
 public class CustomerValueController {
 
     @Autowired

@@ -6,18 +6,20 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth/customer/attributes")
+@RequestMapping("/api/v1/admin/customer")
 public class CustomerAttributeController {
 
     @Autowired
     private CustomerAttributeServiceImpl customerAttributeService;
 
     @PostMapping("/{customerId}/addAttributes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addAttributeToOneCustomer(@PathVariable Long customerId, @RequestBody List<CustomerAttributeDTO> attributeDTOs) {
         try {
             customerAttributeService.addAttributeToOneCustomer(customerId, attributeDTOs);
@@ -28,6 +30,7 @@ public class CustomerAttributeController {
     }
 
     @PostMapping("/addAttributes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addAttributesToAllCustomers(@RequestBody List<CustomerAttributeDTO> attributeDTOs) {
         try {
             customerAttributeService.addAttributesToAllCustomers(attributeDTOs);
@@ -38,6 +41,7 @@ public class CustomerAttributeController {
     }
 
     @DeleteMapping("/{customerId}/deleteAttribute")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteCustomerAttributes(
             @PathVariable Long customerId,
             @RequestBody List<String> attributeCodes
@@ -47,6 +51,7 @@ public class CustomerAttributeController {
     }
 
     @DeleteMapping("/deleteAttribute")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteCustomerAttributes(
             @RequestBody List<String> attributeCodes
     ) {

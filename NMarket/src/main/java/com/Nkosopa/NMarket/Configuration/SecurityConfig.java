@@ -36,8 +36,7 @@ public class SecurityConfig {
                         .contentSecurityPolicy(cps -> cps
                                 .policyDirectives("script-src 'self'; frame-ancestors 'self'")))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**")
-                        .permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )
@@ -48,8 +47,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

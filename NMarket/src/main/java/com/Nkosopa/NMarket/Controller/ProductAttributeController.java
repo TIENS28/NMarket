@@ -5,18 +5,20 @@ import com.Nkosopa.NMarket.Services.Product.impl.ProductAttributeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth/products/attribute")
+@RequestMapping("/api/v1/products/attribute")
 public class ProductAttributeController {
 
     @Autowired
     private ProductAttributeServiceImpl productAttributeService;
 
     @PostMapping("/addAttributes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addAttributesToAllCustomers(@RequestBody List<ProductAttributesDTO> attributeDTOs) {
         try {
             productAttributeService.addAttributeToAllProduct(attributeDTOs);
@@ -26,16 +28,8 @@ public class ProductAttributeController {
         }
     }
 
-    @DeleteMapping("/{productId}/deleteAttribute")
-    public ResponseEntity<String> deletepProductAttributes(
-            @PathVariable Long productId,
-            @RequestBody List<String> attributeCodes
-    ) {
-        productAttributeService.deleteSingleProductAttribute(productId, attributeCodes);
-        return ResponseEntity.ok("Product attributes deleted successfully");
-    }
-
     @DeleteMapping("/deleteAttribute")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteCustomerAttributes(
             @RequestBody List<String> attributeCodes
     ) {

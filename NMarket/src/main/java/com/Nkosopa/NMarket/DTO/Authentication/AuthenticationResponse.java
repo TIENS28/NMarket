@@ -19,4 +19,5 @@ public class AuthenticationResponse {
     private String message;
     private String address;
     private String gender;
+    private String role;
 }

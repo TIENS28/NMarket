@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,13 +63,20 @@ public class AuthenticationService {
                 .gender(request.getGender())
                 .avatarUrl(avatarUrl)
                 .build();
-        customer.setRole(Role.NORMAL_CUSTOMER);
+        customer.setRole(Role.ROLE_CUSTOMER);
         if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
             throw new RuntimeException("Password is required");
-        }else {
+        } else {
             registrationService.register(customer);
         }
         return AuthenticationResponse.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .gender(customer.getGender())
+                .avatarUrl(customer.getAvatarUrl())
+                .DOB(customer.getDOB())
+                .address(customer.getAddress())
+                .role(customer.getRole().name())
                 .message("Registration successful. Check your email for verification.")
                 .build();
     }
@@ -102,9 +110,20 @@ public class AuthenticationService {
                     .avatarUrl(customer.getAvatarUrl())
                     .address(customer.getAddress())
                     .gender(customer.getGender())
+                    .role(customer.getRole().name())
                     .build();
         } catch (Exception e) {
             throw new RuntimeException("Authentication failed", e);
         }
     }
+
+    public Customer getCurrentCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof Customer) {
+            return (Customer) authentication.getPrincipal();
+        }
+        return null;
+    }
+
 }

@@ -6,6 +6,7 @@ import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerAttributeService;
+import com.Nkosopa.NMarket.Services.Other.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,10 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
     @Autowired
     private CustomerAttributeConverter customerAttributeConverter;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
+
     @Override
     public void addAttributeToOneCustomer(Long customerId, List<CustomerAttributeDTO> attributeDTOs) {
         Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
@@ -50,7 +55,6 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
     @Override
     public void addAttributesToAllCustomers(List<CustomerAttributeDTO> attributeDTOs) {
         List<Customer> customers = customerJPARepository.findAll();
-
         for (Customer customer : customers) {
             customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
         }
