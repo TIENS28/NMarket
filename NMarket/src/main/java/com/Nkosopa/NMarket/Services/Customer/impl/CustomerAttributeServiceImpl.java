@@ -6,7 +6,7 @@ import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerAttributeService;
-import com.Nkosopa.NMarket.Services.Other.AuthenticationService;
+import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

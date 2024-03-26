@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.Entity.Customer;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
+import com.Nkosopa.NMarket.Entity.Other.ShoppingCart;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

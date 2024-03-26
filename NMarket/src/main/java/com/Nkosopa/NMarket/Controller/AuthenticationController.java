@@ -4,7 +4,7 @@ import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationRequest;
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationResponse;
 import com.Nkosopa.NMarket.DTO.Authentication.RegistrationRequest;
 import com.Nkosopa.NMarket.Services.Customer.impl.RegistrationServiceImpl;
-import com.Nkosopa.NMarket.Services.Other.AuthenticationService;
+import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

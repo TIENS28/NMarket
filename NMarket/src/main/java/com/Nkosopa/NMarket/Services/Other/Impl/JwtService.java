@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Services.Other;
+package com.Nkosopa.NMarket.Services.Other.Impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

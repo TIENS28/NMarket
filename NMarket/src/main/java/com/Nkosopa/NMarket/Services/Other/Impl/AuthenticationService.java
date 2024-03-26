@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Services.Other;
+package com.Nkosopa.NMarket.Services.Other.Impl;
 
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationRequest;
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationResponse;

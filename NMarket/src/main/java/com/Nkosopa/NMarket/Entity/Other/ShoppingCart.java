@@ -1,6 +1,7 @@
-package com.Nkosopa.NMarket.Entity.Customer;
+package com.Nkosopa.NMarket.Entity.Other;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
+import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

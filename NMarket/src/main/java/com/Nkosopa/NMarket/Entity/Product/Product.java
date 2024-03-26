@@ -24,6 +24,8 @@ public class Product extends BaseEntity<Product>{
 	private String name;
 	
 	private int stock;
+
+	private Long price;
 	
 	@OneToMany(mappedBy = "product")
 	private List<ProductAttributes> attributes;

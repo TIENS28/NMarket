@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products/attribute")
+@RequestMapping("/api/v1/products/attribute")
 public class ProductValueController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class ProductValueController {
     }
 
     @PostMapping("/addValues")
-    public ResponseEntity<String> addValuesToCustomerAttributes(@RequestBody List<ProductValueDTO> valueDTOs) {
+    public ResponseEntity<String> addValuesToProductAttributes(@RequestBody List<ProductValueDTO> valueDTOs) {
         try {
             productValueService.addValuesToProductAttributes(valueDTOs);
             return ResponseEntity.ok("Values added to customer attributes successfully");

@@ -22,4 +22,6 @@ public interface iProductService{
     Page<ProductDTO> searchProduct(String query, org.springframework.data.domain.Pageable pageable);
 
     Page<ProductDTO> listProduct(Pageable pageable);
+
+    void updateProduct(Long productId, ProductDTO updatedProductDTO);
 }

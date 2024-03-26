@@ -78,4 +78,32 @@ public class ProductServiceImpl implements iProductService {
         return productJpaRepository.findAllProduct(pageable)
                 .map(productConverter::mapEntityToDTO);
     }
+
+    @Override
+    public void updateProduct(Long productId, ProductDTO productDTO) {
+        Optional<Product> productOptional = productJpaRepository.findById(productId);
+
+        productOptional.ifPresent(product -> {
+            product.setName(productDTO.getName());
+            product.setSku(productDTO.getSku());
+            product.setStock(productDTO.getStock());
+
+            if (productDTO.getAttributesDTOS() != null && !productDTO.getAttributesDTOS().isEmpty()) {
+                List<ProductAttributes> updatedAttributes = new ArrayList<>();
+                for (ProductAttributesDTO attributeDTO : productDTO.getAttributesDTOS()) {
+                    ProductAttributes attribute = productAttributeJpaRepository.findById(attributeDTO.getId())
+                            .orElseThrow(() -> new RuntimeException("Attribute not found with ID: " + attributeDTO.getId()));
+
+                    attribute.setAttribute_name(attributeDTO.getAttributeName());
+                    attribute.setAttribute_code(attributeDTO.getAttributeCode());
+
+                    updatedAttributes.add(attribute);
+                }
+                product.setAttributes(updatedAttributes);
+            }
+
+            productJpaRepository.save(product);
+        });
+    }
+
 }

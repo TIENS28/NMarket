@@ -1,6 +1,6 @@
 package com.Nkosopa.NMarket.Configuration;
 
-import com.Nkosopa.NMarket.Services.Other.JwtService;
+import com.Nkosopa.NMarket.Services.Other.Impl.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
