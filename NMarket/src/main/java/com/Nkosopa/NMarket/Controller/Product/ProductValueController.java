@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Controller;
+package com.Nkosopa.NMarket.Controller.Product;
 
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Services.Product.impl.ProductValueServiceImpl;

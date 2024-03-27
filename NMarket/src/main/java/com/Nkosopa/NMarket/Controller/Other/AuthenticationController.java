@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Controller;
+package com.Nkosopa.NMarket.Controller.Other;
 
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationRequest;
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationResponse;

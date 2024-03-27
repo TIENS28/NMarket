@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Controller;
+package com.Nkosopa.NMarket.Controller.Customer;
 
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerAttributeServiceImpl;

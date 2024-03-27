@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Controller;
+package com.Nkosopa.NMarket.Controller.Customer;
 
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,19 +40,22 @@ public class CustomerController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/admin/delete/{customerId}")
+    @DeleteMapping("/delete/{customerId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteCustomer(@PathVariable long customerId) {
         customerService.deleteUser(customerId);
         return ResponseEntity.ok("Delete customer successfully");
     }
 
-    @DeleteMapping("/admin/attributes/delete/{customerId}")
+    @DeleteMapping("/attributes/delete/{customerId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteAttributes(@PathVariable long customerId) {
         customerService.deleteUser(customerId);
         return ResponseEntity.ok("Delete customer successfully");
     }
 
-    @GetMapping("/admin/allCustomer")
+    @GetMapping("/allCustomer")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<List<CustomerDTO>> getAllCustomer() {
         List<CustomerDTO> customerDTOs = customerService.getAllCustomer();
         return ResponseEntity.ok(customerDTOs);
