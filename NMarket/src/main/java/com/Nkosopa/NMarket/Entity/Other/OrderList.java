@@ -29,4 +29,6 @@ public class OrderList extends BaseEntity<OrderList> {
     private Customer customer;
 
     private Long totalPrice;
+
+    private String status;
 }

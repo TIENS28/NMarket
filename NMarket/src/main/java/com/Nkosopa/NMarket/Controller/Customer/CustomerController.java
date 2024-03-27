@@ -32,6 +32,7 @@ public class CustomerController {
 //    }
 
     @GetMapping("/{customerId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long customerId) {
         Optional<CustomerDTO> customerDTOOptional = customerService.findCustomerById(customerId);
 
@@ -62,6 +63,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}/information")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<CustomerDTO> getCustomerInformation(@PathVariable Long customerId){
         CustomerDTO customerDTO = customerService.getOneCustomer(customerId);
         return ResponseEntity.ok(customerDTO);
