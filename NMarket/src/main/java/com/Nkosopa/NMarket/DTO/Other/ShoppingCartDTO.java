@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Other;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ShopingCartDTO {
+public class ShoppingCartDTO extends BaseDTO<ShoppingCartDTO> {
 
     private CustomerDTO customerDTO;
 

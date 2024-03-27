@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductConverter {
@@ -40,4 +41,9 @@ public class ProductConverter {
         return productDTO;
     }
 
+    public List<ProductDTO> mapEntitiesToDTOs(List<Product> products) {
+        return products.stream()
+                .map(this::mapEntityToDTO)
+                .collect(Collectors.toList());
+    }
 }

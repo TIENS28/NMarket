@@ -1,7 +1,7 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
 import com.Nkosopa.NMarket.DTO.BaseDTO;
-import com.Nkosopa.NMarket.DTO.Other.ShopingCartDTO;
+import com.Nkosopa.NMarket.DTO.Other.ShoppingCartDTO;
 import jakarta.annotation.Nullable;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,5 +37,5 @@ public class CustomerDTO extends BaseDTO<CustomerDTO> {
 
     private List<CustomerAttributeDTO> attributesDTO;
 
-    private ShopingCartDTO shopingCartDTO;
+    private ShoppingCartDTO shopingCartDTO;
 }
