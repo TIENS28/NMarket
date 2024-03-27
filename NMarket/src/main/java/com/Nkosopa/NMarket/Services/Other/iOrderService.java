@@ -1,7 +1,10 @@
 package com.Nkosopa.NMarket.Services.Other;
 
-public interface iOrderService {
-    void confirmOrder(long orderId);
+import com.Nkosopa.NMarket.DTO.Other.OrderDTO;
 
-    void cancelOrder(long orderId);
+public interface iOrderService {
+
+    OrderDTO confirmOrder(long cartId);
+
+    OrderDTO cancelOrder(long orderId);
 }

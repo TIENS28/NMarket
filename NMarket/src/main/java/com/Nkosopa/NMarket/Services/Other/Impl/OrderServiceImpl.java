@@ -1,5 +1,7 @@
 package com.Nkosopa.NMarket.Services.Other.Impl;
 
+import com.Nkosopa.NMarket.Converter.Other.OrderConverter;
+import com.Nkosopa.NMarket.DTO.Other.OrderDTO;
 import com.Nkosopa.NMarket.Entity.Other.OrderList;
 import com.Nkosopa.NMarket.Entity.Other.ShoppingCart;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.ShoppingCartJpaRepository;
@@ -19,8 +21,11 @@ public class OrderServiceImpl implements iOrderService {
     @Autowired
     private ShoppingCartJpaRepository shoppingCartJpaRepository;
 
+    @Autowired
+    private OrderConverter orderConverter;
+
     @Override
-    public void confirmOrder(long cartId) {
+    public OrderDTO confirmOrder(long cartId) {
         Optional<ShoppingCart> cartOptional = shoppingCartJpaRepository.findById(cartId);
         if (cartOptional.isPresent()) {
             ShoppingCart cart = cartOptional.get();
@@ -33,18 +38,22 @@ public class OrderServiceImpl implements iOrderService {
             orderJpaRepository.save(order);
 
             shoppingCartJpaRepository.delete(cart);
+
+            return orderConverter.mapEntityToDTO(order);
         } else {
             throw new RuntimeException("Shopping cart not found");
         }
     }
 
     @Override
-    public void cancelOrder(long orderId) {
+    public OrderDTO cancelOrder(long orderId) {
         Optional<OrderList> orderOptional = orderJpaRepository.findById(orderId);
         if (orderOptional.isPresent()) {
             OrderList order = orderOptional.get();
             order.setStatus("CANCELED");
             orderJpaRepository.save(order);
+
+            return orderConverter.mapEntityToDTO(order);
         } else {
             throw new RuntimeException("Order not found");
         }
