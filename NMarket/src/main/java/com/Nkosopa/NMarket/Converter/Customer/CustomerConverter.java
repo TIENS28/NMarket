@@ -24,6 +24,7 @@ public class CustomerConverter {
             customerDTO.setLastName(customer.getLastName());
             customerDTO.setEmail(customer.getEmail());
             customerDTO.setRole(customer.getRole().name());
+            customerDTO.setAddress(customer.getAddress());
             customerDTO.setAttributesDTO(customerAttributeConverter.mapAttributesToDTOs(customer.getAttributes()));
         }
 

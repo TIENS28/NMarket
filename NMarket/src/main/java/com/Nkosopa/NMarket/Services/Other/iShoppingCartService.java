@@ -10,4 +10,8 @@ public interface iShoppingCartService {
 
     @Autowired
     void addProductToCart(Long productId, Long cartId);
+
+    void removeProductFromShoppingCart(long productId, long cartId);
+
+    void cancelShoppingCart(long cartId);
 }
