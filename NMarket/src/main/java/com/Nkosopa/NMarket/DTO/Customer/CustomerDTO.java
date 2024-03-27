@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
 import com.Nkosopa.NMarket.DTO.BaseDTO;
+import com.Nkosopa.NMarket.DTO.Other.ShopingCartDTO;
 import jakarta.annotation.Nullable;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;

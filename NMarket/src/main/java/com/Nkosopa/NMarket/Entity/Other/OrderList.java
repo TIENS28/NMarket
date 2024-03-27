@@ -5,7 +5,6 @@ import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShoppingCart extends BaseEntity<ShoppingCart> {
+public class OrderList extends BaseEntity<OrderList> {
 
     @OneToMany
     private List<Product> productList;
@@ -30,5 +29,4 @@ public class ShoppingCart extends BaseEntity<ShoppingCart> {
     private Customer customer;
 
     private Long totalPrice;
-
 }

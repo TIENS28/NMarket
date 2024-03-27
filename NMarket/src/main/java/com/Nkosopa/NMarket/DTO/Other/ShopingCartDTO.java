@@ -1,5 +1,6 @@
-package com.Nkosopa.NMarket.DTO.Customer;
+package com.Nkosopa.NMarket.DTO.Other;
 
+import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import lombok.*;
 
