@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class ShoppingCartDTO extends BaseDTO<ShoppingCartDTO> {
 
-    private CustomerDTO customerDTO;
+    private Long customerId;
 
     private List<ProductDTO> productDTOS;
 

@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface iShoppingCartService {
 
-    ShoppingCartDTO addProductToCart(Long productId, Long cartId);
+    ShoppingCartDTO addProductsToCart(Long customerId, List<Long> productIds);
 
-    ShoppingCartDTO removeProductFromShoppingCart(long productId, long cartId);
+    ShoppingCartDTO removeProductFromShoppingCart(Long productId, Long cartId);
 
-    ShoppingCartDTO cancelShoppingCart(long cartId);
+    ShoppingCartDTO cancelShoppingCart(Long cartId);
 }
