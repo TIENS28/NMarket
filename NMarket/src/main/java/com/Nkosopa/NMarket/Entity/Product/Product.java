@@ -23,7 +23,9 @@ public class Product extends BaseEntity<Product>{
 	private String sku;
 	
 	private String name;
-	
+
+	private String currency;
+
 	private int stock;
 
 	private Long price;

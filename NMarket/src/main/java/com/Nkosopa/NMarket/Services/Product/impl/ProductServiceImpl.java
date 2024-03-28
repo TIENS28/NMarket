@@ -9,6 +9,7 @@ import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
 import com.Nkosopa.NMarket.Services.Product.iProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,14 +36,20 @@ public class ProductServiceImpl implements iProductService {
     private ProductConverter productConverter;
 
     @Override
-    public void addProduct(ProductDTO productDTO) {
-        Product newProduct = new Product();
-        newProduct.setName(productDTO.getName());
-        newProduct.setAttributes(new ArrayList<>());
-        newProduct.setSku(productDTO.getSku());
-        newProduct.setStock(productDTO.getStock());
-        productJpaRepository.save(newProduct);
-    }//add new customer manually
+    public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
+        List<ProductDTO> createdProducts = new ArrayList<>();
+        for (ProductDTO productDTO : productDTOs) {
+            Product newProduct = new Product();
+            newProduct.setName(productDTO.getName());
+            newProduct.setAttributes(new ArrayList<>());
+            newProduct.setSku(productDTO.getSku());
+            newProduct.setStock(productDTO.getStock());
+            newProduct.setCurrency(productDTO.getCurrency());
+            productJpaRepository.save(newProduct);
+            createdProducts.add(productConverter.mapEntityToDTO(newProduct));
+        }
+        return createdProducts;
+    }
 
     @Override
     public Optional<ProductDTO> findProductById(Long productId) {
@@ -80,13 +87,15 @@ public class ProductServiceImpl implements iProductService {
     }
 
     @Override
-    public void updateProduct(Long productId, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
         Optional<Product> productOptional = productJpaRepository.findById(productId);
 
-        productOptional.ifPresent(product -> {
+        return productOptional.map(product -> {
             product.setName(productDTO.getName());
             product.setSku(productDTO.getSku());
             product.setStock(productDTO.getStock());
+            product.setPrice(productDTO.getPrice());
+            product.setCurrency(productDTO.getCurrency());
 
             if (productDTO.getAttributesDTOS() != null && !productDTO.getAttributesDTOS().isEmpty()) {
                 List<ProductAttributes> updatedAttributes = new ArrayList<>();
@@ -102,8 +111,9 @@ public class ProductServiceImpl implements iProductService {
                 product.setAttributes(updatedAttributes);
             }
 
-            productJpaRepository.save(product);
-        });
+            Product updatedProduct = productJpaRepository.save(product);
+            return productConverter.mapEntityToDTO(updatedProduct); // Convert updated product to DTO
+        }).orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + productId));
     }
 
 }

@@ -11,8 +11,7 @@ import java.util.Optional;
 @Service
 public interface iProductService{
 
-
-    void addProduct(ProductDTO productDTO);//add new customer manually
+    List<ProductDTO> addProducts(List<ProductDTO> productDTOs);
 
     Optional<ProductDTO> findProductById(Long productId);
 
@@ -23,5 +22,5 @@ public interface iProductService{
 
     Page<ProductDTO> listProduct(Pageable pageable);
 
-    void updateProduct(Long productId, ProductDTO updatedProductDTO);
+    ProductDTO updateProduct(Long productId, ProductDTO productDTO);
 }

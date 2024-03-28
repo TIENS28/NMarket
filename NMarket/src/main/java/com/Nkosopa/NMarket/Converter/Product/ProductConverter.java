@@ -37,7 +37,8 @@ public class ProductConverter {
         productDTO.setStock(product.getStock());
         productDTO.setProductTypeDTOS(productTypeConverter.mapEntityToDTO(product.getProductType()));
         productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
-
+        productDTO.setPrice(product.getPrice());
+        productDTO.setCurrency(product.getCurrency());
         return productDTO;
     }
 

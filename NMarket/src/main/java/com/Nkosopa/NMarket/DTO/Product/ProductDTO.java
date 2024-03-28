@@ -19,6 +19,10 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private int stock;
 
+    private Long price;
+
+    private String currency;
+
     private ProductTypeDTO productTypeDTOS;
 
     private List<ProductAttributesDTO> attributesDTOS;
