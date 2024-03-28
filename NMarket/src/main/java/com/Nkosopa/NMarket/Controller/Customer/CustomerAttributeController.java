@@ -40,15 +40,15 @@ public class CustomerAttributeController {
         }
     }
 
-    @DeleteMapping("/{customerId}/deleteAttribute")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteCustomerAttributes(
-            @PathVariable Long customerId,
-            @RequestBody List<String> attributeCodes
-    ) {
-        customerAttributeService.deleteSingleCustomerAttribute(customerId, attributeCodes);
-        return ResponseEntity.ok("Customer attributes deleted successfully");
-    }
+//    @DeleteMapping("/{customerId}/deleteAttribute")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<String> deleteCustomerAttributes(
+//            @PathVariable Long customerId,
+//            @RequestBody List<String> attributeCodes
+//    ) {
+//        customerAttributeService.deleteSingleCustomerAttribute(customerId, attributeCodes);
+//        return ResponseEntity.ok("Customer attributes deleted successfully");
+//    }
 
     @DeleteMapping("/deleteAttribute")
     @PreAuthorize("hasRole('ADMIN')")

@@ -40,7 +40,7 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
 
 
     @Override
-    public void addAttributeToOneCustomer(Long customerId, List<CustomerAttributeDTO> attributeDTOs) {
+    public List<CustomerAttributeDTO> addAttributeToOneCustomer(Long customerId, List<CustomerAttributeDTO> attributeDTOs) {
         Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
 
         if (customerOptional.isEmpty()) {
@@ -50,15 +50,20 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
         Customer customer = customerOptional.get();
 
         customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
+
+        return attributeDTOs;
     }//add attribute to one customer
 
     @Override
-    public void addAttributesToAllCustomers(List<CustomerAttributeDTO> attributeDTOs) {
+    public List<CustomerAttributeDTO> addAttributesToAllCustomers(List<CustomerAttributeDTO> attributeDTOs) {
         List<Customer> customers = customerJPARepository.findAll();
         for (Customer customer : customers) {
             customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
         }
+
+        return attributeDTOs;
     }//add attribute to all customers
+
 
     @Override
     public void deleteSingleCustomerAttribute(Long customerId, List<String> attributeCodes){

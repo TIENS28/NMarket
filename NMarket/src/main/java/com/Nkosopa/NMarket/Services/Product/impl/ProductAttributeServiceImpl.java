@@ -36,7 +36,7 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
 
 
     @Override
-    public void addProductAttribute(ProductAttributesDTO productAttributesDTO) {
+    public List<ProductAttributesDTO> addProductAttribute(ProductAttributesDTO productAttributesDTO) {
         ProductAttributes attributes = new ProductAttributes();
         attributes.setAttribute_name(productAttributesDTO.getAttributeName());
         attributes.setAttribute_code(productAttributesDTO.getAttributeCode());
@@ -54,15 +54,19 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
 
         attributes.setDataType(productAttributesDTO.getDataType());
         productAttributesJpaRepository.save(attributes);
+
+        return productAttributeConverter.mapAttributesToDTOs(List.of(attributes));
     }
 
     @Override
-    public void addAttributeToAllProduct(List<ProductAttributesDTO> productAttributeDTOList){
+    public List<ProductAttributesDTO> addAttributeToAllProduct(List<ProductAttributesDTO> productAttributeDTOList){
         List<Product> products = productJpaRepository.findAll();
 
         for (Product product : products) {
             productAttributeConverter.convertProductAttributeDTOtoEntity(productAttributeDTOList, product);
         }
+
+        return productAttributeDTOList;
     }
 
     @Override

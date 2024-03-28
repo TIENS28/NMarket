@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class ProductController {
     private ProductServiceImpl productService;
 
     @GetMapping("/findProduct/{query}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<Page<ProductDTO>> searchProducts
             (
                     @PathVariable String query,
@@ -26,6 +28,7 @@ public class ProductController {
     }
 
     @GetMapping("/allProduct")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<Page<ProductDTO>> allProduct(@RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "30") int size) {
         Page<ProductDTO> productDTOsPage = productService.listProduct(PageRequest.of(page, size));
