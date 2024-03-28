@@ -19,7 +19,7 @@ public class CustomerAttributeController {
     private CustomerAttributeServiceImpl customerAttributeService;
 
     @PostMapping("/{customerId}/addAttributes")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> addAttributeToOneCustomer(@PathVariable Long customerId, @RequestBody List<CustomerAttributeDTO> attributeDTOs) {
         try {
             customerAttributeService.addAttributeToOneCustomer(customerId, attributeDTOs);
@@ -30,7 +30,7 @@ public class CustomerAttributeController {
     }
 
     @PostMapping("/addAttributes")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> addAttributesToAllCustomers(@RequestBody List<CustomerAttributeDTO> attributeDTOs) {
         try {
             customerAttributeService.addAttributesToAllCustomers(attributeDTOs);
@@ -41,7 +41,7 @@ public class CustomerAttributeController {
     }
 
     @DeleteMapping("/{customerId}/deleteAttribute")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteCustomerAttributes(
             @PathVariable Long customerId,
             @RequestBody List<String> attributeCodes

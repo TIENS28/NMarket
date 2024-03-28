@@ -1,11 +1,13 @@
 package com.Nkosopa.NMarket.Controller.Customer;
 
+import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerValueServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,30 +19,23 @@ public class CustomerValueController {
     @Autowired
     private CustomerValueServiceImpl customerValueService;
 
-    @PostMapping("/{customerAttributeId}/addValue")
-    public ResponseEntity<String> addValueToCustomerAttribute(
-            @PathVariable Long customerAttributeId,
-            @RequestBody CustomerValueDTO valueDTO
-    ) {
+    @PostMapping("/addValues")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+    public ResponseEntity<CustomerValueDTO> addValueToCustomerAttribute(@RequestParam("customerAttributeId") Long customerAttributeId, @RequestBody CustomerValueDTO valueDTO) {
         try {
-            customerValueService.addValueToCustomerAttribute(customerAttributeId, valueDTO);
-            return new ResponseEntity<>("Value added successfully", HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>("CustomerAttribute not found", HttpStatus.NOT_FOUND);
+            CustomerValueDTO newValuesDTO = customerValueService.addValueToCustomerAttribute(customerAttributeId, valueDTO);
+            return ResponseEntity.ok(newValuesDTO);
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PostMapping("/addValues")
-    public ResponseEntity<String> addValuesToCustomerAttributes(@RequestBody List<CustomerValueDTO> valueDTOs) {
-        try {
-            customerValueService.addValuesToCustomerAttributes(valueDTOs);
-            return ResponseEntity.ok("Values added to customer attributes successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding values to customer attributes");
-        }
+    @PutMapping("/updateAttributeValue/{attributeId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+    public ResponseEntity<CustomerValueDTO> updateCustomerAttributeValue(@PathVariable("attributeId") Long attributeId, @RequestBody CustomerValueDTO customerValueDTO) {
+        CustomerValueDTO updatedCustomerValueDTO = customerValueService.updateCustomerAttributeValue(attributeId, customerValueDTO);
+        return ResponseEntity.ok(updatedCustomerValueDTO);
     }
 }

@@ -20,4 +20,7 @@ public class CustomerValueDTO extends BaseDTO<CustomerValueDTO> {
     private String value;
 
     private Long customerId;
+
+    public CustomerValueDTO(String value) {
+    }
 }

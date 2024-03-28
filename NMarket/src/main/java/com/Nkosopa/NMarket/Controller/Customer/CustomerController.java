@@ -48,13 +48,6 @@ public class CustomerController {
         return ResponseEntity.ok("Delete customer successfully");
     }
 
-    @DeleteMapping("/attributes/delete/{customerId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteAttributes(@PathVariable long customerId) {
-        customerService.deleteUser(customerId);
-        return ResponseEntity.ok("Delete customer successfully");
-    }
-
     @GetMapping("/allCustomer")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<List<CustomerDTO>> getAllCustomer() {
