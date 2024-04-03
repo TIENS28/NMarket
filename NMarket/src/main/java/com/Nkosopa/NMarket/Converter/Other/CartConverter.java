@@ -20,17 +20,9 @@ public class CartConverter {
         ShoppingCartDTO dto = new ShoppingCartDTO();
         dto.setId(cart.getId());
         dto.setTotalPrice(cart.getTotalPrice());
-        dto.setCustomerDTO(customerConverter.mapEntityToDTO(cart.getCustomer()));
+        dto.setCustomerId(cart.getCustomer().getId());
         dto.setProductDTOS(productConverter.mapEntitiesToDTOs(cart.getProductList()));
         return dto;
     }
 
-//    public ShoppingCart mapDTOToEntity(ShoppingCartDTO dto) {
-//        ShoppingCart cart = new ShoppingCart();
-//        cart.setId(dto.getId());
-//        cart.setTotalPrice(dto.getTotalPrice());
-//        cart.setCustomer(dto.getCustomerDTO());
-//        cart.setProductList(dto.getProductDTOS());
-//        return cart;
-//    } //use later
 }

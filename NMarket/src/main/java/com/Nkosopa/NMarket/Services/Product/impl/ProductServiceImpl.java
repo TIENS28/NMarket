@@ -44,6 +44,7 @@ public class ProductServiceImpl implements iProductService {
             newProduct.setAttributes(new ArrayList<>());
             newProduct.setSku(productDTO.getSku());
             newProduct.setStock(productDTO.getStock());
+            newProduct.setPrice(productDTO.getPrice());
             newProduct.setCurrency(productDTO.getCurrency());
             productJpaRepository.save(newProduct);
             createdProducts.add(productConverter.mapEntityToDTO(newProduct));
@@ -78,7 +79,6 @@ public class ProductServiceImpl implements iProductService {
         return productJpaRepository.searchProducts(query, pageable)
                 .map(productConverter::mapEntityToDTO);
     }
-
 
     @Override
     public Page<ProductDTO> listProduct(Pageable pageable) {

@@ -25,6 +25,9 @@ public class ProductAttributeConverter {
     }
 
     public ProductAttributesDTO mapAttributeToDTO(ProductAttributes productAttributes) {
+        if (!productAttributes.isSearchable()) {
+            return null;
+        }
         return ProductAttributesDTO.builder()
                 .attributeCode(productAttributes.getAttribute_code())
                 .attributeName(productAttributes.getAttribute_name())
@@ -35,6 +38,7 @@ public class ProductAttributeConverter {
                 .productId(productAttributes.getProduct().getId())
                 .build();
     }
+
 
 
     public List<ProductTextValueDTO> mapTextValuesToDTOs(List<ProductTextValue> textValues) {

@@ -20,16 +20,15 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
             "LEFT JOIN ProductLongValue lv ON lv.productAttributes.id = pa.id " +
             "LEFT JOIN ProductTextValue tv ON tv.productAttributes.id = pa.id " +
             "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id " +
-            "WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%",
+            "WHERE (p.name LIKE %:query% OR pt.pType LIKE %:query%) ",
             countQuery = "SELECT COUNT(DISTINCT p.id) " +
                     "FROM Product p " +
                     "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
                     "LEFT JOIN ProductAttributes pa ON pa.product.id = p.id " +
-                    "LEFT JOIN ProductLongValue lv ON lv.productAttributes.id = pa.id " +
-                    "LEFT JOIN ProductTextValue tv ON tv.productAttributes.id = pa.id " +
-                    "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id " +
-                    "WHERE p.name LIKE %:query% OR p.productType.pType LIKE %:query%")
+                    "WHERE (p.name LIKE %:query% OR pt.pType LIKE %:query%) ")
     public Page<Product> searchProducts(@Param("query") String query, Pageable pageable);
+
+
 
     @Query(value = "SELECT DISTINCT p " +
             "FROM Product p " +

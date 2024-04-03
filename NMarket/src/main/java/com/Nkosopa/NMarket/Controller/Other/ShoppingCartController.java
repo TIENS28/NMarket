@@ -34,7 +34,6 @@ public class ShoppingCartController {
         }
     }
 
-
     @DeleteMapping("/removeProduct")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<ShoppingCartDTO> removeProductFromShoppingCart(@RequestParam("productId") Long productId, @RequestParam("cartId") Long cartId) {

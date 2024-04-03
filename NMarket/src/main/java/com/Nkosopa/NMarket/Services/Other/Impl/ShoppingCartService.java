@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ShoppingCartService implements iShoppingCartService {
+public class  ShoppingCartService implements iShoppingCartService {
 
     @Autowired
     private ProductJpaRepository productJpaRepository;

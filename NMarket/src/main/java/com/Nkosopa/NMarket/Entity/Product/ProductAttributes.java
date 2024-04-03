@@ -5,6 +5,7 @@ import com.Nkosopa.NMarket.Entity.DataType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -31,7 +32,7 @@ public class ProductAttributes extends BaseEntity<ProductAttributes> {
 	@Enumerated(EnumType.STRING)
 	private DataType dataType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER )
     @JoinColumn(name = "product_id")
     private Product product;
     
@@ -43,5 +44,7 @@ public class ProductAttributes extends BaseEntity<ProductAttributes> {
 
 	@OneToMany(mappedBy = "productAttributes")
 	private List<ProductDateValue> dateValues;
+
+	private boolean isSearchable;
 	
 }
