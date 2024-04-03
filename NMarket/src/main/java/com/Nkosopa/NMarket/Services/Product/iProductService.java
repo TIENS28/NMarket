@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,9 @@ public interface iProductService{
 
     //search product
     Page<ProductDTO> searchProduct(String query, org.springframework.data.domain.Pageable pageable);
+
+
+    Page<ProductDTO> searchProductWithFilter(String name, Map<String, String> filters, Pageable pageable);
 
     Page<ProductDTO> listProduct(Pageable pageable);
 

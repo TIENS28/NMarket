@@ -4,6 +4,7 @@ import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDateValueDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductLongValueDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductTextValueDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Entity.Product.*;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

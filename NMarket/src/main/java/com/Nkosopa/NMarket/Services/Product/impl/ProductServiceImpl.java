@@ -8,6 +8,7 @@ import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
+import com.Nkosopa.NMarket.Repository.Product.impl.ProductRepositoryImpl;
 import com.Nkosopa.NMarket.Services.Product.iProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,9 @@ public class ProductServiceImpl implements iProductService {
 
     @Autowired
     private ProductConverter productConverter;
+
+    @Autowired
+    private ProductRepositoryImpl productRepository;
 
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
@@ -79,6 +84,13 @@ public class ProductServiceImpl implements iProductService {
         return productJpaRepository.searchProducts(query, pageable)
                 .map(productConverter::mapEntityToDTO);
     }
+
+    @Override
+    public Page<ProductDTO> searchProductWithFilter(String name, Map<String, String> filters, Pageable pageable) {
+        Page<Product> products = productRepository.searchProductWithAttribute(name, filters, pageable);
+        return products.map(productConverter::mapEntityToDTO);
+    }
+
 
     @Override
     public Page<ProductDTO> listProduct(Pageable pageable) {

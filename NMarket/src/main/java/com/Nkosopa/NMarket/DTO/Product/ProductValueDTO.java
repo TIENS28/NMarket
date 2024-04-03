@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.DTO.Product;
 
 import com.Nkosopa.NMarket.DTO.BaseDTO;
+import com.Nkosopa.NMarket.Entity.Product.Product;
 import lombok.*;
 
 @Getter
@@ -16,4 +17,5 @@ public class ProductValueDTO extends BaseDTO<ProductValueDTO> {
     private String value;
 
     private Long productId;
+
 }

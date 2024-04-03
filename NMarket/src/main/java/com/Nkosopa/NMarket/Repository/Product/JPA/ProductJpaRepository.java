@@ -1,6 +1,8 @@
 package com.Nkosopa.NMarket.Repository.Product.JPA;
 
 import com.Nkosopa.NMarket.Entity.Product.Product;
+import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
+import com.Nkosopa.NMarket.Entity.Product.QProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,4 +41,5 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
             "LEFT JOIN ProductDateValue dv ON dv.productAttributes.id = pa.id ",
             countQuery = "SELECT COUNT(DISTINCT p.id) FROM Product p")
     public Page<Product> findAllProduct(Pageable pageable);
+
 }
