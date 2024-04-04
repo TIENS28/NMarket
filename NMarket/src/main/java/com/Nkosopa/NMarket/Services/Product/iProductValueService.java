@@ -1,6 +1,6 @@
 package com.Nkosopa.NMarket.Services.Product;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 
 import java.util.List;
@@ -13,6 +13,8 @@ public interface iProductValueService {
     void addValuesToProductAttributes(List<ProductValueDTO> valueDTOs)//add multiple value to multiple attributes
     ;
 
-    void updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO)// update value of one attribute
+    ProductDTO updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO)// update value of one attribute
     ;
+
+    ProductDTO updateProductAttributeValues(List<ProductValueDTO> valueDTOs);
 }

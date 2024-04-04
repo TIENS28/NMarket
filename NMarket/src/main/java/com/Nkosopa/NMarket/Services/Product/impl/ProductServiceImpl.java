@@ -2,6 +2,7 @@ package com.Nkosopa.NMarket.Services.Product.impl;
 
 import com.Nkosopa.NMarket.Converter.Product.ProductAttributeConverter;
 import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
+import com.Nkosopa.NMarket.Converter.Product.ProductTypeConverter;
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.Entity.Product.Product;
@@ -40,6 +41,10 @@ public class ProductServiceImpl implements iProductService {
     @Autowired
     private ProductRepositoryImpl productRepository;
 
+    @Autowired
+    private ProductTypeConverter productTypeConverter;
+
+
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
         List<ProductDTO> createdProducts = new ArrayList<>();
@@ -61,11 +66,17 @@ public class ProductServiceImpl implements iProductService {
     public Optional<ProductDTO> findProductById(Long productId) {
         Optional<Product> productOptional = productJpaRepository.findById(productId);
 
-        return productOptional.map(customer -> {
+        return productOptional.map(product -> {
             List<ProductAttributes> productAttributesList = productAttributeJpaRepository.getProductAtribute(productId);
             List<ProductAttributesDTO> attributeDTOs = productAttributeConverter.mapAttributesToDTOs(productAttributesList);
 
             return ProductDTO.builder()
+                    .sku(product.getSku())
+                    .productTypeDTOS(productTypeConverter.mapEntityToDTO(product.getProductType()))
+                    .price(product.getPrice())
+                    .stock(product.getStock())
+                    .currency(product.getCurrency())
+                    .name(product.getName())
                     .attributesDTOS(attributeDTOs)
                     .build();
         });

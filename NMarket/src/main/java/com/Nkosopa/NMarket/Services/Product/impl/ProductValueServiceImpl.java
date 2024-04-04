@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.Services.Product.impl;
 
+import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
@@ -37,6 +38,9 @@ public class ProductValueServiceImpl implements iProductValueService {
 
     @Autowired
     private ProductDateValueJpaRepository productDateValueJpaRepository;
+
+    @Autowired
+    private ProductServiceImpl productService;
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
@@ -96,7 +100,21 @@ public class ProductValueServiceImpl implements iProductValueService {
     }
 
     @Override
-    public void updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO) {
+    public ProductDTO updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO) {
+        updateProductValue(valueDTO, productAttributeId);
+        return productService.findProductById(valueDTO.getProductId()).orElse(null);
+    }
+
+    @Override
+    public ProductDTO updateProductAttributeValues(List<ProductValueDTO> valueDTOs) {
+        for (ProductValueDTO valueDTO : valueDTOs) {
+            Long productAttributeId = valueDTO.getAttributeId();
+            updateProductValue(valueDTO, productAttributeId);
+        }
+        return productService.findProductById(valueDTOs.get(0).getProductId()).orElse(null);
+    }
+
+    private void updateProductValue(ProductValueDTO valueDTO, Long productAttributeId) {
         ProductAttributes productAttribute = productAttributesJpaRepository.findById(productAttributeId)
                 .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
 
@@ -127,6 +145,7 @@ public class ProductValueServiceImpl implements iProductValueService {
             default:
                 throw new IllegalArgumentException("Unsupported data type");
         }
-    }// update value of one attribute
+    }
+
 
 }

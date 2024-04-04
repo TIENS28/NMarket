@@ -42,7 +42,7 @@ public class ProductAttributeController {
 
     @DeleteMapping("/attribute/deleteAll")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteAttributesOfAllProduct(@RequestParam("attributeCodes") List<String> attributeCodes) {
+    public ResponseEntity<String> deleteAttributesOfAllProduct(@RequestBody List<String> attributeCodes) {
         try {
             productAttributeService.deleteAttributesOfAllProduct(attributeCodes);
             return ResponseEntity.ok("Attributes deleted from all products successfully");

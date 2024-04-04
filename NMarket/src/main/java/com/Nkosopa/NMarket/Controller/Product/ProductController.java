@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -46,6 +47,17 @@ public class ProductController {
         return ResponseEntity.ok(productDTOPage);
     }
 
+    @PostMapping("/information")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+    public ResponseEntity<ProductDTO> getProductById(@RequestBody ProductDTO productDTO) {
+        Long productId = productDTO.getId();
+        Optional<ProductDTO> productDTOOptional = productServiceImple.findProductById(productId);
+        if (productDTOOptional.isPresent()) {
+            return ResponseEntity.ok(productDTOOptional.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/allProduct")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")

@@ -45,6 +45,6 @@ public class ProductAttributes extends BaseEntity<ProductAttributes> {
 	@OneToMany(mappedBy = "productAttributes")
 	private List<ProductDateValue> dateValues;
 
-	private boolean isSearchable;
+	private boolean isSearchable = true;
 	
 }

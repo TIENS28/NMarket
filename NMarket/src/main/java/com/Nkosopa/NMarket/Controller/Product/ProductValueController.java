@@ -1,36 +1,43 @@
 package com.Nkosopa.NMarket.Controller.Product;
 
+import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
+import com.Nkosopa.NMarket.Services.Product.impl.ProductServiceImpl;
 import com.Nkosopa.NMarket.Services.Product.impl.ProductValueServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products/attribute")
+@RequestMapping("/api/v1/products/attribute/value")
 public class ProductValueController {
 
     @Autowired
     private ProductValueServiceImpl productValueService;
 
-    @PostMapping("/{productAttributeId}/addValue")
-    public ResponseEntity<String> addValueToProductAttribute(
-            @PathVariable Long productAttributeId,
-            @RequestBody ProductValueDTO valueDTO
-    ) {
-        try {
-            productValueService.addValueToProductAttribute(productAttributeId, valueDTO);
-            return new ResponseEntity<>("Value added successfully", HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>("Product attribute not found", HttpStatus.NOT_FOUND);
-        }
-    }
+    @Autowired
+    private ProductServiceImpl productService;
+
+//    @PostMapping("/{productAttributeId}/addValue")
+//    public ResponseEntity<String> addValueToProductAttribute(
+//            @PathVariable Long productAttributeId,
+//            @RequestBody ProductValueDTO valueDTO
+//    ) {
+//        try {
+//            productValueService.addValueToProductAttribute(productAttributeId, valueDTO);
+//            return new ResponseEntity<>("Value added successfully", HttpStatus.OK);
+//        } catch (EntityNotFoundException e) {
+//            return new ResponseEntity<>("Product attribute not found", HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PostMapping("/addValues")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<String> addValuesToProductAttributes(@RequestBody List<ProductValueDTO> valueDTOs) {
         try {
             productValueService.addValuesToProductAttributes(valueDTOs);
@@ -45,15 +52,24 @@ public class ProductValueController {
     }
 
     @PutMapping("/{productAttributeId}/value")
-    public ResponseEntity<String> updateProductAttributeValue(@PathVariable Long productAttributeId,
-                                                              @RequestBody ProductValueDTO valueDTO) {
-        try {
-            productValueService.updateValueOfProductAttribute(productAttributeId, valueDTO);
-            return new ResponseEntity<>("Product attribute value updated successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Failed to update product attribute value: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+    public ResponseEntity<ProductDTO> updateProductAttributeValue(@PathVariable Long productAttributeId,
+                                                                  @RequestBody ProductValueDTO valueDTO) {
+        ProductDTO updatedProductDTO = productValueService.updateValueOfProductAttribute(productAttributeId, valueDTO);
+        if (updatedProductDTO != null) {
+            return ResponseEntity.ok(updatedProductDTO);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
+    @PutMapping("/updateValues")
+    public ResponseEntity<ProductDTO> updateProductAttributesValues(@RequestBody List<ProductValueDTO> valueDTOs) {
+        ProductDTO updatedProductDTO = productValueService.updateProductAttributeValues(valueDTOs);
+        if (updatedProductDTO != null) {
+            return ResponseEntity.ok(updatedProductDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
