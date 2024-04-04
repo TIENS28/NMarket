@@ -5,10 +5,13 @@ import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
 import com.Nkosopa.NMarket.Converter.Product.ProductTypeConverter;
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductTypeDTO;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
+import com.Nkosopa.NMarket.Entity.Product.ProductType;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
+import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTypeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.impl.ProductRepositoryImpl;
 import com.Nkosopa.NMarket.Services.Product.iProductService;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,6 +39,9 @@ public class ProductServiceImpl implements iProductService {
     private ProductAttributeConverter productAttributeConverter;
 
     @Autowired
+    private ProductTypeJpaRepository productTypeJpaRepository;
+
+    @Autowired
     private ProductConverter productConverter;
 
     @Autowired
@@ -56,6 +62,13 @@ public class ProductServiceImpl implements iProductService {
             newProduct.setStock(productDTO.getStock());
             newProduct.setPrice(productDTO.getPrice());
             newProduct.setCurrency(productDTO.getCurrency());
+
+            ProductTypeDTO productTypeDTO = productDTO.getProductTypeDTO();
+            if (productTypeDTO != null) {
+                ProductType productType = productJpaRepository.findProductTypeByType(productTypeDTO.getType());
+                newProduct.setProductType(productType);
+            }
+
             productJpaRepository.save(newProduct);
             createdProducts.add(productConverter.mapEntityToDTO(newProduct));
         }
@@ -72,7 +85,7 @@ public class ProductServiceImpl implements iProductService {
 
             return ProductDTO.builder()
                     .sku(product.getSku())
-                    .productTypeDTOS(productTypeConverter.mapEntityToDTO(product.getProductType()))
+                    .productTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()))
                     .price(product.getPrice())
                     .stock(product.getStock())
                     .currency(product.getCurrency())

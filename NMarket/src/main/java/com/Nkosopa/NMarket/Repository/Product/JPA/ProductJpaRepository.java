@@ -2,6 +2,7 @@ package com.Nkosopa.NMarket.Repository.Product.JPA;
 
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
+import com.Nkosopa.NMarket.Entity.Product.ProductType;
 import com.Nkosopa.NMarket.Entity.Product.QProductAttributes;
 import com.Nkosopa.NMarket.Repository.Product.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -42,4 +43,6 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
             countQuery = "SELECT COUNT(DISTINCT p.id) FROM Product p")
     public Page<Product> findAllProduct(Pageable pageable);
 
+    @Query("SELECT pt FROM ProductType pt WHERE pt.pType = :type")
+    ProductType findProductTypeByType(String type);
 }

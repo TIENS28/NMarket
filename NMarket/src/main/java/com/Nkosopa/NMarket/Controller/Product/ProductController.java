@@ -35,17 +35,17 @@ public class ProductController {
         return ResponseEntity.ok(productDTOPage);
     }
 
-    @GetMapping("/findProductWithFilter")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<Page<ProductDTO>> searchProductsWithFilter(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Map<String, String> filters,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
-        Page<ProductDTO> productDTOPage = productServiceImple.searchProductWithFilter(name, filters, PageRequest.of(page, size));
-        return ResponseEntity.ok(productDTOPage);
-    }
+//    @GetMapping("/findProductWithFilter")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+//    public ResponseEntity<Page<ProductDTO>> searchProductsWithFilter(
+//            @RequestParam(required = false) String name,
+//            @RequestParam(required = false) Map<String, String> filters,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size
+//    ) {
+//        Page<ProductDTO> productDTOPage = productServiceImple.searchProductWithFilter(name, filters, PageRequest.of(page, size));
+//        return ResponseEntity.ok(productDTOPage);
+//    }
 
     @PostMapping("/information")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")

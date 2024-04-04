@@ -18,7 +18,7 @@ public class ProductTypeConverter {
         ProductTypeDTO productTypeDTO = new ProductTypeDTO();
 
         productTypeDTO.setId(productType.getId());
-        productTypeDTO.setType(productTypeDTO.getType());
+        productTypeDTO.setType(productType.getPType());
         return productTypeDTO;
     }
 
@@ -26,5 +26,11 @@ public class ProductTypeConverter {
         return productTypeList.stream()
                 .map(this::mapEntityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ProductType mapDTOsToEntity(ProductTypeDTO productTypeDTO){
+        ProductType productType = new ProductType();
+        productType.setPType(productTypeDTO.getType());
+        return productType;
     }
 }

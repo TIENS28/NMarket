@@ -23,7 +23,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String currency;
 
-    private ProductTypeDTO productTypeDTOS;
+    private ProductTypeDTO productTypeDTO;
 
     private List<ProductAttributesDTO> attributesDTOS;
 
