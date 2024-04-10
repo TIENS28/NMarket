@@ -48,19 +48,19 @@ public class AttributeConverter {
 
     public List<ProductTextValueDTO> mapTextValuesToDTOs(List<ProductTextValue> textValues) {
         return textValues.stream()
-                .map(textValue -> new ProductTextValueDTO(textValue.getValue()))
+                .map(textValue -> new ProductTextValueDTO(textValue.getValue(), textValue.getProduct().getId(), textValue.getAttribute().getId()))
                 .collect(Collectors.toList());
     }
 
     public List<ProductLongValueDTO> mapIntValuesToDTOs(List<ProductLongValue> intValues) {
         return intValues.stream()
-                .map(intValue -> new ProductLongValueDTO(intValue.getValue()))
+                .map(intValue -> new ProductLongValueDTO(intValue.getValue(), intValue.getProduct().getId(), intValue.getAttribute().getId()))
                 .collect(Collectors.toList());
     }
 
     public List<ProductDateValueDTO> mapDateValuesToDTOs(List<ProductDateValue> dateValues) {
         return dateValues.stream()
-                .map(dateValue -> new ProductDateValueDTO(dateValue.getValue()))
+                .map(dateValue -> new ProductDateValueDTO(dateValue.getValue(), dateValue.getProduct().getId(), dateValue.getAttribute().getId()))
                 .collect(Collectors.toList());
     }
 }

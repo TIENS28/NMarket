@@ -11,4 +11,6 @@ import lombok.*;
 @Builder
 public class ProductTextValueDTO extends BaseDTO<ProductTextValueDTO> {
     private String value;
+    private Long productId;
+    private Long attributeId;
 }

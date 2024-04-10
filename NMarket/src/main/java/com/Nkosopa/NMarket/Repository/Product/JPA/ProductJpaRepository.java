@@ -31,7 +31,15 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
                     "WHERE (p.name LIKE %:query% OR pt.pType LIKE %:query%) ")
     public Page<Product> searchProducts(@Param("query") String query, Pageable pageable);
 
-
+    @Query(value = "SELECT DISTINCT p " +
+            "FROM Product p " +
+            "JOIN p.attributeEAVS pa " +
+            "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
+            "LEFT JOIN pa.intValues lv ON lv.product.id = p.id " +
+            "LEFT JOIN pa.textValues tv ON tv.product.id = p.id " +
+            "LEFT JOIN pa.dateValues dv ON dv.product.id = p.id " +
+            "WHERE (p.name LIKE %:query% OR pt.pType LIKE %:query%) ")
+    public Page<Product> searchProducts2(@Param("query") String query, Pageable pageable);
 
     @Query(value = "SELECT DISTINCT p " +
             "FROM Product p " +

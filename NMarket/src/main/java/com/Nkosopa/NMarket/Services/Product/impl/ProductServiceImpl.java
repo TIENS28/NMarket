@@ -8,18 +8,13 @@ import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductTypeDTO;
-import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
-import com.Nkosopa.NMarket.Entity.Product.Product;
-import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
-import com.Nkosopa.NMarket.Entity.Product.ProductType;
-import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTypeJpaRepository;
+import com.Nkosopa.NMarket.Entity.Product.*;
+import com.Nkosopa.NMarket.Repository.Product.JPA.*;
 import com.Nkosopa.NMarket.Repository.Product.impl.ProductRepositoryImpl;
 import com.Nkosopa.NMarket.Services.Product.iProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,12 +30,6 @@ public class ProductServiceImpl implements iProductService {
 
     @Autowired
     private ProductJpaRepository productJpaRepository;
-
-    @Autowired
-    private ProductAttributeJpaRepository productAttributeJpaRepository;
-
-    @Autowired
-    private ProductAttributeConverter productAttributeConverter;
 
     @Autowired
     private ProductTypeJpaRepository productTypeJpaRepository;
@@ -59,6 +48,16 @@ public class ProductServiceImpl implements iProductService {
 
     @Autowired
     private AttributeConverter attributeConverter;
+
+    @Autowired
+    private CommonValueRepository<ProductLongValue, Long> longValueRepository;
+
+    @Autowired
+    private CommonValueRepository<ProductTextValue, Long> textValueRepository;
+
+    @Autowired
+    private CommonValueRepository<ProductDateValue, Long> dateValueRepository;
+
 
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
@@ -98,6 +97,12 @@ public class ProductServiceImpl implements iProductService {
         Optional<Product> productOptional = productJpaRepository.findById(productId);
         return productOptional.map(product -> {
 //            List<ProductAttributesDTO> attributeDTOs = productAttributeConverter.mapAttributesToDTOs(productAttributesList);
+            List<AttributeEAV> attributeEAVList = product.getAttributeEAVS();
+            for (AttributeEAV attributeEAV : attributeEAVList) {
+                attributeEAV.setIntValues(longValueRepository.findByProductId(productId));
+                attributeEAV.setDateValues(dateValueRepository.findByProductId(productId));
+                attributeEAV.setTextValues(textValueRepository.findByProductId(productId));
+            }
             ProductDTO productDTO = ProductDTO.builder()
                     .sku(product.getSku())
                     .productTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()))
@@ -105,6 +110,7 @@ public class ProductServiceImpl implements iProductService {
                     .stock(product.getStock())
                     .currency(product.getCurrency())
                     .name(product.getName())
+                    .productTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()))
                     .attributeDTOList(attributeConverter.mapToDTOs(product.getAttributeEAVS()))
                     .build();
             productDTO.setId(product.getId());
@@ -122,8 +128,8 @@ public class ProductServiceImpl implements iProductService {
     //search product
     @Override
     public Page<ProductDTO> searchProduct(String query, Pageable pageable) {
-        return productJpaRepository.searchProducts(query, pageable)
-                .map(productConverter::mapEntityToDTO);
+         Page<Product> productList = productJpaRepository.searchProducts2(query, pageable);
+         return productList.map(productConverter::mapEntityToDTO);
     }
 
     @Override

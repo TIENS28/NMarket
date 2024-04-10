@@ -5,7 +5,8 @@ import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
-import com.Nkosopa.NMarket.Entity.Product.Product;
+import com.Nkosopa.NMarket.Entity.Product.*;
+import com.Nkosopa.NMarket.Repository.Product.JPA.CommonValueRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,6 @@ import java.util.stream.Collectors;
 public class ProductConverter {
 
     @Autowired
-    private ProductAttributeJpaRepository productAttributeJpaRepository;
-
-    @Autowired
     private ProductAttributeConverter productAttributeConverter;
 
     @Autowired
@@ -27,6 +25,15 @@ public class ProductConverter {
 
     @Autowired
     private AttributeConverter attributeConverter;
+
+    @Autowired
+    private CommonValueRepository<ProductLongValue, Long> longValueRepository;
+
+    @Autowired
+    private CommonValueRepository<ProductTextValue, Long> textValueRepository;
+
+    @Autowired
+    private CommonValueRepository<ProductDateValue, Long> dateValueRepository;
 
     public ProductDTO mapEntityToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
@@ -39,9 +46,14 @@ public class ProductConverter {
         productDTO.setSku(product.getSku());
         productDTO.setStock(product.getStock());
         productDTO.setProductTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()));
-//        productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
         if(product.getAttributeEAVS()!=null) {
-            productDTO.setAttributeDTOList(attributeConverter.mapToDTOs(product.getAttributeEAVS()));
+            List<AttributeEAV> attributeEAVList = product.getAttributeEAVS();
+            for (AttributeEAV attributeEAV : attributeEAVList) {
+                attributeEAV.setIntValues(longValueRepository.findByProductId(product.getId()));
+                attributeEAV.setDateValues(dateValueRepository.findByProductId(product.getId()));
+                attributeEAV.setTextValues(textValueRepository.findByProductId(product.getId()));
+            }
+            productDTO.setAttributeDTOList(attributeConverter.mapToDTOs(attributeEAVList));
         }
         productDTO.setPrice(product.getPrice());
         productDTO.setCurrency(product.getCurrency());

@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductValueServiceImpl implements iProductValueService {
@@ -34,51 +35,60 @@ public class ProductValueServiceImpl implements iProductValueService {
     private ProductDateValueJpaRepository productDateValueJpaRepository;
 
     @Autowired
+    private ProductJpaRepository productJpaRepository;
+
+    @Autowired
     private ProductServiceImpl productService;
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     @Override
-    public void addValueToProductAttribute(Long attributeId, ProductValueDTO valueDTO) {
-        AttributeEAV attributes = attributeJPARepository.findById(attributeId)
-                .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
+    public void addValueToProductAttribute(ProductValueDTO valueDTO) {
+        Optional<Product> productOptional = productJpaRepository.findById(valueDTO.getProductId());
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            Optional<AttributeEAV> attributesOptinal = attributeJPARepository.findById(valueDTO.getAttributeId());
+            if (attributesOptinal.isPresent()) {
+                AttributeEAV attributeEAV = attributesOptinal.get();
+                DataType dataType = attributeEAV.getDataType();
+                switch (dataType) {
+                    case STRING:
+                        ProductTextValue textValue = new ProductTextValue();
+                        textValue.setValue(valueDTO.getValue());
+                        textValue.setAttribute(attributeEAV);
+                        textValue.setProduct(product);
+                        productTextValueJpaRepository.save(textValue);
+                        break;
 
-        DataType dataType = attributes.getDataType();
+                    case LONG:
+                        ProductLongValue longValue = new ProductLongValue();
+                        longValue.setValue(Long.parseLong(valueDTO.getValue()));
+                        longValue.setAttribute(attributeEAV);
+                        longValue.setProduct(product);
+                        productLongValueJpaRepository.save(longValue);
+                        break;
 
-        switch (dataType) {
-            case STRING:
-                ProductTextValue textValue = new ProductTextValue();
-                textValue.setValue(valueDTO.getValue());
-                textValue.setAttribute(attributes);
-                productTextValueJpaRepository.save(textValue);
-                break;
+                    case DATE:
+                        ProductDateValue dateValue = new ProductDateValue();
+                        dateValue.setValue(parseStringToDate(valueDTO.getValue()));
+                        dateValue.setAttribute(attributeEAV);
+                        dateValue.setProduct(product);
+                        productDateValueJpaRepository.save(dateValue);
+                        break;
 
-            case LONG:
-                ProductLongValue longValue = new ProductLongValue();
-                longValue.setValue(Long.parseLong(valueDTO.getValue()));
-                longValue.setAttribute(attributes);
-//                longValue.setProduct(productAttribute.getProduct());
-                productLongValueJpaRepository.save(longValue);
-                break;
+                    default:
 
-            case DATE:
-                ProductDateValue dateValue = new ProductDateValue();
-                dateValue.setValue(parseStringToDate(valueDTO.getValue()));
-                dateValue.setAttribute(attributes);
-//                dateValue.setProduct(productAttribute.getProduct());
-                productDateValueJpaRepository.save(dateValue);
-                break;
+                        throw new IllegalArgumentException("Unsupported data type");
 
-            default:
-
-                throw new IllegalArgumentException("Unsupported data type");
+                }
+            }
         }
     }//add value to one attribute
 
     @Override
     public void addValuesToProductAttributes(List<ProductValueDTO> valueDTOs) {
         for (ProductValueDTO valueDTO : valueDTOs) {
-            addValueToProductAttribute(valueDTO.getAttributeId(), valueDTO);
+            addValueToProductAttribute(valueDTO);
         }
     }//add multiple value to multiple attributes
 

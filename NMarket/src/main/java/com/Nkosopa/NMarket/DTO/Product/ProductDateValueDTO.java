@@ -12,4 +12,6 @@ import java.util.Date;
 @Data
 public class ProductDateValueDTO extends BaseDTO<ProductDateValueDTO> {
     private Date value;
+    private Long productId;
+    private Long attributeId;
 }
