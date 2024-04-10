@@ -47,7 +47,7 @@ public class ProductController {
 //        return ResponseEntity.ok(productDTOPage);
 //    }
 
-    @PostMapping("/information")
+    @GetMapping("/information")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<ProductDTO> getProductById(@RequestBody ProductDTO productDTO) {
         Long productId = productDTO.getId();
@@ -69,9 +69,13 @@ public class ProductController {
 
     @PostMapping("/addProducts")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<List<ProductDTO>> addMultipleProducts(@RequestBody List<ProductDTO> productDTOs) {
-        List<ProductDTO> createdProducts = productServiceImple.addProducts(productDTOs);
-        return new ResponseEntity<>(createdProducts, HttpStatus.CREATED);
+    public ResponseEntity<List<ProductDTO>> addProducts(@RequestBody List<ProductDTO> productDTOs) {
+        if (productDTOs == null || productDTOs.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        List<ProductDTO> createdProducts;
+        createdProducts = productServiceImple.addProducts(productDTOs);
+        return ResponseEntity.ok(createdProducts);
     }
 
     @PutMapping("/updateProduct")

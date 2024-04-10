@@ -1,14 +1,18 @@
 package com.Nkosopa.NMarket.Services.Product.impl;
 
+import com.Nkosopa.NMarket.Converter.Product.AttributeConverter;
 import com.Nkosopa.NMarket.Converter.Product.ProductAttributeConverter;
 import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
 import com.Nkosopa.NMarket.Converter.Product.ProductTypeConverter;
+import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductTypeDTO;
+import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Entity.Product.ProductType;
+import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTypeJpaRepository;
@@ -50,6 +54,11 @@ public class ProductServiceImpl implements iProductService {
     @Autowired
     private ProductTypeConverter productTypeConverter;
 
+    @Autowired
+    private AttributeJPARepository attributeJPARepository;
+
+    @Autowired
+    private AttributeConverter attributeConverter;
 
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
@@ -57,7 +66,6 @@ public class ProductServiceImpl implements iProductService {
         for (ProductDTO productDTO : productDTOs) {
             Product newProduct = new Product();
             newProduct.setName(productDTO.getName());
-            newProduct.setAttributes(new ArrayList<>());
             newProduct.setSku(productDTO.getSku());
             newProduct.setStock(productDTO.getStock());
             newProduct.setPrice(productDTO.getPrice());
@@ -69,29 +77,38 @@ public class ProductServiceImpl implements iProductService {
                 newProduct.setProductType(productType);
             }
 
+            List<AttributeDTO> attributeDTOList = productDTO.getAttributeDTOList();
+            if (attributeDTOList != null && !attributeDTOList.isEmpty()) {
+                List<AttributeEAV> attributes = attributeDTOList.stream()
+                        .map(attributeConverter::mapToEntity)
+                        .collect(Collectors.toList());
+                newProduct.setAttributeEAVS(attributes);
+            }
+
             productJpaRepository.save(newProduct);
+
             createdProducts.add(productConverter.mapEntityToDTO(newProduct));
         }
         return createdProducts;
     }
 
+
     @Override
     public Optional<ProductDTO> findProductById(Long productId) {
         Optional<Product> productOptional = productJpaRepository.findById(productId);
-
         return productOptional.map(product -> {
-            List<ProductAttributes> productAttributesList = productAttributeJpaRepository.getProductAtribute(productId);
-            List<ProductAttributesDTO> attributeDTOs = productAttributeConverter.mapAttributesToDTOs(productAttributesList);
-
-            return ProductDTO.builder()
+//            List<ProductAttributesDTO> attributeDTOs = productAttributeConverter.mapAttributesToDTOs(productAttributesList);
+            ProductDTO productDTO = ProductDTO.builder()
                     .sku(product.getSku())
                     .productTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()))
                     .price(product.getPrice())
                     .stock(product.getStock())
                     .currency(product.getCurrency())
                     .name(product.getName())
-                    .attributesDTOS(attributeDTOs)
+                    .attributeDTOList(attributeConverter.mapToDTOs(product.getAttributeEAVS()))
                     .build();
+            productDTO.setId(product.getId());
+            return productDTO;
         });
     }
 
@@ -133,18 +150,16 @@ public class ProductServiceImpl implements iProductService {
             product.setPrice(productDTO.getPrice());
             product.setCurrency(productDTO.getCurrency());
 
-            if (productDTO.getAttributesDTOS() != null && !productDTO.getAttributesDTOS().isEmpty()) {
-                List<ProductAttributes> updatedAttributes = new ArrayList<>();
-                for (ProductAttributesDTO attributeDTO : productDTO.getAttributesDTOS()) {
-                    ProductAttributes attribute = productAttributeJpaRepository.findById(attributeDTO.getId())
+            if (productDTO.getAttributeDTOList() != null && !productDTO.getAttributeDTOList().isEmpty()) {
+                List<AttributeEAV> updatedAttributes = new ArrayList<>();
+                for (AttributeDTO attributeDTO : productDTO.getAttributeDTOList()) {
+                    AttributeEAV attribute = attributeJPARepository.findById(attributeDTO.getId())
                             .orElseThrow(() -> new RuntimeException("Attribute not found with ID: " + attributeDTO.getId()));
 
-                    attribute.setAttribute_name(attributeDTO.getAttributeName());
-                    attribute.setAttribute_code(attributeDTO.getAttributeCode());
+                    attribute.setName(attributeDTO.getAttributeName());
 
-                    updatedAttributes.add(attribute);
                 }
-                product.setAttributes(updatedAttributes);
+                product.setAttributeEAVS(updatedAttributes);
             }
 
             Product updatedProduct = productJpaRepository.save(product);

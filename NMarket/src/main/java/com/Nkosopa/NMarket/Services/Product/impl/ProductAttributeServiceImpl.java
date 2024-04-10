@@ -87,7 +87,7 @@ public class ProductAttributeServiceImpl implements iProductAttributeService {
         productTextValueJpaRepository.deleteAll(productAttributes.getTextValues());
         productLongValueJpaRepository.deleteAll(productAttributes.getIntValues());
         productDateValueJpaRepository.deleteAll(productAttributes.getDateValues());
-    }//delete value for each customerAttributes
+    }
 
 
 }

@@ -3,14 +3,8 @@ package com.Nkosopa.NMarket.Services.Product.impl;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
-import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
-import com.Nkosopa.NMarket.Entity.Product.ProductDateValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductTextValue;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductDateValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductLongValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTextValueJpaRepository;
+import com.Nkosopa.NMarket.Entity.Product.*;
+import com.Nkosopa.NMarket.Repository.Product.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerServiceImpl;
 import com.Nkosopa.NMarket.Services.Product.iProductValueService;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,7 +22,7 @@ import java.util.List;
 public class ProductValueServiceImpl implements iProductValueService {
 
     @Autowired
-    private ProductAttributeJpaRepository productAttributesJpaRepository;
+    private AttributeJPARepository attributeJPARepository;
 
     @Autowired
     private ProductTextValueJpaRepository productTextValueJpaRepository;
@@ -45,34 +39,33 @@ public class ProductValueServiceImpl implements iProductValueService {
     private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     @Override
-    public void addValueToProductAttribute(Long productAttributeId, ProductValueDTO valueDTO) {
-        ProductAttributes productAttribute = productAttributesJpaRepository.findById(productAttributeId)
+    public void addValueToProductAttribute(Long attributeId, ProductValueDTO valueDTO) {
+        AttributeEAV attributes = attributeJPARepository.findById(attributeId)
                 .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
 
-        DataType dataType = productAttribute.getDataType();
+        DataType dataType = attributes.getDataType();
 
         switch (dataType) {
             case STRING:
                 ProductTextValue textValue = new ProductTextValue();
                 textValue.setValue(valueDTO.getValue());
-                textValue.setProductAttributes(productAttribute);
-                textValue.setProduct(productAttribute.getProduct());
+                textValue.setAttribute(attributes);
                 productTextValueJpaRepository.save(textValue);
                 break;
 
             case LONG:
                 ProductLongValue longValue = new ProductLongValue();
                 longValue.setValue(Long.parseLong(valueDTO.getValue()));
-                longValue.setProductAttributes(productAttribute);
-                longValue.setProduct(productAttribute.getProduct());
+                longValue.setAttribute(attributes);
+//                longValue.setProduct(productAttribute.getProduct());
                 productLongValueJpaRepository.save(longValue);
                 break;
 
             case DATE:
                 ProductDateValue dateValue = new ProductDateValue();
                 dateValue.setValue(parseStringToDate(valueDTO.getValue()));
-                dateValue.setProductAttributes(productAttribute);
-                dateValue.setProduct(productAttribute.getProduct());
+                dateValue.setAttribute(attributes);
+//                dateValue.setProduct(productAttribute.getProduct());
                 productDateValueJpaRepository.save(dateValue);
                 break;
 
@@ -115,10 +108,10 @@ public class ProductValueServiceImpl implements iProductValueService {
     }
 
     private void updateProductValue(ProductValueDTO valueDTO, Long productAttributeId) {
-        ProductAttributes productAttribute = productAttributesJpaRepository.findById(productAttributeId)
+        AttributeEAV attributeEAV = attributeJPARepository.findById(productAttributeId)
                 .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
 
-        DataType dataType = productAttribute.getDataType();
+        DataType dataType = attributeEAV.getDataType();
 
         switch (dataType) {
             case STRING:

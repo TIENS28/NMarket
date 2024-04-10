@@ -25,6 +25,6 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private ProductTypeDTO productTypeDTO;
 
-    private List<ProductAttributesDTO> attributesDTOS;
+    private List<AttributeDTO> attributeDTOList;
 
 }

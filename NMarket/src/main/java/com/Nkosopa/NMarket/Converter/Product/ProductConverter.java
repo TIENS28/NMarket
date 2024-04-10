@@ -25,6 +25,9 @@ public class ProductConverter {
     @Autowired
     private ProductTypeConverter productTypeConverter;
 
+    @Autowired
+    private AttributeConverter attributeConverter;
+
     public ProductDTO mapEntityToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
 
@@ -36,7 +39,10 @@ public class ProductConverter {
         productDTO.setSku(product.getSku());
         productDTO.setStock(product.getStock());
         productDTO.setProductTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()));
-        productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
+//        productDTO.setAttributesDTOS(productAttributeConverter.mapAttributesToDTOs(product.getAttributes()));
+        if(product.getAttributeEAVS()!=null) {
+            productDTO.setAttributeDTOList(attributeConverter.mapToDTOs(product.getAttributeEAVS()));
+        }
         productDTO.setPrice(product.getPrice());
         productDTO.setCurrency(product.getCurrency());
         return productDTO;

@@ -1,10 +1,7 @@
 package com.Nkosopa.NMarket.Entity.Product;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,4 +34,6 @@ public class Product extends BaseEntity<Product>{
 	@JoinColumn(name = "type_id")
 	private ProductType productType;
 
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<AttributeEAV> attributeEAVS;
 }
