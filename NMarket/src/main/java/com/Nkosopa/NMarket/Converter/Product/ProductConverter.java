@@ -1,13 +1,8 @@
 package com.Nkosopa.NMarket.Converter.Product;
 
-import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
-import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
-import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Product.*;
 import com.Nkosopa.NMarket.Repository.Product.JPA.CommonValueRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductAttributeJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,9 +44,9 @@ public class ProductConverter {
         if(product.getAttributeEAVS()!=null) {
             List<AttributeEAV> attributeEAVList = product.getAttributeEAVS();
             for (AttributeEAV attributeEAV : attributeEAVList) {
-                attributeEAV.setIntValues(longValueRepository.findByProductId(product.getId()));
-                attributeEAV.setDateValues(dateValueRepository.findByProductId(product.getId()));
-                attributeEAV.setTextValues(textValueRepository.findByProductId(product.getId()));
+                attributeEAV.setIntValues(longValueRepository.findByProductIdAndAttributeId(product.getId(), attributeEAV.getId()));
+                attributeEAV.setDateValues(dateValueRepository.findByProductIdAndAttributeId(product.getId(), attributeEAV.getId()));
+                attributeEAV.setTextValues(textValueRepository.findByProductIdAndAttributeId(product.getId(), attributeEAV.getId()));
             }
             productDTO.setAttributeDTOList(attributeConverter.mapToDTOs(attributeEAVList));
         }

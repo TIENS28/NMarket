@@ -96,25 +96,7 @@ public class ProductServiceImpl implements iProductService {
     public Optional<ProductDTO> findProductById(Long productId) {
         Optional<Product> productOptional = productJpaRepository.findById(productId);
         return productOptional.map(product -> {
-//            List<ProductAttributesDTO> attributeDTOs = productAttributeConverter.mapAttributesToDTOs(productAttributesList);
-            List<AttributeEAV> attributeEAVList = product.getAttributeEAVS();
-            for (AttributeEAV attributeEAV : attributeEAVList) {
-                attributeEAV.setIntValues(longValueRepository.findByProductId(productId));
-                attributeEAV.setDateValues(dateValueRepository.findByProductId(productId));
-                attributeEAV.setTextValues(textValueRepository.findByProductId(productId));
-            }
-            ProductDTO productDTO = ProductDTO.builder()
-                    .sku(product.getSku())
-                    .productTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()))
-                    .price(product.getPrice())
-                    .stock(product.getStock())
-                    .currency(product.getCurrency())
-                    .name(product.getName())
-                    .productTypeDTO(productTypeConverter.mapEntityToDTO(product.getProductType()))
-                    .attributeDTOList(attributeConverter.mapToDTOs(product.getAttributeEAVS()))
-                    .build();
-            productDTO.setId(product.getId());
-            return productDTO;
+            return productConverter.mapEntityToDTO(product);
         });
     }
 
