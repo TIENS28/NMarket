@@ -1,15 +1,21 @@
 package com.Nkosopa.NMarket.Entity.Product;
 
-import java.util.List;
-
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-
 import com.Nkosopa.NMarket.Entity.DataType;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "product_attribute")
@@ -19,18 +25,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProductAttributes extends BaseEntity<ProductAttributes> {
 
-	private String entity_code;
-
 	private String attribute_code;
 
 	private String attribute_name;
 
-	private Long type_id;
-
 	@Enumerated(EnumType.STRING)
 	private DataType dataType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER )
     @JoinColumn(name = "product_id")
     private Product product;
     
@@ -42,5 +44,7 @@ public class ProductAttributes extends BaseEntity<ProductAttributes> {
 
 	@OneToMany(mappedBy = "productAttributes")
 	private List<ProductDateValue> dateValues;
+
+	private boolean isSearchable = true;
 	
 }

@@ -1,8 +1,10 @@
-package com.Nkosopa.NMarket.Repository.Customer;
+package com.Nkosopa.NMarket.Repository.Customer.JPA;
 
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Repository.Customer.CustomerRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 public interface CustomerJPARepository extends JpaRepository<Customer, Long>, CustomerRepository {
 
@@ -10,4 +12,5 @@ public interface CustomerJPARepository extends JpaRepository<Customer, Long>, Cu
 
     boolean existsByEmail(String email);
 
+    Optional<Customer> findByEmail(String email);
 }

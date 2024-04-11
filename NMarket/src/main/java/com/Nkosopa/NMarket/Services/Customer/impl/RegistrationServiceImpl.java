@@ -1,7 +1,7 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
-import com.Nkosopa.NMarket.Repository.Customer.CustomerJPARepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -38,7 +38,7 @@ public class RegistrationServiceImpl {
         mailMessage.setSubject("HUTECH Forum - Email Verification");
         mailMessage.setFrom("hutechforum@gmail.com");
 
-        String verificationLink = "http://localhost:5005/api/auth/confirm?token=" + token;
+        String verificationLink = "http://localhost:5005/api/v1/auth/confirm?token=" + token;
         String emailBody = "Please click the following link to verify your email:\n" + verificationLink;
 
         mailMessage.setText(emailBody);

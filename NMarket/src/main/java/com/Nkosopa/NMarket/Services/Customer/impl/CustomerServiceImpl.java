@@ -1,18 +1,20 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
-import com.Nkosopa.NMarket.DTO.Customer.*;
+import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
+import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
 import com.Nkosopa.NMarket.Entity.Customer.*;
-import com.Nkosopa.NMarket.Entity.DataType;
-import com.Nkosopa.NMarket.Repository.Customer.*;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerService;
+import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,16 +26,23 @@ public class CustomerServiceImpl implements iCustomerService {
     private CustomerAttributeJpaRepository customerAttributeJpaRepository;
 
     @Autowired
-    private CustomerTextValueRepository customerTextValueRepository;
+    private CustomerTextValueJpaRepository customerTextValueRepository;
+
 
     @Autowired
-    private CustomerLongValueRepository customerLongValueRepository;
+    private CustomerJPARepository customerJPARepository;
 
     @Autowired
-    private CustomerDateTimeRepository customerDateTimeRepository;
+    private CustomerConverter customerConverter;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerAttributeConverter customerAttributeConverter;
+
+    @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private CustomerValueServiceImpl customerValueService;
 
     @Override
     public void newCustomer(CustomerDTO customerDTO) {
@@ -45,88 +54,22 @@ public class CustomerServiceImpl implements iCustomerService {
         newCustomer.setEmail(customerDTO.getEmail());
         newCustomer.setAttributes(new ArrayList<>());
 
-        customerRepository.save(newCustomer);
-    }
+        customerJPARepository.save(newCustomer);
+    }//add new customer manually
+
 
     @Override
-    public void addAttribute(CustomerAttributeDTO attributeDTO) {
-        CustomerAttributes attributes = new CustomerAttributes();
-        attributes.setAttribute_name(attributeDTO.getAttribute_name());
-        attributes.setAttribute_code(attributeDTO.getAttribute_code());
-
-        Optional<Customer> customerOptional = customerRepository.findById(attributeDTO.getCustomer_id());
-
-        if (customerOptional.isPresent()) {
-            Customer customer = customerOptional.get();
-            attributes.setCustomer(customer);
-            attributes.setDataType(attributeDTO.getDataType());
-            customerAttributeJpaRepository.save(attributes);
-        } else {
-            throw new EntityNotFoundException("Customer not found with ID: " + attributeDTO.getCustomer_id());
-        }
-
-        attributes.setDataType(attributeDTO.getDataType());
-        customerAttributeJpaRepository.save(attributes);
-    }
-
-    @Override
-    public void addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO) {
-        CustomerAttributes customerAttribute = customerAttributeJpaRepository.findById(customerAttributeId)
-                .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
-
-        DataType dataType = customerAttribute.getDataType();
-
-        switch (dataType) {
-            case STRING:
-                CustomerTextValue textValue = new CustomerTextValue();
-                textValue.setValue(valueDTO.getValue());
-                textValue.setCustomerAttributes(customerAttribute);
-                textValue.setCustomer(customerAttribute.getCustomer());
-                customerTextValueRepository.save(textValue);
-                break;
-
-            case LONG:
-                CustomerLongValue longValue = new CustomerLongValue();
-                longValue.setValue(Long.parseLong(valueDTO.getValue()));
-                longValue.setCustomerAttributes(customerAttribute);
-                longValue.setCustomer(customerAttribute.getCustomer());
-                customerLongValueRepository.save(longValue);
-                break;
-
-            case DATE:
-                CustomerDateValue dateValue = new CustomerDateValue();
-                dateValue.setValue(parseStringToDate(valueDTO.getValue()));
-                dateValue.setCustomerAttributes(customerAttribute);
-                dateValue.setCustomer(customerAttribute.getCustomer());
-                customerDateTimeRepository.save(dateValue);
-                break;
-
-            default:
-
-                throw new IllegalArgumentException("Unsupported data type");
-        }
-    }
-
-
-    private Date parseStringToDate(String value) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            return dateFormat.parse(value);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public Optional<CustomerDTO> findCustomerById(Long customerId) {
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
 
         return customerOptional.map(customer -> {
-            List<CustomerAttributeDTO> attributeDTOs = customerAttributeJpaRepository.getCustomerAttributes(customerId);
+            List<CustomerAttributes> customerAttributesList = customerAttributeJpaRepository.getCustomerAttributes(customerId);
+            List<CustomerAttributeDTO> attributeDTOs = customerAttributeConverter.mapAttributesToDTOs(customerAttributesList);
+
             return CustomerDTO.builder()
                     .firstName(customer.getFirstName())
                     .lastName(customer.getLastName())
-                    .userName(customer.getUserName())
+                    .userName(customer.getUsername())
                     .password(customer.getPassword())
                     .email(customer.getEmail())
                     .attributesDTO(attributeDTOs)
@@ -134,6 +77,56 @@ public class CustomerServiceImpl implements iCustomerService {
         });
     }
 
+    @Override
+    public void deleteUser(Long customerId) {
+        customerTextValueRepository.deleteValueByCustomerId(customerId);
+        customerJPARepository.deleteById(customerId);
+    }
 
+    @Override
+    @Transactional
+    public void updateCustomerProfile(CustomerDTO customerDTO, List<CustomerValueDTO> valueDTOList) {
+        Long customerId = customerDTO.getId();
+        Optional<Customer> optionalCustomer = customerJPARepository.findById(customerId);
+
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+
+            if (customerDTO.getAvatar() != null) {
+                String avatarUrl = authenticationService.uploadImageToCloudinary(customerDTO.getAvatar());
+                customer.setAvatarUrl(avatarUrl);
+            }
+
+            customer.setFirstName(customerDTO.getFirstName());
+            customer.setLastName(customerDTO.getLastName());
+            customer.setEmail(customerDTO.getEmail());
+            customer.setPassword(customerDTO.getPassword());
+            customer.setDOB(customer.getDOB());
+            customerJPARepository.save(customer);
+
+            //chua xong
+        } else {
+            throw new EntityNotFoundException("User not found with ID: " + customerId);
+        }
+    }
+
+    //view
+    @Override
+    public List<CustomerDTO> getAllCustomer() {
+        return customerJPARepository.findAll().stream()
+                .map(customerConverter::mapEntityToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomerDTO getOneCustomer(Long customerId) {
+        Optional<Customer> optionalCustomer = customerJPARepository.findById(customerId);
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            return customerConverter.mapEntityToDTO(customer);
+        } else {
+            return null;
+        }
+    }
 
 }

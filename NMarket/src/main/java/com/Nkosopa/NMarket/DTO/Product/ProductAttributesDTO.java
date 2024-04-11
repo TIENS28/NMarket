@@ -1,9 +1,7 @@
 package com.Nkosopa.NMarket.DTO.Product;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
-import com.Nkosopa.NMarket.Entity.Product.ProductDateValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductTextValue;
 import lombok.*;
 
 import java.util.List;
@@ -14,23 +12,21 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ProductAttributesDTO {
+public class ProductAttributesDTO extends BaseDTO<ProductAttributesDTO> {
 
     private Long productId;
 
-    private String entity_code;
+    private String attributeCode;
 
-    private String attribute_code;
+    private String attributeName;
 
-    private String attribute_name;
+    private Long typeId;
 
-    private Long type_id;
+    private List<ProductTextValueDTO> textValues;
 
-    private List<ProductTextValue> textValues;
+    private List<ProductLongValueDTO> intValues;
 
-    private List<ProductLongValue> intValues;
-
-    private List<ProductDateValue> dateValues;
+    private List<ProductDateValueDTO> dateValues;
 
     private DataType dataType;
 

@@ -22,7 +22,11 @@ public class ProductLongValue extends BaseEntity<ProductLongValue>{
     @ManyToOne
     @JoinColumn(name = "product_attribute_id")
     private ProductAttributes productAttributes;
-	
+
+    @ManyToOne
+    @JoinColumn(name = "attribute_id")
+    private AttributeEAV attribute;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

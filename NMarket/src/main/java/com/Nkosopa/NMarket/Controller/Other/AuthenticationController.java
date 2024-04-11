@@ -1,16 +1,17 @@
-package com.Nkosopa.NMarket.Controller;
+package com.Nkosopa.NMarket.Controller.Other;
 
+import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationRequest;
 import com.Nkosopa.NMarket.DTO.Authentication.AuthenticationResponse;
 import com.Nkosopa.NMarket.DTO.Authentication.RegistrationRequest;
 import com.Nkosopa.NMarket.Services.Customer.impl.RegistrationServiceImpl;
-import com.Nkosopa.NMarket.Services.Other.AuthenticationService;
+import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
     @Autowired
@@ -37,6 +38,11 @@ public class AuthenticationController {
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired token.");
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
 }

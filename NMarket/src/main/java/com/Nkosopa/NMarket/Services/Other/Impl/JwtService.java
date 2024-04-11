@@ -1,4 +1,4 @@
-package com.Nkosopa.NMarket.Services.Other;
+package com.Nkosopa.NMarket.Services.Other.Impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -52,8 +52,6 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);

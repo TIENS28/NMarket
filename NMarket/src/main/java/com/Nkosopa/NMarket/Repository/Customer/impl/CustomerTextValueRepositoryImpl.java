@@ -10,4 +10,5 @@ public class CustomerTextValueRepositoryImpl extends BaseRepositoryImpl<Customer
     public CustomerTextValueRepositoryImpl(EntityManager entityManager) {
         super(CustomerTextValue.class, entityManager);
     }
+
 }

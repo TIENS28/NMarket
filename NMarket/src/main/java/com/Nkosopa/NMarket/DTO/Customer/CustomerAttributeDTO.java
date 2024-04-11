@@ -1,7 +1,7 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
-import com.querydsl.core.Tuple;
 import lombok.*;
 
 import java.util.List;
@@ -12,15 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class CustomerAttributeDTO {
+public class CustomerAttributeDTO extends BaseDTO<CustomerAttributeDTO> {
 
-    private String entity_code;
+    private String attributeCode;
 
-    private Long type_id;
-
-    private String attribute_code;
-
-    private String attribute_name;
+    private String attributeName;
 
     private List<CustomerTextValueDTO> textValues;
 
@@ -30,5 +26,5 @@ public class CustomerAttributeDTO {
 
     private DataType dataType;
 
-    private Long customer_id;
+    private Long customerId;
 }

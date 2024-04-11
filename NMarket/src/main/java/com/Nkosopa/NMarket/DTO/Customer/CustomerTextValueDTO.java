@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
+import com.Nkosopa.NMarket.DTO.BaseDTO;
 import lombok.*;
 
 @Getter
@@ -7,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CustomerTextValueDTO {
+public class CustomerTextValueDTO extends BaseDTO<CustomerTextValueDTO> {
     private String value;
 }

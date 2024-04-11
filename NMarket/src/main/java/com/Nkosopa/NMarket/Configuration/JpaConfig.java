@@ -14,7 +14,6 @@ import java.util.Optional;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableJpaRepositories(basePackages = "com.Nkosopa.NMarket.Repository")
 public class JpaConfig {
-
     @Bean
     public AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();
@@ -25,7 +24,7 @@ public class JpaConfig {
         public Optional<String> getCurrentAuditor() {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
-                return null;
+                return Optional.empty();
             }
             return Optional.of(authentication.getName());
         }

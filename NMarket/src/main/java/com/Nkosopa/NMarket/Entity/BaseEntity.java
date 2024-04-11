@@ -1,5 +1,7 @@
 package com.Nkosopa.NMarket.Entity;
 
+import com.Nkosopa.NMarket.Entity.Other.OrderList;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.EntityListeners;
@@ -21,6 +23,6 @@ public class BaseEntity<T> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long id;
-	
+
 }
 

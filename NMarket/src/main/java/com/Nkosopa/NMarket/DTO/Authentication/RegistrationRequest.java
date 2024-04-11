@@ -27,6 +27,10 @@ public class RegistrationRequest {
 
     private String DOB;
 
+    private String address;
+
+    private String gender;
+
     @Nullable
     private MultipartFile avatar;
 }

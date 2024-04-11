@@ -18,7 +18,7 @@ import jakarta.persistence.EntityManager;
 
 public abstract class BaseRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID>{
 
-	EntityManager entityManager;
+	public EntityManager entityManager;
 	JPAQueryFactory jpaQueryFactory;
 	
 	protected final QCustomer customer = QCustomer.customer;
