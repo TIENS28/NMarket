@@ -118,7 +118,7 @@ public class ProductServiceImpl implements iProductService {
                 .map(productConverter::mapEntityToDTO);
     }
 
-    @Override //bugs
+    @Override //unfixed
     public ProductDTO updateProduct(ProductDTO productDTO) {
         Optional<Product> productOptional = productJpaRepository.findById(productDTO.getId());
 
