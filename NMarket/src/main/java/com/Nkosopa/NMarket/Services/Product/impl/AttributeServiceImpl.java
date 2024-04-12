@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AttributeServiceImpl implements iAttributeService {
@@ -31,23 +33,35 @@ public class AttributeServiceImpl implements iAttributeService {
     private AttributeConverter attributeConverter;
 
     @Transactional
-    public ProductDTO addAttributeToProduct(Long productId, AttributeDTO attributeDTO) {
-        // Retrieve the Product entity by productId
+    public ProductDTO addAttributesToProduct(Long productId, List<AttributeDTO> attributeDTOList) {
         Product product = productJpaRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + productId));
 
-        // Convert AttributeDTO to AttributeEAV entity
-        AttributeEAV attributeEAV = attributeConverter.mapToEntity(attributeDTO);
+        List<String> existingAttributeNames = product.getAttributeEAVS().stream()
+                .map(AttributeEAV::getName)
+                .toList();
 
-        // Associate the AttributeEAV with the Product
-        product.getAttributeEAVS().add(attributeEAV);
+        for (AttributeDTO attributeDTO : attributeDTOList) {
+            String attributeName = attributeDTO.getAttributeName();
+            if (!existingAttributeNames.contains(attributeName)) {
+                Optional<AttributeEAV> attributeEAVOptional = attributeJPARepository.findByName(attributeName);
 
-        // Save the updated Product entity
+                if (attributeEAVOptional.isPresent()) {
+                    AttributeEAV attributeEAV = attributeEAVOptional.get();
+                    product.getAttributeEAVS().add(attributeEAV);
+                } else {
+                    AttributeEAV newAttributeEAV = new AttributeEAV();
+                    newAttributeEAV.setName(attributeName);
+                    newAttributeEAV.setDataType(attributeDTO.getDataType());
+                    attributeJPARepository.save(newAttributeEAV);
+                    product.getAttributeEAVS().add(newAttributeEAV);
+                }
+            }
+        }
         productJpaRepository.save(product);
-
-        // Convert the updated Product entity to ProductDTO
         return productConverter.mapEntityToDTO(product);
     }
+
 
     @Transactional
     public void addAttributeToAllProducts(AttributeDTO attributeDTO) {

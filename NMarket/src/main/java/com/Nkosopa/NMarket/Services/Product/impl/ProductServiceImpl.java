@@ -49,15 +49,6 @@ public class ProductServiceImpl implements iProductService {
     @Autowired
     private AttributeConverter attributeConverter;
 
-    @Autowired
-    private CommonValueRepository<ProductLongValue, Long> longValueRepository;
-
-    @Autowired
-    private CommonValueRepository<ProductTextValue, Long> textValueRepository;
-
-    @Autowired
-    private CommonValueRepository<ProductDateValue, Long> dateValueRepository;
-
 
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
@@ -127,9 +118,9 @@ public class ProductServiceImpl implements iProductService {
                 .map(productConverter::mapEntityToDTO);
     }
 
-    @Override
-    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
-        Optional<Product> productOptional = productJpaRepository.findById(productId);
+    @Override //bugs
+    public ProductDTO updateProduct(ProductDTO productDTO) {
+        Optional<Product> productOptional = productJpaRepository.findById(productDTO.getId());
 
         return productOptional.map(product -> {
             product.setName(productDTO.getName());
@@ -139,20 +130,23 @@ public class ProductServiceImpl implements iProductService {
             product.setCurrency(productDTO.getCurrency());
 
             if (productDTO.getAttributeDTOList() != null && !productDTO.getAttributeDTOList().isEmpty()) {
-                List<AttributeEAV> updatedAttributes = new ArrayList<>();
-                for (AttributeDTO attributeDTO : productDTO.getAttributeDTOList()) {
-                    AttributeEAV attribute = attributeJPARepository.findById(attributeDTO.getId())
-                            .orElseThrow(() -> new RuntimeException("Attribute not found with ID: " + attributeDTO.getId()));
-
-                    attribute.setName(attributeDTO.getAttributeName());
-
-                }
+                List<AttributeEAV> updatedAttributes = attributeConverter.mapToEntities(productDTO.getAttributeDTOList());
                 product.setAttributeEAVS(updatedAttributes);
             }
 
             Product updatedProduct = productJpaRepository.save(product);
             return productConverter.mapEntityToDTO(updatedProduct); // Convert updated product to DTO
-        }).orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + productId));
+        }).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+    }
+
+    public ProductDTO updateProduct2(ProductDTO productDTO) {
+        Product product = productConverter.mapDTOToEntity(productDTO);
+        if (productDTO.getAttributeDTOList() != null && !productDTO.getAttributeDTOList().isEmpty()) {
+            List<AttributeEAV> updatedAttributes = attributeConverter.mapToEntities(productDTO.getAttributeDTOList());
+            product.setAttributeEAVS(updatedAttributes);
+        }
+        Product updatedProduct = productJpaRepository.save(product);
+        return productConverter.mapEntityToDTO(updatedProduct);
     }
 
 }

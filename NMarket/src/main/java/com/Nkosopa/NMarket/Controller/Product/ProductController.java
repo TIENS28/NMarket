@@ -80,9 +80,9 @@ public class ProductController {
 
     @PutMapping("/updateProduct")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<?> updateProduct(@RequestParam("productId") Long productId, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) {
         try {
-            ProductDTO updatedProductDTO = productServiceImple.updateProduct(productId, productDTO);
+            ProductDTO updatedProductDTO = productServiceImple.updateProduct2(productDTO);
             return ResponseEntity.ok(updatedProductDTO);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

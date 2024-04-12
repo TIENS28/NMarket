@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/attribute")
 public class AttributeController {
@@ -21,8 +23,8 @@ public class AttributeController {
     public ResponseEntity<ProductDTO> addAttributeToProduct(@RequestBody ProductDTO productDTO) {
         try {
             Long productId = productDTO.getId();
-            AttributeDTO attributeDTO = productDTO.getAttributeDTOList().get(0);
-            ProductDTO updatedProductDTO = attributeService.addAttributeToProduct(productId, attributeDTO);
+            List<AttributeDTO> attributeDTOList = productDTO.getAttributeDTOList();
+            ProductDTO updatedProductDTO = attributeService.addAttributesToProduct(productId, attributeDTOList);
             return ResponseEntity.ok(updatedProductDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

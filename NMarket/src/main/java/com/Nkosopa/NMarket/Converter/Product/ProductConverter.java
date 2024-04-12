@@ -1,11 +1,13 @@
 package com.Nkosopa.NMarket.Converter.Product;
 
+import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.Entity.Product.*;
 import com.Nkosopa.NMarket.Repository.Product.JPA.CommonValueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,4 +62,28 @@ public class ProductConverter {
                 .map(this::mapEntityToDTO)
                 .collect(Collectors.toList());
     }
+
+    public Product mapDTOToEntity(ProductDTO productDTO) {
+        Product product = new Product();
+
+        if (productDTO.getId() != null) {
+            product.setId(productDTO.getId());
+        }
+
+        product.setName(productDTO.getName());
+        product.setSku(productDTO.getSku());
+        product.setStock(productDTO.getStock());
+        product.setProductType(productTypeConverter.mapDTOsToEntity(productDTO.getProductTypeDTO()));
+
+        if(productDTO.getAttributeDTOList() != null) {
+            List<AttributeEAV> attributeEAVList = attributeConverter.mapToEntities(productDTO.getAttributeDTOList());
+            product.setAttributeEAVS(attributeEAVList);
+        }
+
+        product.setPrice(productDTO.getPrice());
+        product.setCurrency(productDTO.getCurrency());
+
+        return product;
+    }
+
 }

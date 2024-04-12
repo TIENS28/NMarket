@@ -26,5 +26,5 @@ public interface iProductService{
 
     Page<ProductDTO> listProduct(Pageable pageable);
 
-    ProductDTO updateProduct(Long productId, ProductDTO productDTO);
+    ProductDTO updateProduct(ProductDTO productDTO);
 }

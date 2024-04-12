@@ -10,13 +10,13 @@ public interface iProductValueService {
 //    void addValueToProductAttribute(Long productAttributeId, ProductValueDTO valueDTO)//add value to one attribute
 //    ;
 
-    void addValueToProductAttribute(ProductValueDTO valueDTO)//add value to one attribute
+    ProductDTO addValueToProductAttribute(ProductValueDTO valueDTO)//add value to one attribute
     ;
 
-    void addValuesToProductAttributes(List<ProductValueDTO> valueDTOs)//add multiple value to multiple attributes
+    List<ProductDTO> addValuesToProductAttributes(List<ProductValueDTO> valueDTOs)//add multiple value to multiple attributes
     ;
 
-    ProductDTO updateValueOfProductAttribute(Long productAttributeId, ProductValueDTO valueDTO)// update value of one attribute
+    ProductDTO updateValueOfProductAttribute(ProductValueDTO valueDTO)// update value of one attribute
     ;
 
     ProductDTO updateProductAttributeValues(List<ProductValueDTO> valueDTOs);

@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ProductTextValueJpaRepository extends CommonValueRepository<ProductTextValue, Long>{
 
 
+    ProductTextValue findByAttributeId(Long attributeId);
 }

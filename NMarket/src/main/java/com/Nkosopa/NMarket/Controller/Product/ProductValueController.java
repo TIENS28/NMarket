@@ -38,24 +38,19 @@ public class ProductValueController {
 
     @PostMapping("/addValues")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<String> addValuesToProductAttributes(@RequestBody List<ProductValueDTO> valueDTOs) {
+    public ResponseEntity<List<ProductDTO>> addValuesToProductAttributes(@RequestBody List<ProductValueDTO> valueDTOs) {
         try {
-            productValueService.addValuesToProductAttributes(valueDTOs);
-            return ResponseEntity.ok("Values added to customer attributes successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
+            List<ProductDTO> productDTO = productValueService.addValuesToProductAttributes(valueDTOs);
+            return ResponseEntity.ok(productDTO);
+        } catch(EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding values to customer attributes");
         }
     }
 
-    @PutMapping("/{productAttributeId}/value")
+    @PutMapping("/updateValue")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<ProductDTO> updateProductAttributeValue(@PathVariable Long productAttributeId,
-                                                                  @RequestBody ProductValueDTO valueDTO) {
-        ProductDTO updatedProductDTO = productValueService.updateValueOfProductAttribute(productAttributeId, valueDTO);
+    public ResponseEntity<ProductDTO> updateProductAttributeValue(@RequestBody ProductValueDTO valueDTO) {
+        ProductDTO updatedProductDTO = productValueService.updateValueOfProductAttribute(valueDTO);
         if (updatedProductDTO != null) {
             return ResponseEntity.ok(updatedProductDTO);
         } else {

@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface ProductDateValueJpaRepository extends CommonValueRepository<ProductDateValue, Long> {
 
+    ProductDateValue findByAttributeId(Long attributeId);
 }

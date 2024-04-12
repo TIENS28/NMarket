@@ -9,8 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class ProductLongValueDTO extends BaseDTO<ProductLongValueDTO> {
-
+    private Long value;
     private Long productId;
     private Long attributeId;
-    private Long value;
 }
