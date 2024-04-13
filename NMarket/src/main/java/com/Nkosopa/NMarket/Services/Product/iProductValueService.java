@@ -7,17 +7,10 @@ import java.util.List;
 
 public interface iProductValueService {
 
-//    void addValueToProductAttribute(Long productAttributeId, ProductValueDTO valueDTO)//add value to one attribute
-//    ;
-
     ProductDTO addValueToProductAttribute(ProductValueDTO valueDTO)//add value to one attribute
     ;
 
     List<ProductDTO> addValuesToProductAttributes(List<ProductValueDTO> valueDTOs)//add multiple value to multiple attributes
     ;
 
-    ProductDTO updateValueOfProductAttribute(ProductValueDTO valueDTO)// update value of one attribute
-    ;
-
-    ProductDTO updateProductAttributeValues(List<ProductValueDTO> valueDTOs);
 }

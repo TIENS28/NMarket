@@ -1,8 +1,7 @@
 package com.Nkosopa.NMarket.Services.Product.impl;
 
 import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
-import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
+import com.Nkosopa.NMarket.DTO.Product.*;
 import com.Nkosopa.NMarket.Entity.DataType;
 import com.Nkosopa.NMarket.Entity.Product.*;
 import com.Nkosopa.NMarket.Repository.Product.JPA.*;
@@ -16,10 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductValueServiceImpl implements iProductValueService {
@@ -41,9 +40,6 @@ public class ProductValueServiceImpl implements iProductValueService {
 
     @Autowired
     private ProductJpaRepository productJpaRepository;
-
-    @Autowired
-    private ProductServiceImpl productService;
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
@@ -98,65 +94,93 @@ public class ProductValueServiceImpl implements iProductValueService {
                 updatedProductDTOs.add(updatedProductDTO);
             }
         }
-
         return updatedProductDTOs;
     }
 
+    public void updateTextValues(Long productId, Long attributeId, List<ProductTextValueDTO> textValues) {
+        for (ProductTextValueDTO textValueDTO : textValues) {
+            Long textValueId = textValueDTO.getId();
+            String textValueContent = textValueDTO.getValue();
 
-    @Override
-    public ProductDTO updateValueOfProductAttribute(ProductValueDTO valueDTO) {
-        updateProductValue(valueDTO);
-        return productService.findProductById(valueDTO.getProductId()).orElse(null);
-    }
+            Optional<ProductTextValue> existingValueOptional = productTextValueJpaRepository.findById(textValueId);
+            if (existingValueOptional.isPresent()) {
+                ProductTextValue existingValue = existingValueOptional.get();
 
-    @Override
-    public ProductDTO updateProductAttributeValues(List<ProductValueDTO> valueDTOs) {
-        for (ProductValueDTO valueDTO : valueDTOs) {
-            updateProductValue(valueDTO);
-        }
-        return productService.findProductById(valueDTOs.get(0).getProductId()).orElse(null);
-    }
+                if (existingValue.getProduct().getId().equals(productId) &&
+                        existingValue.getAttribute().getId().equals(attributeId)) {
 
-    private void updateProductValue(ProductValueDTO valueDTO) {
-        AttributeEAV attributeEAV = attributeJPARepository.findById(valueDTO.getAttributeId())
-                .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
-
-        Product product = productJpaRepository.findById(valueDTO.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-        DataType dataType = attributeEAV.getDataType();
-
-        switch (dataType) {
-            case STRING:
-                List<ProductTextValue> textValueList = productTextValueJpaRepository.findByProductIdAndAttributeId(product.getId(), attributeEAV.getId());
-                for (ProductTextValue textValue : textValueList) {
-                    textValue.setValue(valueDTO.getValue());
-                    productTextValueJpaRepository.save(textValue);
+                    existingValue.setValue(textValueContent);
+                    productTextValueJpaRepository.save(existingValue);
+                } else {
+                    throw new IllegalArgumentException("Invalid existing text value for productId and attributeId");
                 }
-                break;
-
-            case LONG:
-                List<ProductLongValue> longValueList = productLongValueJpaRepository.findByProductIdAndAttributeId(product.getId(), attributeEAV.getId());
-                for (ProductLongValue longValue : longValueList) {
-                    longValue.setValue(Long.parseLong(valueDTO.getValue()));
-                    productLongValueJpaRepository.save(longValue);
-                }
-                break;
-
-            case DATE:
-                List<ProductDateValue> dateValueList = productDateValueJpaRepository.findByProductIdAndAttributeId(product.getId(), attributeEAV.getId());
-                for (ProductDateValue dateValue : dateValueList) {
-                    dateValue.setValue(parseStringToDate(valueDTO.getValue()));
-                    productDateValueJpaRepository.save(dateValue);
-                }
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unsupported data type");
+            } else {
+                ProductTextValue newValue = new ProductTextValue();
+                newValue.setProduct(productJpaRepository.getReferenceById(productId));
+                newValue.setAttribute(attributeJPARepository.getReferenceById(attributeId));
+                newValue.setValue(textValueContent);
+                productTextValueJpaRepository.save(newValue);
+            }
         }
     }
 
-    private Date parseStringToDate(String value) {
+
+    public void updateLongValues(Long productId, Long attributeId, List<ProductLongValueDTO> longValues) {
+        for (ProductLongValueDTO longValueDTO : longValues) {
+            Long longValueId = longValueDTO.getId();
+            Long longValueContent = longValueDTO.getValue();
+
+            Optional<ProductLongValue> existingValueOptional = productLongValueJpaRepository.findById(longValueId);
+            if (existingValueOptional.isPresent()) {
+                ProductLongValue existingValue = existingValueOptional.get();
+
+                if (existingValue.getProduct().getId().equals(productId) &&
+                        existingValue.getAttribute().getId().equals(attributeId)) {
+
+                    existingValue.setValue(longValueContent);
+                    productLongValueJpaRepository.save(existingValue);
+                } else {
+                    throw new IllegalArgumentException("Invalid existing long value for productId and attributeId");
+                }
+            } else {
+                ProductLongValue newValue = new ProductLongValue();
+                newValue.setProduct(productJpaRepository.getReferenceById(productId));
+                newValue.setAttribute(attributeJPARepository.getReferenceById(attributeId));
+                newValue.setValue(longValueContent);
+                productLongValueJpaRepository.save(newValue);
+            }
+        }
+    }
+
+
+    public void updateDateValues(Long productId, Long attributeId, List<ProductDateValueDTO> dateValues) {
+        for (ProductDateValueDTO dateValueDTO : dateValues) {
+            Long dateValueId = dateValueDTO.getId();
+            Date dateValueContent = dateValueDTO.getValue();
+
+            Optional<ProductDateValue> existingValueOptional = productDateValueJpaRepository.findById(dateValueId);
+            if (existingValueOptional.isPresent()) {
+                ProductDateValue existingValue = existingValueOptional.get();
+
+                if (existingValue.getProduct().getId().equals(productId) &&
+                        existingValue.getAttribute().getId().equals(attributeId)) {
+                    existingValue.setValue(dateValueContent);
+                    productDateValueJpaRepository.save(existingValue);
+                } else {
+                    throw new IllegalArgumentException("Invalid existing date value for productId and attributeId");
+                }
+            } else {
+                ProductDateValue newValue = new ProductDateValue();
+                newValue.setProduct(productJpaRepository.getOne(productId));
+                newValue.setAttribute(attributeJPARepository.getOne(attributeId));
+                newValue.setValue(dateValueContent);
+                productDateValueJpaRepository.save(newValue);
+            }
+        }
+    }
+
+
+    public Date parseStringToDate(String value) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
             return dateFormat.parse(value);

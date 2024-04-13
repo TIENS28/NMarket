@@ -82,7 +82,7 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) {
         try {
-            ProductDTO updatedProductDTO = productServiceImple.updateProduct2(productDTO);
+            ProductDTO updatedProductDTO = productServiceImple.updateProduct(productDTO);
             return ResponseEntity.ok(updatedProductDTO);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -5,14 +5,8 @@ import com.Nkosopa.NMarket.DTO.Product.ProductLongValueDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductTextValueDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductValueDTO;
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
-import com.Nkosopa.NMarket.Entity.Product.ProductDateValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductTextValue;
-import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductDateValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductLongValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTextValueJpaRepository;
+import com.Nkosopa.NMarket.Entity.Product.*;
+import com.Nkosopa.NMarket.Repository.Product.JPA.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,43 +21,76 @@ public class ProductValueConverter {
     private AttributeJPARepository attributeJPARepository;
 
     @Autowired
-    private ProductTextValueJpaRepository productTextValueJpaRepository;
+    private ProductJpaRepository productJpaRepository;
 
-    @Autowired
-    private ProductLongValueJpaRepository productLongValueJpaRepository;
+    public ProductTextValueDTO mapTextValueToDTO(ProductTextValue productTextValue){
+        ProductTextValueDTO productTextValueDTO = new ProductTextValueDTO();
+        productTextValueDTO.setId(productTextValue.getId());
+        productTextValueDTO.setValue(productTextValue.getValue());
+        productTextValueDTO.setProductId(productTextValue.getProduct().getId());
+        productTextValueDTO.setAttributeId(productTextValue.getAttribute().getId());
+        return productTextValueDTO;
+    }
 
-    @Autowired
-    private ProductDateValueJpaRepository productDateValueJpaRepository;
+    public ProductLongValueDTO mapLongValueToDTO(ProductLongValue productLongValue){
+        ProductLongValueDTO productLongValueDTO = new ProductLongValueDTO();
+        productLongValueDTO.setId(productLongValue.getId());
+        productLongValueDTO.setValue(productLongValue.getValue());
+        productLongValueDTO.setProductId(productLongValue.getProduct().getId());
+        productLongValueDTO.setAttributeId(productLongValue.getAttribute().getId());
+        return productLongValueDTO;
+    }
 
+    public ProductDateValueDTO mapDateValueToDTO(ProductDateValue productDateValue){
+        ProductDateValueDTO productDateValueDTO = new ProductDateValueDTO();
+        productDateValueDTO.setId(productDateValue.getId());
+        productDateValueDTO.setValue(productDateValue.getValue());
+        productDateValueDTO.setProductId(productDateValue.getProduct().getId());
+        productDateValueDTO.setAttributeId(productDateValue.getAttribute().getId());
+        return productDateValueDTO;
+    }
 
     public List<ProductTextValueDTO> mapTextValuesToDTOs(List<ProductTextValue> textValues) {
         return textValues.stream()
-                .map(textValue -> new ProductTextValueDTO(textValue.getValue(), textValue.getProduct().getId(), textValue.getAttribute().getId()))
+                .map(this::mapTextValueToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ProductLongValueDTO> mapIntValuesToDTOs(List<ProductLongValue> intValues) {
         return intValues.stream()
-                .map(intValue -> new ProductLongValueDTO(intValue.getValue(), intValue.getProduct().getId(), intValue.getAttribute().getId()))
+                .map(this::mapLongValueToDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ProductDateValueDTO> mapDateValuesToDTOs(List<ProductDateValue> dateValues) {
         return dateValues.stream()
-                .map(dateValue -> new ProductDateValueDTO(dateValue.getValue(), dateValue.getProduct().getId(), dateValue.getAttribute().getId()))
+                .map(this::mapDateValueToDTO)
                 .collect(Collectors.toList());
     }
 
     public ProductTextValue mapToProductTextValue(ProductTextValueDTO dto) {
         ProductTextValue textValue = new ProductTextValue();
         textValue.setValue(dto.getValue());
+        textValue.setAttribute(getAttribute(dto.getAttributeId()));
+        textValue.setProduct(getProduct(dto.getProductId()));
         return textValue;
     }
 
     public ProductLongValue mapToProductLongValue(ProductLongValueDTO dto) {
         ProductLongValue longValue = new ProductLongValue();
         longValue.setValue(dto.getValue());
+        longValue.setAttribute(getAttribute(dto.getAttributeId()));
+        longValue.setProduct(getProduct(dto.getProductId()));
         return longValue;
+    }
+
+
+    public ProductDateValue mapToProductDateValue(ProductDateValueDTO dto) {
+        ProductDateValue dateValue = new ProductDateValue();
+        dateValue.setValue(dto.getValue());
+        dateValue.setAttribute(getAttribute(dto.getAttributeId()));
+        dateValue.setProduct(getProduct(dto.getProductId()));
+        return dateValue;
     }
 
     public List<ProductLongValue> mapToProductLongValues(List<ProductLongValueDTO> dtos) {
@@ -79,17 +106,20 @@ public class ProductValueConverter {
                 .collect(Collectors.toList());
     }
 
-    public ProductDateValue mapToProductDateValue(ProductDateValueDTO dto) {
-        ProductDateValue dateValue = new ProductDateValue();
-        dateValue.setValue(dto.getValue());
-        return dateValue;
-    }
-
     public List<ProductDateValue> mapToProductDateValues(List<ProductDateValueDTO> dtos) {
         return dtos.stream()
                 .map(this::mapToProductDateValue)
                 .collect(Collectors.toList());
     }
 
+    public AttributeEAV getAttribute(Long attributeId) {
+        return attributeJPARepository.findById(attributeId)
+                .orElseThrow(() -> new IllegalArgumentException("AttributeEAV not found"));
+    }
+
+    public Product getProduct(Long productId) {
+        return productJpaRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+    }
     
 }

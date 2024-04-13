@@ -7,6 +7,9 @@ import com.Nkosopa.NMarket.Entity.Product.ProductDateValue;
 import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
 import com.Nkosopa.NMarket.Entity.Product.ProductTextValue;
 import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
+import com.Nkosopa.NMarket.Repository.Product.JPA.ProductDateValueJpaRepository;
+import com.Nkosopa.NMarket.Repository.Product.JPA.ProductLongValueJpaRepository;
+import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTextValueJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +50,9 @@ public class AttributeConverter {
         attribute.setName(attributeDTO.getAttributeName());
         attribute.setId(attributeDTO.getId());
         attribute.setDataType(attributeDTO.getDataType());
+        attribute.setTextValues(productValueConverter.mapToProductTextValues(attributeDTO.getTextValues()));
+        attribute.setIntValues(productValueConverter.mapToProductLongValues(attributeDTO.getIntValues()));
+        attribute.setDateValues(productValueConverter.mapToProductDateValues(attributeDTO.getDateValues()));
         return attribute;
     }
 
@@ -56,39 +62,34 @@ public class AttributeConverter {
         for (AttributeDTO attributeDTO : attributeDTOList) {
             Optional<AttributeEAV> existingAttributeOpt = attributeJPARepository.findByName(attributeDTO.getAttributeName());
             AttributeEAV attributeEAV;
+
             if (existingAttributeOpt.isPresent()) {
                 attributeEAV = existingAttributeOpt.get();
             } else {
                 attributeEAV = new AttributeEAV();
                 attributeEAV.setName(attributeDTO.getAttributeName());
                 attributeEAV.setSearchable(true);
-                attributeEAV.setDataType(attributeDTO.getDataType());
-                attributeJPARepository.save(attributeEAV);
             }
 
             attributeEAV.setDataType(attributeDTO.getDataType());
-            DataType dataType = attributeDTO.getDataType();
 
-            switch (dataType) {
+            switch (attributeDTO.getDataType()) {
                 case STRING:
-                    List<ProductTextValue> textValues = productValueConverter.mapToProductTextValues(attributeDTO.getTextValues());
-                    attributeEAV.setTextValues(textValues);
+                    attributeEAV.setTextValues(productValueConverter.mapToProductTextValues(attributeDTO.getTextValues()));
                     break;
                 case LONG:
-                    List<ProductLongValue> longValues = productValueConverter.mapToProductLongValues(attributeDTO.getIntValues());
-                    attributeEAV.setIntValues(longValues);
+                    attributeEAV.setIntValues(productValueConverter.mapToProductLongValues(attributeDTO.getIntValues()));
                     break;
                 case DATE:
-                    List<ProductDateValue> dateValues = productValueConverter.mapToProductDateValues(attributeDTO.getDateValues());
-                    attributeEAV.setDateValues(dateValues);
+                    attributeEAV.setDateValues(productValueConverter.mapToProductDateValues(attributeDTO.getDateValues()));
                     break;
                 default:
                     break;
             }
-
+            attributeJPARepository.save(attributeEAV);
             attributeEntities.add(attributeEAV);
         }
-
         return attributeEntities;
     }
+
 }

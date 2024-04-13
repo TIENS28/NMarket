@@ -20,21 +20,6 @@ public class ProductValueController {
     @Autowired
     private ProductValueServiceImpl productValueService;
 
-    @Autowired
-    private ProductServiceImpl productService;
-
-//    @PostMapping("/{productAttributeId}/addValue")
-//    public ResponseEntity<String> addValueToProductAttribute(
-//            @PathVariable Long productAttributeId,
-//            @RequestBody ProductValueDTO valueDTO
-//    ) {
-//        try {
-//            productValueService.addValueToProductAttribute(productAttributeId, valueDTO);
-//            return new ResponseEntity<>("Value added successfully", HttpStatus.OK);
-//        } catch (EntityNotFoundException e) {
-//            return new ResponseEntity<>("Product attribute not found", HttpStatus.NOT_FOUND);
-//        }
-//    }
 
     @PostMapping("/addValues")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
@@ -47,24 +32,4 @@ public class ProductValueController {
         }
     }
 
-    @PutMapping("/updateValue")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<ProductDTO> updateProductAttributeValue(@RequestBody ProductValueDTO valueDTO) {
-        ProductDTO updatedProductDTO = productValueService.updateValueOfProductAttribute(valueDTO);
-        if (updatedProductDTO != null) {
-            return ResponseEntity.ok(updatedProductDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/updateValues")
-    public ResponseEntity<ProductDTO> updateProductAttributesValues(@RequestBody List<ProductValueDTO> valueDTOs) {
-        ProductDTO updatedProductDTO = productValueService.updateProductAttributeValues(valueDTOs);
-        if (updatedProductDTO != null) {
-            return ResponseEntity.ok(updatedProductDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

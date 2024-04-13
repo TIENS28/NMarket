@@ -1,13 +1,8 @@
 package com.Nkosopa.NMarket.Services.Product.impl;
 
-import com.Nkosopa.NMarket.Converter.Product.AttributeConverter;
-import com.Nkosopa.NMarket.Converter.Product.ProductAttributeConverter;
-import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
-import com.Nkosopa.NMarket.Converter.Product.ProductTypeConverter;
-import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductTypeDTO;
+import com.Nkosopa.NMarket.Converter.Product.*;
+import com.Nkosopa.NMarket.DTO.Product.*;
+import com.Nkosopa.NMarket.Entity.DataType;
 import com.Nkosopa.NMarket.Entity.Product.*;
 import com.Nkosopa.NMarket.Repository.Product.JPA.*;
 import com.Nkosopa.NMarket.Repository.Product.impl.ProductRepositoryImpl;
@@ -23,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,16 +28,10 @@ public class ProductServiceImpl implements iProductService {
     private ProductJpaRepository productJpaRepository;
 
     @Autowired
-    private ProductTypeJpaRepository productTypeJpaRepository;
-
-    @Autowired
     private ProductConverter productConverter;
 
     @Autowired
     private ProductRepositoryImpl productRepository;
-
-    @Autowired
-    private ProductTypeConverter productTypeConverter;
 
     @Autowired
     private AttributeJPARepository attributeJPARepository;
@@ -49,6 +39,8 @@ public class ProductServiceImpl implements iProductService {
     @Autowired
     private AttributeConverter attributeConverter;
 
+    @Autowired
+    private ProductValueServiceImpl productValueService;
 
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
@@ -130,23 +122,43 @@ public class ProductServiceImpl implements iProductService {
             product.setCurrency(productDTO.getCurrency());
 
             if (productDTO.getAttributeDTOList() != null && !productDTO.getAttributeDTOList().isEmpty()) {
-                List<AttributeEAV> updatedAttributes = attributeConverter.mapToEntities(productDTO.getAttributeDTOList());
-                product.setAttributeEAVS(updatedAttributes);
+                List<AttributeDTO> attributeDTOList = productDTO.getAttributeDTOList();
+                for (AttributeDTO attributeDTO : attributeDTOList) {
+                    Optional<AttributeEAV> existingAttributeOpt = attributeJPARepository.findByName(attributeDTO.getAttributeName());
+                    AttributeEAV attributeEAV;
+                    if (existingAttributeOpt.isPresent()) {
+                        attributeEAV = existingAttributeOpt.get();
+                    } else {
+                        attributeEAV = new AttributeEAV();
+                        attributeEAV.setName(attributeDTO.getAttributeName());
+                        attributeEAV.setSearchable(true);
+                        attributeEAV.setDataType(attributeDTO.getDataType());
+                    }
+
+                    attributeEAV.setDataType(attributeDTO.getDataType());
+                    DataType dataType = attributeDTO.getDataType();
+
+                    switch (dataType) {
+                        case STRING:
+                            productValueService.updateTextValues(product.getId(), attributeEAV.getId(), attributeDTO.getTextValues());
+                            break;
+                        case LONG:
+                            productValueService.updateLongValues(product.getId(), attributeEAV.getId(), attributeDTO.getIntValues());
+                            break;
+                        case DATE:
+                            productValueService.updateDateValues(product.getId(), attributeEAV.getId(), attributeDTO.getDateValues());
+                            break;
+                        default:
+                            break;
+                    }
+                    attributeJPARepository.save(attributeEAV);
+                }
+                product.setAttributeEAVS(attributeConverter.mapToEntities(attributeDTOList));
             }
 
             Product updatedProduct = productJpaRepository.save(product);
-            return productConverter.mapEntityToDTO(updatedProduct); // Convert updated product to DTO
+            return productConverter.mapEntityToDTO(updatedProduct);
         }).orElseThrow(() -> new EntityNotFoundException("Product not found"));
-    }
-
-    public ProductDTO updateProduct2(ProductDTO productDTO) {
-        Product product = productConverter.mapDTOToEntity(productDTO);
-        if (productDTO.getAttributeDTOList() != null && !productDTO.getAttributeDTOList().isEmpty()) {
-            List<AttributeEAV> updatedAttributes = attributeConverter.mapToEntities(productDTO.getAttributeDTOList());
-            product.setAttributeEAVS(updatedAttributes);
-        }
-        Product updatedProduct = productJpaRepository.save(product);
-        return productConverter.mapEntityToDTO(updatedProduct);
     }
 
 }
