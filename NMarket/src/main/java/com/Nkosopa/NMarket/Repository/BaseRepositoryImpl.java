@@ -8,7 +8,6 @@ import com.Nkosopa.NMarket.Entity.Customer.QCustomerDateValue;
 import com.Nkosopa.NMarket.Entity.Customer.QCustomerLongValue;
 import com.Nkosopa.NMarket.Entity.Customer.QCustomerTextValue;
 import com.Nkosopa.NMarket.Entity.Product.QProduct;
-import com.Nkosopa.NMarket.Entity.Product.QProductAttributes;
 import com.Nkosopa.NMarket.Entity.Product.QProductDateValue;
 import com.Nkosopa.NMarket.Entity.Product.QProductLongValue;
 import com.Nkosopa.NMarket.Entity.Product.QProductTextValue;
@@ -28,7 +27,6 @@ public abstract class BaseRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID
 	protected final QCustomerDateValue customerDateValue = QCustomerDateValue.customerDateValue;
 	
 	protected final QProduct product = QProduct.product;
-	protected final QProductAttributes productAttributes = QProductAttributes.productAttributes;
 	protected final QProductLongValue productLongValue = QProductLongValue.productLongValue;
 	protected final QProductTextValue productTextValue = QProductTextValue.productTextValue;
 	protected final QProductDateValue productDateValue =  QProductDateValue.productDateValue;

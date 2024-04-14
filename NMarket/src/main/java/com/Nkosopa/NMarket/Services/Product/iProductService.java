@@ -16,15 +16,9 @@ public interface iProductService{
 
     Optional<ProductDTO> findProductById(Long productId);
 
-    List<ProductDTO> getAllProduct();
-
     //search product
     Page<ProductDTO> searchProduct(String query, org.springframework.data.domain.Pageable pageable);
 
-
-    Page<ProductDTO> searchProductWithFilter(String name, Map<String, String> filters, Pageable pageable);
-
-    Page<ProductDTO> listProduct(Pageable pageable);
 
     ProductDTO updateProduct(ProductDTO productDTO);
 }

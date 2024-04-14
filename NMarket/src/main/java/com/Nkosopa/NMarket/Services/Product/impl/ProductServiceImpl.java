@@ -1,24 +1,27 @@
 package com.Nkosopa.NMarket.Services.Product.impl;
 
-import com.Nkosopa.NMarket.Converter.Product.*;
-import com.Nkosopa.NMarket.DTO.Product.*;
+import com.Nkosopa.NMarket.Converter.Product.AttributeConverter;
+import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
+import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductTypeDTO;
 import com.Nkosopa.NMarket.Entity.DataType;
-import com.Nkosopa.NMarket.Entity.Product.*;
-import com.Nkosopa.NMarket.Repository.Product.JPA.*;
+import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
+import com.Nkosopa.NMarket.Entity.Product.Product;
+import com.Nkosopa.NMarket.Entity.Product.ProductType;
+import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
+import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.impl.ProductRepositoryImpl;
 import com.Nkosopa.NMarket.Services.Product.iProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,10 +48,22 @@ public class ProductServiceImpl implements iProductService {
     @Override
     public List<ProductDTO> addProducts(List<ProductDTO> productDTOs) {
         List<ProductDTO> createdProducts = new ArrayList<>();
+        List<String> skusToCheck = productDTOs.stream()
+                .map(ProductDTO::getSku)
+                .collect(Collectors.toList());
+
+        List<String> existingSkus = productJpaRepository.findSkusInList(skusToCheck);
+
         for (ProductDTO productDTO : productDTOs) {
+            String sku = productDTO.getSku();
+
+            if (existingSkus.contains(sku)) {
+                throw new IllegalArgumentException("SKU '" + sku + "' already exists. Duplicate SKUs not allowed.");
+            }
+
             Product newProduct = new Product();
             newProduct.setName(productDTO.getName());
-            newProduct.setSku(productDTO.getSku());
+            newProduct.setSku(sku);
             newProduct.setStock(productDTO.getStock());
             newProduct.setPrice(productDTO.getPrice());
             newProduct.setCurrency(productDTO.getCurrency());
@@ -61,10 +76,7 @@ public class ProductServiceImpl implements iProductService {
 
             List<AttributeDTO> attributeDTOList = productDTO.getAttributeDTOList();
             if (attributeDTOList != null && !attributeDTOList.isEmpty()) {
-                List<AttributeEAV> attributes = attributeDTOList.stream()
-                        .map(attributeConverter::mapToEntity)
-                        .collect(Collectors.toList());
-                newProduct.setAttributeEAVS(attributes);
+                newProduct.setAttributeEAVS(attributeConverter.mapToEntities(attributeDTOList));
             }
 
             productJpaRepository.save(newProduct);
@@ -83,32 +95,13 @@ public class ProductServiceImpl implements iProductService {
         });
     }
 
-    @Override
-    public List<ProductDTO> getAllProduct() {
-        return productJpaRepository.findAll().stream()
-                .map(productConverter::mapEntityToDTO)
-                .collect(Collectors.toList());
-    }
-
     //search product
     @Override
     public Page<ProductDTO> searchProduct(String query, Pageable pageable) {
-         Page<Product> productList = productJpaRepository.searchProducts2(query, pageable);
+         Page<Product> productList = productJpaRepository.searchProducts(query, pageable);
          return productList.map(productConverter::mapEntityToDTO);
     }
 
-    @Override
-    public Page<ProductDTO> searchProductWithFilter(String name, Map<String, String> filters, Pageable pageable) {
-        Page<Product> products = productRepository.searchProductWithAttribute(name, filters, pageable);
-        return products.map(productConverter::mapEntityToDTO);
-    }
-
-
-    @Override
-    public Page<ProductDTO> listProduct(Pageable pageable) {
-        return productJpaRepository.findAllProduct(pageable)
-                .map(productConverter::mapEntityToDTO);
-    }
 
     @Override //unfixed
     public ProductDTO updateProduct(ProductDTO productDTO) {

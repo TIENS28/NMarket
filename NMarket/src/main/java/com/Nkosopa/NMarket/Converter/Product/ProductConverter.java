@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
 public class ProductConverter {
 
     @Autowired
-    private ProductAttributeConverter productAttributeConverter;
-
-    @Autowired
     private ProductTypeConverter productTypeConverter;
 
     @Autowired

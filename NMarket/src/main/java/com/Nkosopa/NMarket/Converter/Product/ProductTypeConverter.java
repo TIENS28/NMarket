@@ -1,10 +1,6 @@
 package com.Nkosopa.NMarket.Converter.Product;
 
-import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductTypeDTO;
-import com.Nkosopa.NMarket.Entity.Product.Product;
-import com.Nkosopa.NMarket.Entity.Product.ProductAttributes;
 import com.Nkosopa.NMarket.Entity.Product.ProductType;
 import org.springframework.stereotype.Component;
 

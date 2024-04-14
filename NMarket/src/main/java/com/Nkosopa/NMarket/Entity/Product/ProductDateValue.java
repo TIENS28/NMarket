@@ -20,10 +20,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDateValue extends BaseEntity<ProductDateValue>{
-	
-	@ManyToOne
-    @JoinColumn(name = "product_attribute_id")
-    private ProductAttributes productAttributes;
 
     @ManyToOne
     @JoinColumn(name = "attribute_id")

@@ -26,9 +26,6 @@ public class Product extends BaseEntity<Product>{
 	private int stock;
 
 	private Long price;
-	
-	@OneToMany(mappedBy = "product")
-	private List<ProductAttributes> attributes;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")

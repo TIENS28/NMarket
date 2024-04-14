@@ -1,15 +1,8 @@
 package com.Nkosopa.NMarket.Converter.Product;
 
 import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
-import com.Nkosopa.NMarket.Entity.DataType;
 import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
-import com.Nkosopa.NMarket.Entity.Product.ProductDateValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductTextValue;
 import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductDateValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductLongValueJpaRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.ProductTextValueJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
