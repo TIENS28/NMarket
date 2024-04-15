@@ -2,6 +2,7 @@ package com.Nkosopa.NMarket.Controller.Customer;
 
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
+import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerServiceImpl;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerValueServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -55,10 +56,16 @@ public class CustomerController {
         return ResponseEntity.ok(customerDTOs);
     }
 
-    @GetMapping("/{customerId}/information")
+    @PutMapping("/update")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<CustomerDTO> getCustomerInformation(@PathVariable Long customerId){
-        CustomerDTO customerDTO = customerService.getOneCustomer(customerId);
-        return ResponseEntity.ok(customerDTO);
+    public ResponseEntity<?> updateProduct(@RequestBody CustomerDTO customerDTO) {
+        try {
+            CustomerDTO updatedCustomer = customerService.updateCustomerProfile(customerDTO);
+            return ResponseEntity.ok(updatedCustomer);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating customer: " + e.getMessage());
+        }
     }
 }

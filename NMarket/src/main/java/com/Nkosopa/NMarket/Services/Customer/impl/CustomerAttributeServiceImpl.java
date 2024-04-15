@@ -1,13 +1,19 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
-import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
+import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeEAVConverter;
+import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
+import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
+import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributeEAV;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
+import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
+import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerAttributeService;
 import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,36 +39,54 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
     private CustomerJPARepository customerJPARepository;
 
     @Autowired
-    private CustomerAttributeConverter customerAttributeConverter;
-
+    private CustomerAttributeEAVConverter customerAttributeEAVConverter;
     @Autowired
-    private AuthenticationService authenticationService;
-
-
-    @Override
-    public List<CustomerAttributeDTO> addAttributeToOneCustomer(Long customerId, List<CustomerAttributeDTO> attributeDTOs) {
-        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
-
-        if (customerOptional.isEmpty()) {
-            throw new EntityNotFoundException("Customer not found with ID: " + customerId);
-        }
-
-        Customer customer = customerOptional.get();
-
-        customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
-
-        return attributeDTOs;
-    }//add attribute to one customer
+    private CustomerAttributeEAVJPARepository customerAttributeEAVJPARepository;
+    @Autowired
+    private CustomerConverter customerConverter;
 
     @Override
-    public List<CustomerAttributeDTO> addAttributesToAllCustomers(List<CustomerAttributeDTO> attributeDTOs) {
-        List<Customer> customers = customerJPARepository.findAll();
-        for (Customer customer : customers) {
-            customerAttributeConverter.convertCustomerAttributeDTOtoEntity(attributeDTOs, customer);
-        }
+    @Transactional
+    public CustomerDTO addAttributesToCustomer(Long customerId, List<CustomerAttributeEAVDTO> attributeDTOList) {
+        Customer customer = customerJPARepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerId));
 
-        return attributeDTOs;
-    }//add attribute to all customers
+        List<String> existingAttributeNames = customer.getAttributeEAVList().stream()
+                .map(CustomerAttributeEAV::getAttributeName)
+                .toList();
+
+        for (CustomerAttributeEAVDTO attributeDTO : attributeDTOList) {
+            String attributeName = attributeDTO.getAttributeName();
+            if (!existingAttributeNames.contains(attributeName)) {
+                Optional<CustomerAttributeEAV> attributeEAVOptional = customerAttributeEAVJPARepository.findByAttributeName(attributeName);
+
+                if (attributeEAVOptional.isPresent()) {
+                    CustomerAttributeEAV attributeEAV = attributeEAVOptional.get();
+                    customer.getAttributeEAVList().add(attributeEAV);
+                } else {
+                    CustomerAttributeEAV newAttributeEAV = new CustomerAttributeEAV();
+                    newAttributeEAV.setAttributeName(attributeName);
+                    newAttributeEAV.setDataType(attributeDTO.getDataType());
+                    customerAttributeEAVJPARepository.save(newAttributeEAV);
+                    customer.getAttributeEAVList().add(newAttributeEAV);
+                }
+            }
+        }
+        customerJPARepository.save(customer);
+        return customerConverter.mapEntityToDTO(customer);
+    }
+
+//
+//    @Transactional
+//    public void addAttributeToAllCustomer(CustomerAttributeEAVDTO attributeDTO) {
+//        List<Customer> customers = customerJPARepository.findAll();
+//        CustomerAttributeEAV attributeEAV = customerAttributeEAVConverter.mapToEntity(attributeDTO);
+//        attributeEAV = customerAttributeEAVJPARepository.save(attributeEAV);
+//        for (Customer customer : customers) {
+//            customer.getAttributeEAVList().add(attributeEAV);
+//        }
+//        customerJPARepository.saveAll(customers);
+//    }
 
 
     @Override

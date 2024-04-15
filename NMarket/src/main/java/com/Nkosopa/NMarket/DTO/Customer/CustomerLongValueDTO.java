@@ -8,6 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class CustomerLongValueDTO extends BaseDTO<CustomerLongValueDTO> {
     private Long value;
+    private Long customerId;
+    private Long attributeId;
 }

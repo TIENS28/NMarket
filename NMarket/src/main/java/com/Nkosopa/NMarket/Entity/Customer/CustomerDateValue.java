@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
 
+import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -25,7 +26,11 @@ public class CustomerDateValue extends BaseEntity<CustomerDateValue>{
 	@ManyToOne
     @JoinColumn(name = "customer_attribute_id")
     private CustomerAttributes customerAttributes;
-	
+
+    @ManyToOne
+    @JoinColumn(name = "attribute_id")
+    private CustomerAttributeEAV attribute;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

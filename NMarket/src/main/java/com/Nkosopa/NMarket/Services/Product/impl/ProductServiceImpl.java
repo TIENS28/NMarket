@@ -103,7 +103,7 @@ public class ProductServiceImpl implements iProductService {
     }
 
 
-    @Override //unfixed
+    @Override
     public ProductDTO updateProduct(ProductDTO productDTO) {
         Optional<Product> productOptional = productJpaRepository.findById(productDTO.getId());
 
@@ -114,10 +114,16 @@ public class ProductServiceImpl implements iProductService {
             product.setPrice(productDTO.getPrice());
             product.setCurrency(productDTO.getCurrency());
 
+            ProductTypeDTO productTypeDTO = productDTO.getProductTypeDTO();
+            if (productTypeDTO != null) {
+                ProductType productType = productJpaRepository.findProductTypeByType(productTypeDTO.getType());
+                product.setProductType(productType);
+            }
             if (productDTO.getAttributeDTOList() != null && !productDTO.getAttributeDTOList().isEmpty()) {
                 List<AttributeDTO> attributeDTOList = productDTO.getAttributeDTOList();
                 for (AttributeDTO attributeDTO : attributeDTOList) {
                     Optional<AttributeEAV> existingAttributeOpt = attributeJPARepository.findByName(attributeDTO.getAttributeName());
+
                     AttributeEAV attributeEAV;
                     if (existingAttributeOpt.isPresent()) {
                         attributeEAV = existingAttributeOpt.get();

@@ -38,4 +38,6 @@ public class CustomerDTO extends BaseDTO<CustomerDTO> {
     private List<CustomerAttributeDTO> attributesDTO;
 
     private ShoppingCartDTO shopingCartDTO;
+
+    private List<CustomerAttributeEAVDTO> attributeEAVDTOList;
 }

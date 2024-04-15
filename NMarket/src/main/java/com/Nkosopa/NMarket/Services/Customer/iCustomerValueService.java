@@ -6,9 +6,8 @@ import java.util.List;
 
 public interface iCustomerValueService {
 
-    CustomerValueDTO addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO);
+//    CustomerValueDTO addValueToCustomerAttribute(Long customerAttributeId, CustomerValueDTO valueDTO);
 
-    List<CustomerValueDTO> addValuesToCustomerAttributes(List<CustomerValueDTO> valueDTOs);
+//    List<CustomerValueDTO> addValuesToCustomerAttributes(List<CustomerValueDTO> valueDTOs);
 
-    CustomerValueDTO updateCustomerAttributeValue(Long attributeId, CustomerValueDTO customerValueDTO);
 }

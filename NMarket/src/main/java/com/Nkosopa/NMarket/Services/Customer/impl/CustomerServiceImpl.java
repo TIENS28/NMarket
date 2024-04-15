@@ -1,16 +1,20 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
 import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
+import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeEAVConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
-import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
-import com.Nkosopa.NMarket.Entity.Customer.*;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
+import com.Nkosopa.NMarket.Entity.Customer.Customer;
+import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributeEAV;
+import com.Nkosopa.NMarket.Entity.DataType;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeEAVJPARepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerJPARepository;
+import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerTextValueJpaRepository;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerService;
 import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +27,6 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements iCustomerService {
 
     @Autowired
-    private CustomerAttributeJpaRepository customerAttributeJpaRepository;
-
-    @Autowired
     private CustomerTextValueJpaRepository customerTextValueRepository;
 
 
@@ -36,13 +37,11 @@ public class CustomerServiceImpl implements iCustomerService {
     private CustomerConverter customerConverter;
 
     @Autowired
-    private CustomerAttributeConverter customerAttributeConverter;
-
-    @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
     private CustomerValueServiceImpl customerValueService;
+    @Autowired
+    private CustomerAttributeEAVJPARepository customerAttributeEAVJPARepository;
+    @Autowired
+    private CustomerAttributeEAVConverter customerAttributeEAVConverter;
 
     @Override
     public void newCustomer(CustomerDTO customerDTO) {
@@ -61,19 +60,8 @@ public class CustomerServiceImpl implements iCustomerService {
     @Override
     public Optional<CustomerDTO> findCustomerById(Long customerId) {
         Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
-
-        return customerOptional.map(customer -> {
-            List<CustomerAttributes> customerAttributesList = customerAttributeJpaRepository.getCustomerAttributes(customerId);
-            List<CustomerAttributeDTO> attributeDTOs = customerAttributeConverter.mapAttributesToDTOs(customerAttributesList);
-
-            return CustomerDTO.builder()
-                    .firstName(customer.getFirstName())
-                    .lastName(customer.getLastName())
-                    .userName(customer.getUsername())
-                    .password(customer.getPassword())
-                    .email(customer.getEmail())
-                    .attributesDTO(attributeDTOs)
-                    .build();
+        return customerOptional.map(product -> {
+            return customerConverter.mapEntityToDTO(product);
         });
     }
 
@@ -84,30 +72,61 @@ public class CustomerServiceImpl implements iCustomerService {
     }
 
     @Override
-    @Transactional
-    public void updateCustomerProfile(CustomerDTO customerDTO, List<CustomerValueDTO> valueDTOList) {
-        Long customerId = customerDTO.getId();
-        Optional<Customer> optionalCustomer = customerJPARepository.findById(customerId);
+    public CustomerDTO updateCustomerProfile(CustomerDTO customerDTO) {
+        Optional<Customer> customerOptional = customerJPARepository.findById(customerDTO.getId());
 
-        if (optionalCustomer.isPresent()) {
-            Customer customer = optionalCustomer.get();
-
-            if (customerDTO.getAvatar() != null) {
-                String avatarUrl = authenticationService.uploadImageToCloudinary(customerDTO.getAvatar());
-                customer.setAvatarUrl(avatarUrl);
-            }
-
+        return customerOptional.map(customer -> {
             customer.setFirstName(customerDTO.getFirstName());
             customer.setLastName(customerDTO.getLastName());
-            customer.setEmail(customerDTO.getEmail());
+            customer.setUserName(customerDTO.getUserName());
             customer.setPassword(customerDTO.getPassword());
-            customer.setDOB(customer.getDOB());
-            customerJPARepository.save(customer);
+            customer.setEmail(customerDTO.getEmail());
 
-            //chua xong
-        } else {
-            throw new EntityNotFoundException("User not found with ID: " + customerId);
-        }
+//            CustomerTypeDTO customerTypeDTO = customerDTO.getCustomerType();
+//            if (CustomerTypeDTO != null) {
+//                CustomerType customerType = customerJpaRepository.findCustomerTypeByType(customerTypeDTO.getType());
+//                product.setCustomerType(customerTypeDTO);
+//            }
+
+            if (customerDTO.getAttributeEAVDTOList() != null && !customerDTO.getAttributeEAVDTOList().isEmpty()) {
+                List<CustomerAttributeEAVDTO> attributeDTOList = customerDTO.getAttributeEAVDTOList();
+                for (CustomerAttributeEAVDTO attributeDTO : attributeDTOList) {
+                    Optional<CustomerAttributeEAV> existingAttributeOpt = customerAttributeEAVJPARepository.findByAttributeName(attributeDTO.getAttributeName());
+
+                    CustomerAttributeEAV attributeEAV;
+                    if (existingAttributeOpt.isPresent()) {
+                        attributeEAV = existingAttributeOpt.get();
+                    } else {
+                        attributeEAV = new CustomerAttributeEAV();
+                        attributeEAV.setAttributeName(attributeDTO.getAttributeName());
+                        attributeEAV.setSearchable(true);
+                        attributeEAV.setDataType(attributeDTO.getDataType());
+                    }
+
+                    attributeEAV.setDataType(attributeDTO.getDataType());
+                    DataType dataType = attributeDTO.getDataType();
+
+                    switch (dataType) {
+                        case STRING:
+                            customerValueService.updateTextValues(customer.getId(), attributeEAV.getId(), attributeDTO.getTextValues());
+                            break;
+                        case LONG:
+                            customerValueService.updateLongValues(customer.getId(), attributeEAV.getId(), attributeDTO.getLongValues());
+                            break;
+                        case DATE:
+                            customerValueService.updateDateValues(customer.getId(), attributeEAV.getId(), attributeDTO.getDateValues());
+                            break;
+                        default:
+                            break;
+                    }
+                    customerAttributeEAVJPARepository.save(attributeEAV);
+                }
+                customer.setAttributeEAVList(customerAttributeEAVConverter.mapToEntities(attributeDTOList));
+            }
+
+            Customer updatedCustomer = customerJPARepository.save(customer);
+            return customerConverter.mapEntityToDTO(updatedCustomer);
+        }).orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
     //view
@@ -116,17 +135,6 @@ public class CustomerServiceImpl implements iCustomerService {
         return customerJPARepository.findAll().stream()
                 .map(customerConverter::mapEntityToDTO)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public CustomerDTO getOneCustomer(Long customerId) {
-        Optional<Customer> optionalCustomer = customerJPARepository.findById(customerId);
-        if (optionalCustomer.isPresent()) {
-            Customer customer = optionalCustomer.get();
-            return customerConverter.mapEntityToDTO(customer);
-        } else {
-            return null;
-        }
     }
 
 }

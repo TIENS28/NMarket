@@ -51,6 +51,9 @@ public class Customer extends BaseEntity<Customer> implements UserDetails {
 	@OneToMany(mappedBy = "customer")
 	private List<CustomerAttributes> attributes;
 
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<CustomerAttributeEAV> attributeEAVList;
+
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private CustomerType customerType;
