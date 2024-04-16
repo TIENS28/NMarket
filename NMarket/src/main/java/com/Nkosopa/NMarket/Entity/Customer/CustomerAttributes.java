@@ -1,15 +1,14 @@
 package com.Nkosopa.NMarket.Entity.Customer;
 
-import java.util.List;
-
 import com.Nkosopa.NMarket.Entity.BaseEntity;
-
 import com.Nkosopa.NMarket.Entity.DataType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "customer_attribute")

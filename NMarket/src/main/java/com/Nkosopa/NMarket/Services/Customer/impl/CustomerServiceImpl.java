@@ -79,8 +79,6 @@ public class CustomerServiceImpl implements iCustomerService {
             customer.setFirstName(customerDTO.getFirstName());
             customer.setLastName(customerDTO.getLastName());
             customer.setUserName(customerDTO.getUserName());
-            customer.setPassword(customerDTO.getPassword());
-            customer.setEmail(customerDTO.getEmail());
 
 //            CustomerTypeDTO customerTypeDTO = customerDTO.getCustomerType();
 //            if (CustomerTypeDTO != null) {
@@ -126,7 +124,7 @@ public class CustomerServiceImpl implements iCustomerService {
 
             Customer updatedCustomer = customerJPARepository.save(customer);
             return customerConverter.mapEntityToDTO(updatedCustomer);
-        }).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        }).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
     }
 
     //view
@@ -135,6 +133,23 @@ public class CustomerServiceImpl implements iCustomerService {
         return customerJPARepository.findAll().stream()
                 .map(customerConverter::mapEntityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteCustomer(Long customerId){
+        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
+        customerValueService.deleteCustomerValue(customerId);
+        customerJPARepository.deleteCustomerAttribute(customerId);
+        if (customerOptional.isPresent()) {
+            customerJPARepository.deleteById(customerId);
+        }
+    }
+
+    public CustomerDTO disableCustomer(Long customerId){
+        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
+        return customerOptional.map(customer -> {
+                customer.setStatus(false);
+                return customerConverter.mapEntityToDTO(customer);
+        }).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
     }
 
 }

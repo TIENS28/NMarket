@@ -183,4 +183,10 @@ public class CustomerValueServiceImpl implements iCustomerValueService {
             return null;
         }
     }
+
+    public void deleteCustomerValue(Long customerId) {
+        customerTextValueJpaRepository.findByCustomerId(customerId).clear();
+        customerLongValueJpaRepository.findByCustomerId(customerId).clear();
+        customerDateValueJpaRepository.findByCustomerId(customerId).clear();
+    }
 }

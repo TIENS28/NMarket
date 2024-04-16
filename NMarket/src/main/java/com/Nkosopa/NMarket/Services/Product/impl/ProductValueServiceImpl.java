@@ -197,4 +197,9 @@ public class ProductValueServiceImpl implements iProductValueService {
         }
     }
 
+    public void deleteProductValue(Long productId){
+        productTextValueJpaRepository.findByProductId(productId).clear();
+        productLongValueJpaRepository.findByProductId(productId).clear();
+        productDateValueJpaRepository.findByProductId(productId).clear();
+    }
 }

@@ -66,6 +66,18 @@ public class ProductController {
         return ResponseEntity.ok(createdProducts);
     }
 
+    @DeleteMapping("/deleteProduct")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteProductById(@RequestBody ProductDTO productDTO) {
+        Long productId = productDTO.getId();
+        if (productId == null) {
+            return ResponseEntity.badRequest().body(null);
+        }else{
+            productServiceImple.deleteProduct(productId);
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/updateProduct")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) {

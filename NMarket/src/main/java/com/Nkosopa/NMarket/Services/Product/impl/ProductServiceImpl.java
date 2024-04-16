@@ -160,4 +160,11 @@ public class ProductServiceImpl implements iProductService {
         }).orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
+    public void deleteProduct(Long productId) {
+        Optional<Product> productOptional = productJpaRepository.findById(productId);
+        productValueService.deleteProductValue(productId);
+        productJpaRepository.deleteProductAttribute(productId);
+        productOptional.ifPresent(product -> productJpaRepository.delete(product));
+    }
+
 }
