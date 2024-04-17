@@ -14,8 +14,6 @@ public interface iCustomerService {
 
     Optional<CustomerDTO> findCustomerById(Long customerId);
 
-    void deleteUser(Long customerId);
-
 //    @Transactional
 //    void updateCustomerProfile(CustomerDTO customerDTO, List<CustomerValueDTO> valueDTOList);
 

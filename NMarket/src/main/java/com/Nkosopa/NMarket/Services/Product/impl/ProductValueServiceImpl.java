@@ -7,7 +7,6 @@ import com.Nkosopa.NMarket.Entity.Product.*;
 import com.Nkosopa.NMarket.Repository.Product.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerServiceImpl;
 import com.Nkosopa.NMarket.Services.Product.iProductValueService;
-import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductValueServiceImpl implements iProductValueService {
@@ -97,91 +93,92 @@ public class ProductValueServiceImpl implements iProductValueService {
         return updatedProductDTOs;
     }
 
-    public void updateTextValues(Long productId, Long attributeId, List<ProductTextValueDTO> textValues) {
+    public void updateTextValues(List<ProductTextValueDTO> textValues) {
         for (ProductTextValueDTO textValueDTO : textValues) {
             String textValueContent = textValueDTO.getValue();
-            if (textValueDTO.getId()!=null) {
-                Long textValueId = textValueDTO.getId();
+            if (textValueDTO.getAttributeId()!=null) {
 
-                Optional<ProductTextValue> existingValueOptional = productTextValueJpaRepository.findById(textValueId);
+                Optional<ProductTextValue> existingValueOptional = productTextValueJpaRepository.findByProductAttributesId(textValueDTO.getAttributeId());
+
                 if (existingValueOptional.isPresent()) {
                     ProductTextValue existingValue = existingValueOptional.get();
 
-                    if (existingValue.getProduct().getId().equals(productId) &&
-                            existingValue.getAttribute().getId().equals(attributeId)) {
+                    if (existingValue.getProduct().getId().equals(textValueDTO.getProductId()) &&
+                            existingValue.getAttribute().getId().equals(textValueDTO.getAttributeId())) {
 
                         existingValue.setValue(textValueContent);
                         productTextValueJpaRepository.save(existingValue);
                     } else {
-                        throw new IllegalArgumentException("Invalid existing text value for productId and attributeId");
+                        throw new IllegalArgumentException("Invalid existing text value for customerId and attributeId");
                     }
+                } else {
+                    ProductTextValue newValue = new ProductTextValue();
+                    newValue.setProduct(productJpaRepository.getReferenceById(textValueDTO.getProductId()));
+                    newValue.setAttribute(attributeJPARepository.getReferenceById(textValueDTO.getAttributeId()));
+                    newValue.setValue(textValueContent);
+                    productTextValueJpaRepository.save(newValue);
                 }
-            } else {
-                ProductTextValue newValue = new ProductTextValue();
-                newValue.setProduct(productJpaRepository.getReferenceById(productId));
-                newValue.setAttribute(attributeJPARepository.getReferenceById(attributeId));
-                newValue.setValue(textValueContent);
-                productTextValueJpaRepository.save(newValue);
             }
         }
     }
 
 
-    public void updateLongValues(Long productId, Long attributeId, List<ProductLongValueDTO> longValues) {
-        for (ProductLongValueDTO longValueDTO : longValues) {
+    public void updateLongValues(List<ProductLongValueDTO> longValueDTOS) {
+        for (ProductLongValueDTO longValueDTO : longValueDTOS) {
             Long longValueContent = longValueDTO.getValue();
+            if (longValueDTO.getAttributeId()!=null) {
 
-            if(longValueDTO.getId()!=null) {
-                Long longValueId = longValueDTO.getId();
+                Optional<ProductLongValue> existingValueOptional = productLongValueJpaRepository.findByProductAttributesId(longValueDTO.getAttributeId());
 
-                Optional<ProductLongValue> existingValueOptional = productLongValueJpaRepository.findById(longValueId);
                 if (existingValueOptional.isPresent()) {
                     ProductLongValue existingValue = existingValueOptional.get();
 
-                    if (existingValue.getProduct().getId().equals(productId) &&
-                            existingValue.getAttribute().getId().equals(attributeId)) {
+                    if (existingValue.getProduct().getId().equals(longValueDTO.getProductId()) &&
+                            existingValue.getAttribute().getId().equals(longValueDTO.getAttributeId())) {
 
                         existingValue.setValue(longValueContent);
                         productLongValueJpaRepository.save(existingValue);
                     } else {
-                        throw new IllegalArgumentException("Invalid existing long value for productId and attributeId");
+                        throw new IllegalArgumentException("Invalid existing text value for customerId and attributeId");
                     }
+                } else {
+                    ProductLongValue newValue = new ProductLongValue();
+                    newValue.setProduct(productJpaRepository.getReferenceById(longValueDTO.getProductId()));
+                    newValue.setAttribute(attributeJPARepository.getReferenceById(longValueDTO.getAttributeId()));
+                    newValue.setValue(longValueContent);
+                    productLongValueJpaRepository.save(newValue);
                 }
-            }else{
-                ProductLongValue newValue = new ProductLongValue();
-                newValue.setProduct(productJpaRepository.getReferenceById(productId));
-                newValue.setAttribute(attributeJPARepository.getReferenceById(attributeId));
-                newValue.setValue(longValueContent);
-                productLongValueJpaRepository.save(newValue);
             }
         }
     }
 
 
-    public void updateDateValues(Long productId, Long attributeId, List<ProductDateValueDTO> dateValues) {
-        for (ProductDateValueDTO dateValueDTO : dateValues) {
-            Date dateValueContent = dateValueDTO.getValue();
-            if (dateValueDTO.getId()!=null) {
-                Long dateValueId = dateValueDTO.getId();
 
-                Optional<ProductDateValue> existingValueOptional = productDateValueJpaRepository.findById(dateValueId);
+    public void updateDateValues(List<ProductDateValueDTO> dateValueDTOS) {
+        for (ProductDateValueDTO dateValueDTO : dateValueDTOS) {
+            Date dateValueContent = dateValueDTO.getValue();
+            if (dateValueDTO.getAttributeId()!=null) {
+
+                Optional<ProductDateValue> existingValueOptional = productDateValueJpaRepository.findByProductAttributesId(dateValueDTO.getAttributeId());
+
                 if (existingValueOptional.isPresent()) {
                     ProductDateValue existingValue = existingValueOptional.get();
 
-                    if (existingValue.getProduct().getId().equals(productId) &&
-                            existingValue.getAttribute().getId().equals(attributeId)) {
+                    if (existingValue.getProduct().getId().equals(dateValueDTO.getProductId()) &&
+                            existingValue.getAttribute().getId().equals(dateValueDTO.getAttributeId())) {
+
                         existingValue.setValue(dateValueContent);
                         productDateValueJpaRepository.save(existingValue);
                     } else {
-                        throw new IllegalArgumentException("Invalid existing date value for productId and attributeId");
+                        throw new IllegalArgumentException("Invalid existing text value for customerId and attributeId");
                     }
+                } else {
+                    ProductDateValue newValue = new ProductDateValue();
+                    newValue.setProduct(productJpaRepository.getReferenceById(dateValueDTO.getProductId()));
+                    newValue.setAttribute(attributeJPARepository.getReferenceById(dateValueDTO.getAttributeId()));
+                    newValue.setValue(dateValueContent);
+                    productDateValueJpaRepository.save(newValue);
                 }
-            }else {
-                ProductDateValue newValue = new ProductDateValue();
-                newValue.setProduct(productJpaRepository.getReferenceById(productId));
-                newValue.setAttribute(attributeJPARepository.getReferenceById(attributeId));
-                newValue.setValue(dateValueContent);
-                productDateValueJpaRepository.save(newValue);
             }
         }
     }
@@ -201,5 +198,11 @@ public class ProductValueServiceImpl implements iProductValueService {
         productTextValueJpaRepository.findByProductId(productId).clear();
         productLongValueJpaRepository.findByProductId(productId).clear();
         productDateValueJpaRepository.findByProductId(productId).clear();
+    }
+
+    public void deleteProductAttributeValue(Long productId, Long attributeId){
+        productTextValueJpaRepository.deleteByProductIdAndAttributeId(productId, attributeId);
+        productLongValueJpaRepository.deleteByProductIdAndAttributeId(productId, attributeId);
+        productDateValueJpaRepository.deleteByProductIdAndAttributeId(productId, attributeId);
     }
 }

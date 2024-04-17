@@ -23,9 +23,6 @@ import lombok.Setter;
 @Table(name = "Customer_Date_value")
 public class CustomerDateValue extends BaseEntity<CustomerDateValue>{
 
-	@ManyToOne
-    @JoinColumn(name = "customer_attribute_id")
-    private CustomerAttributes customerAttributes;
 
     @ManyToOne
     @JoinColumn(name = "attribute_id")

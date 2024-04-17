@@ -19,5 +19,11 @@ public class CustomerValueController {
     @Autowired
     private CustomerValueServiceImpl customerValueService;
 
-
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CUSTOMER')")
+    public ResponseEntity<String> delete(@RequestBody CustomerDTO customerDTO) {
+        Long customerId = customerDTO.getId();
+        customerValueService.deleteCustomerValue(customerId);
+        return ResponseEntity.ok("Delete successful");
+    }
 }

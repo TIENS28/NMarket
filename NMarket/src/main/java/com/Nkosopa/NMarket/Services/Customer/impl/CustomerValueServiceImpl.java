@@ -3,7 +3,6 @@ package com.Nkosopa.NMarket.Services.Customer.impl;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDateValueDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerLongValueDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerTextValueDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductLongValueDTO;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerDateValue;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerLongValue;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerTextValue;
@@ -84,91 +83,91 @@ public class CustomerValueServiceImpl implements iCustomerValueService {
 //    }
 
 
-    public void updateTextValues(Long customerId, Long attributeId, List<CustomerTextValueDTO> textValues) {
+    public void updateTextValues(List<CustomerTextValueDTO> textValues) {
         for (CustomerTextValueDTO textValueDTO : textValues) {
             String textValueContent = textValueDTO.getValue();
-            if (textValueDTO.getId()!=null) {
-                Long textValueId = textValueDTO.getId();
+            if (textValueDTO.getAttributeId()!=null) {
 
-                Optional<CustomerTextValue> existingValueOptional = customerTextValueJpaRepository.findById(textValueId);
+                Optional<CustomerTextValue> existingValueOptional = customerTextValueJpaRepository.findByCustomerAttributesId(textValueDTO.getAttributeId());
+
                 if (existingValueOptional.isPresent()) {
                     CustomerTextValue existingValue = existingValueOptional.get();
 
-                    if (existingValue.getCustomer().getId().equals(customerId) &&
-                            existingValue.getAttribute().getId().equals(attributeId)) {
+                    if (existingValue.getCustomer().getId().equals(textValueDTO.getCustomerId()) &&
+                            existingValue.getAttribute().getId().equals(textValueDTO.getAttributeId())) {
 
                         existingValue.setValue(textValueContent);
                         customerTextValueJpaRepository.save(existingValue);
                     } else {
                         throw new IllegalArgumentException("Invalid existing text value for customerId and attributeId");
                     }
+                } else {
+                    CustomerTextValue newValue = new CustomerTextValue();
+                    newValue.setCustomer(customerJPARepository.getReferenceById(textValueDTO.getCustomerId()));
+                    newValue.setAttribute(customerAttributeEAVJPARepository.getReferenceById(textValueDTO.getAttributeId()));
+                    newValue.setValue(textValueContent);
+                    customerTextValueJpaRepository.save(newValue);
                 }
-            } else {
-                CustomerTextValue newValue = new CustomerTextValue();
-                newValue.setCustomer(customerJPARepository.getReferenceById(customerId));
-                newValue.setAttribute(customerAttributeEAVJPARepository.getReferenceById(attributeId));
-                newValue.setValue(textValueContent);
-                customerTextValueJpaRepository.save(newValue);
             }
         }
     }
 
 
-    public void updateLongValues(Long customerId, Long attributeId, List<CustomerLongValueDTO> longValues) {
-        for (CustomerLongValueDTO longValueDTO : longValues) {
+    public void updateLongValues(List<CustomerLongValueDTO> longValueDTOS) {
+        for (CustomerLongValueDTO longValueDTO : longValueDTOS) {
             Long longValueContent = longValueDTO.getValue();
+            if (longValueDTO.getAttributeId()!=null) {
 
-            if(longValueDTO.getId()!=null) {
-                Long longValueId = longValueDTO.getId();
+                Optional<CustomerLongValue> existingValueOptional = customerLongValueJpaRepository.findByCustomerAttributesId(longValueDTO.getAttributeId());
 
-                Optional<CustomerLongValue> existingValueOptional = customerLongValueJpaRepository.findById(longValueId);
                 if (existingValueOptional.isPresent()) {
                     CustomerLongValue existingValue = existingValueOptional.get();
 
-                    if (existingValue.getCustomer().getId().equals(customerId) &&
-                            existingValue.getAttribute().getId().equals(attributeId)) {
+                    if (existingValue.getCustomer().getId().equals(longValueDTO.getCustomerId()) &&
+                            existingValue.getAttribute().getId().equals(longValueDTO.getAttributeId())) {
 
                         existingValue.setValue(longValueContent);
                         customerLongValueJpaRepository.save(existingValue);
                     } else {
-                        throw new IllegalArgumentException("Invalid existing long value for customerId and attributeId");
+                        throw new IllegalArgumentException("Invalid existing text value for customerId and attributeId");
                     }
+                } else {
+                    CustomerLongValue longValue = new CustomerLongValue();
+                    longValue.setCustomer(customerJPARepository.getReferenceById(longValueDTO.getCustomerId()));
+                    longValue.setAttribute(customerAttributeEAVJPARepository.getReferenceById(longValueDTO.getAttributeId()));
+                    longValue.setValue(longValueContent);
+                    customerLongValueJpaRepository.save(longValue);
                 }
-            }else{
-                CustomerLongValue newValue = new CustomerLongValue();
-                newValue.setCustomer(customerJPARepository.getReferenceById(customerId));
-                newValue.setAttribute(customerAttributeEAVJPARepository.getReferenceById(attributeId));
-                newValue.setValue(longValueContent);
-                customerLongValueJpaRepository.save(newValue);
             }
         }
     }
 
 
-    public void updateDateValues(Long customerId, Long attributeId, List<CustomerDateValueDTO> dateValues) {
+    public void updateDateValues(List<CustomerDateValueDTO> dateValues) {
         for (CustomerDateValueDTO dateValueDTO : dateValues) {
             Date dateValueContent = dateValueDTO.getValue();
-            if (dateValueDTO.getId()!=null) {
-                Long dateValueId = dateValueDTO.getId();
+            if (dateValueDTO.getAttributeId()!=null) {
 
-                Optional<CustomerDateValue> existingValueOptional = customerDateValueJpaRepository.findById(dateValueId);
+                Optional<CustomerDateValue> existingValueOptional = customerDateValueJpaRepository.findByCustomerAttributesId(dateValueDTO.getAttributeId());
+
                 if (existingValueOptional.isPresent()) {
                     CustomerDateValue existingValue = existingValueOptional.get();
 
-                    if (existingValue.getCustomer().getId().equals(customerId) &&
-                            existingValue.getAttribute().getId().equals(attributeId)) {
+                    if (existingValue.getCustomer().getId().equals(dateValueDTO.getCustomerId()) &&
+                            existingValue.getAttribute().getId().equals(dateValueDTO.getAttributeId())) {
+
                         existingValue.setValue(dateValueContent);
                         customerDateValueJpaRepository.save(existingValue);
                     } else {
-                        throw new IllegalArgumentException("Invalid existing date value for customerId and attributeId");
+                        throw new IllegalArgumentException("Invalid existing text value for customerId and attributeId");
                     }
+                } else {
+                    CustomerDateValue dateValue = new CustomerDateValue();
+                    dateValue.setCustomer(customerJPARepository.getReferenceById(dateValueDTO.getCustomerId()));
+                    dateValue.setAttribute(customerAttributeEAVJPARepository.getReferenceById(dateValueDTO.getAttributeId()));
+                    dateValue.setValue(dateValueContent);
+                    customerDateValueJpaRepository.save(dateValue);
                 }
-            }else {
-                CustomerDateValue newValue = new CustomerDateValue();
-                newValue.setCustomer(customerJPARepository.getReferenceById(customerId));
-                newValue.setAttribute(customerAttributeEAVJPARepository.getReferenceById(attributeId));
-                newValue.setValue(dateValueContent);
-                customerDateValueJpaRepository.save(newValue);
             }
         }
     }
@@ -188,5 +187,11 @@ public class CustomerValueServiceImpl implements iCustomerValueService {
         customerTextValueJpaRepository.findByCustomerId(customerId).clear();
         customerLongValueJpaRepository.findByCustomerId(customerId).clear();
         customerDateValueJpaRepository.findByCustomerId(customerId).clear();
+    }
+
+    public void deleteCustomerAttributeValue(Long customerId, Long attributeId) {
+        customerTextValueJpaRepository.deleteByCustomerIdAndAttributeId(customerId, attributeId);
+        customerLongValueJpaRepository.deleteByCustomerIdAndAttributeId(customerId, attributeId);
+        customerDateValueJpaRepository.deleteByCustomerIdAndAttributeId(customerId, attributeId);
     }
 }

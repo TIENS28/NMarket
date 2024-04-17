@@ -58,14 +58,5 @@ public class CustomerAttributeController {
 //        return ResponseEntity.ok("Customer attributes deleted successfully");
 //    }
 
-    @DeleteMapping("/deleteAttribute")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteCustomerAttributes(
-            @RequestBody List<String> attributeCodes
-    ) {
-        customerAttributeService.deleteAttributesOfAllCustomer(attributeCodes);
-        return ResponseEntity.ok("Customer attributes deleted successfully");
-    }
-
 
 }

@@ -58,8 +58,6 @@ public class  ShoppingCartService implements iShoppingCartService {
                     Product product = productOptional.get();
 
                     if (product.getStock() > 0) {
-                        product.setStock(product.getStock() - 1);
-                        productJpaRepository.save(product);
 
                         cart.getProductList().add(product);
                         cart.setTotalPrice(cart.getTotalPrice() + product.getPrice());

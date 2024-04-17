@@ -1,6 +1,5 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
-import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeEAVConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
@@ -9,11 +8,9 @@ import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributeEAV;
 import com.Nkosopa.NMarket.Entity.DataType;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeEAVJPARepository;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerJPARepository;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerTextValueJpaRepository;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerService;
-import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +48,7 @@ public class CustomerServiceImpl implements iCustomerService {
         newCustomer.setUserName(customerDTO.getUserName());
         newCustomer.setPassword(customerDTO.getPassword());
         newCustomer.setEmail(customerDTO.getEmail());
-        newCustomer.setAttributes(new ArrayList<>());
+        newCustomer.setAttributeEAVList(new ArrayList<>());
 
         customerJPARepository.save(newCustomer);
     }//add new customer manually
@@ -65,11 +62,6 @@ public class CustomerServiceImpl implements iCustomerService {
         });
     }
 
-    @Override
-    public void deleteUser(Long customerId) {
-        customerTextValueRepository.deleteValueByCustomerId(customerId);
-        customerJPARepository.deleteById(customerId);
-    }
 
     @Override
     public CustomerDTO updateCustomerProfile(CustomerDTO customerDTO) {
@@ -106,13 +98,25 @@ public class CustomerServiceImpl implements iCustomerService {
 
                     switch (dataType) {
                         case STRING:
-                            customerValueService.updateTextValues(customer.getId(), attributeEAV.getId(), attributeDTO.getTextValues());
+                            if(attributeDTO.getTextValues().isEmpty()){
+                                customerValueService.deleteCustomerAttributeValue(customerDTO.getId(), attributeDTO.getId());
+                            }else {
+                                customerValueService.updateTextValues(attributeDTO.getTextValues());
+                            }
                             break;
                         case LONG:
-                            customerValueService.updateLongValues(customer.getId(), attributeEAV.getId(), attributeDTO.getLongValues());
+                            if(attributeDTO.getLongValues().isEmpty()){
+                                customerValueService.deleteCustomerAttributeValue(customerDTO.getId(), attributeDTO.getId());
+                            }else {
+                                customerValueService.updateLongValues(attributeDTO.getLongValues());
+                            }
                             break;
                         case DATE:
-                            customerValueService.updateDateValues(customer.getId(), attributeEAV.getId(), attributeDTO.getDateValues());
+                            if(attributeDTO.getDateValues().isEmpty()) {
+                                customerValueService.deleteCustomerAttributeValue(customerDTO.getId(), attributeDTO.getId());
+                            }else{
+                                customerValueService.updateDateValues(attributeDTO.getDateValues());
+                            }
                             break;
                         default:
                             break;

@@ -10,6 +10,7 @@ public interface CustomerCommonValueRepository<T, ID> extends JpaRepository<T, L
 
     List<T> findByCustomerId(Long customerId);
 
+
     List<T> findByCustomerIdAndAttributeId(Long productId, Long attributeId);
 
 }

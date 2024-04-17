@@ -20,9 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CustomerLongValue extends BaseEntity<CustomerLongValue>{
 	
-	@ManyToOne
-    @JoinColumn(name = "customer_attribute_id")
-    private CustomerAttributes customerAttributes;
+
 
     @ManyToOne
     @JoinColumn(name = "attribute_id")

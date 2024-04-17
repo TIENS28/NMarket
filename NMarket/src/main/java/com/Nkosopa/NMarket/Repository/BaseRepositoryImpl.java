@@ -3,7 +3,6 @@ package com.Nkosopa.NMarket.Repository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import com.Nkosopa.NMarket.Entity.Customer.QCustomer;
-import com.Nkosopa.NMarket.Entity.Customer.QCustomerAttributes;
 import com.Nkosopa.NMarket.Entity.Customer.QCustomerDateValue;
 import com.Nkosopa.NMarket.Entity.Customer.QCustomerLongValue;
 import com.Nkosopa.NMarket.Entity.Customer.QCustomerTextValue;
@@ -21,7 +20,6 @@ public abstract class BaseRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID
 	JPAQueryFactory jpaQueryFactory;
 	
 	protected final QCustomer customer = QCustomer.customer;
-	protected final QCustomerAttributes customerAttributes = QCustomerAttributes.customerAttributes;
 	protected final QCustomerLongValue customerLongValue = QCustomerLongValue.customerLongValue;
 	protected final QCustomerTextValue customerTextValue = QCustomerTextValue.customerTextValue;
 	protected final QCustomerDateValue customerDateValue = QCustomerDateValue.customerDateValue;

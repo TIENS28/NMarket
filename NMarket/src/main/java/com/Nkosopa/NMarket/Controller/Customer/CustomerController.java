@@ -44,13 +44,6 @@ public class CustomerController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/delete/{customerId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteCustomer(@PathVariable long customerId) {
-        customerService.deleteUser(customerId);
-        return ResponseEntity.ok("Delete customer successfully");
-    }
-
     @GetMapping("/allCustomer")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<List<CustomerDTO>> getAllCustomer() {

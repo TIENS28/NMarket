@@ -1,11 +1,8 @@
 package com.Nkosopa.NMarket.Converter.Customer;
 
 import com.Nkosopa.NMarket.DTO.Customer.*;
-import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.Entity.Customer.*;
-import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeEAVJPARepository;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +13,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class CustomerAttributeConverter {
-
-    @Autowired
-    private CustomerAttributeJpaRepository customerAttributeJpaRepository;
 
     @Autowired
     private CustomerValueConverter customerValueConverter;

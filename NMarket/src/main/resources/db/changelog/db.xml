@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    <changeSet id="drop_table_product_attribute" author="tien.tran">
+<!--        <dropForeignKeyConstraint baseTableName="product_entity_date" baseTableSchemaName="nkosopamarket" constraintName="FK3klctqaj0blikunfhp3w4s4lt"/>-->
+<!--        <dropForeignKeyConstraint baseTableName="product_entity_text" baseTableSchemaName="nkosopamarket" constraintName="FK82wnvdj5mo7ajh7kkmq48fr5r"/>-->
+<!--        <dropForeignKeyConstraint baseTableName="product_entity_int" baseTableSchemaName="nkosopamarket" constraintName="FKgnfankp0aia12ywsvfvi4kdne"/>-->
+<!--        <dropForeignKeyConstraint baseTableName="product_attribute" baseTableSchemaName="nkosopamarket" constraintName="FKlefs59y5kmsbu017n1wp10gf2" />-->
+<!--        <dropTable tableName="product_attribute" schemaName="nkosopamarket"/>-->
+        <dropColumn tableName="product_attribute" columnName="attribute_code" schemaName="nkosopamarket"/>
+    </changeSet>
+    <changeSet id="drop_table_productAttribute" author="tien.tran">
+
+<!--        <dropForeignKeyConstraint baseTableName="product_entity_date" baseTableSchemaName="nkosopamarket" constraintName="FK3klctqaj0blikunfhp3w4s4lt"/>-->
+<!--        <dropColumn tableName="product_entity_date" columnName="product_attribute_id" schemaName="nkosopamarket"/>-->
+
+<!--        <dropForeignKeyConstraint baseTableName="product_entity_text" baseTableSchemaName="nkosopamarket" constraintName="FK82wnvdj5mo7ajh7kkmq48fr5r"/>-->
+<!--        <dropColumn tableName="product_entity_text" columnName="product_attribute_id" schemaName="nkosopamarket"/>-->
+
+<!--        <dropForeignKeyConstraint baseTableName="product_entity_int" baseTableSchemaName="nkosopamarket" constraintName="FKgnfankp0aia12ywsvfvi4kdne"/>-->
+<!--        <dropColumn tableName="product_entity_int" columnName="product_attribute_id" schemaName="nkosopamarket"/>-->
+
+        <dropTable tableName="product_attribute" schemaName="nkosopamarket"/>
+    </changeSet>
+</databaseChangeLog>

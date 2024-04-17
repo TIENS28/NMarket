@@ -16,7 +16,5 @@ public interface iCustomerAttributeService {
     @Transactional
     CustomerDTO addAttributesToCustomer(Long customerId, List<CustomerAttributeEAVDTO> attributeDTOList);
 
-    void deleteSingleCustomerAttribute(Long customerId, List<String> attributeCodes);
 
-    void deleteAttributesOfAllCustomer(List<String> attributeCodes);
 }

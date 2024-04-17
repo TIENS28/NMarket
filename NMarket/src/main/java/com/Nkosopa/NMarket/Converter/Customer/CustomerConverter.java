@@ -2,18 +2,11 @@ package com.Nkosopa.NMarket.Converter.Customer;
 
 import com.Nkosopa.NMarket.DTO.Customer.*;
 import com.Nkosopa.NMarket.Entity.Customer.*;
-import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
-import com.Nkosopa.NMarket.Entity.Product.ProductDateValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
-import com.Nkosopa.NMarket.Entity.Product.ProductTextValue;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerAttributeJpaRepository;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerCommonValueRepository;
-import com.Nkosopa.NMarket.Repository.Product.JPA.CommonValueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class CustomerConverter {

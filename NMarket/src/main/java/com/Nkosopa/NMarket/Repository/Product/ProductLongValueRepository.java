@@ -6,4 +6,6 @@ import com.Nkosopa.NMarket.Entity.Product.ProductLongValue;
 
 public interface ProductLongValueRepository extends JpaRepository<ProductLongValue, Long>{
 
+
+
 }

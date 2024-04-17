@@ -4,12 +4,15 @@ import com.Nkosopa.NMarket.Converter.Other.OrderConverter;
 import com.Nkosopa.NMarket.DTO.Other.OrderDTO;
 import com.Nkosopa.NMarket.Entity.Other.OrderList;
 import com.Nkosopa.NMarket.Entity.Other.ShoppingCart;
+import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.ShoppingCartJpaRepository;
 import com.Nkosopa.NMarket.Repository.Other.JPA.OrderJpaRepository;
+import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
 import com.Nkosopa.NMarket.Services.Other.iOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +26,8 @@ public class OrderServiceImpl implements iOrderService {
 
     @Autowired
     private OrderConverter orderConverter;
+    @Autowired
+    private ProductJpaRepository productJpaRepository;
 
 
     @Override
@@ -36,6 +41,11 @@ public class OrderServiceImpl implements iOrderService {
             order.setProductList(cart.getProductList());
             order.setTotalPrice(cart.getTotalPrice());
 
+            List<Product> productList = cart.getProductList();
+            for (Product product : productList) {
+                product.setStock(product.getStock() - 1);
+                productJpaRepository.save(product);
+            }
             orderJpaRepository.save(order);
 
             shoppingCartJpaRepository.delete(cart);
@@ -51,7 +61,9 @@ public class OrderServiceImpl implements iOrderService {
         Optional<OrderList> orderOptional = orderJpaRepository.findById(orderId);
         if (orderOptional.isPresent()) {
             OrderList order = orderOptional.get();
-            order.setStatus("CANCELED");
+            for(Product product : order.getProductList()){
+                product.setStock(product.getStock() + 1);
+            }
             orderJpaRepository.save(order);
 
             return orderConverter.mapEntityToDTO(order);
@@ -59,4 +71,6 @@ public class OrderServiceImpl implements iOrderService {
             throw new RuntimeException("Order not found");
         }
     }
+
+
 }

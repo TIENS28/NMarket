@@ -19,10 +19,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerTextValue extends BaseEntity<CustomerTextValue>{
-	
-	@ManyToOne
-    @JoinColumn(name = "customer_attribute_id")
-    private CustomerAttributes customerAttributes;
 
     @ManyToOne
     @JoinColumn(name = "attribute_id")

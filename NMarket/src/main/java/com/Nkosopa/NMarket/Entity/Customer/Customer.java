@@ -48,9 +48,6 @@ public class Customer extends BaseEntity<Customer> implements UserDetails {
 	@Builder.Default
 	private boolean status =  false;
 
-	@OneToMany(mappedBy = "customer")
-	private List<CustomerAttributes> attributes;
-
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<CustomerAttributeEAV> attributeEAVList;
 

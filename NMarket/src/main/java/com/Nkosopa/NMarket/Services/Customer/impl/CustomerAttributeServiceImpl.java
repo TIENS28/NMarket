@@ -4,15 +4,10 @@ import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeEAVConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
-import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributeEAV;
-import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributes;
-import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
-import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
 import com.Nkosopa.NMarket.Services.Customer.iCustomerAttributeService;
-import com.Nkosopa.NMarket.Services.Other.Impl.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +17,6 @@ import java.util.Optional;
 
 @Service
 public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
-
-    @Autowired
-    private CustomerAttributeJpaRepository customerAttributeJpaRepository;
 
     @Autowired
     private CustomerTextValueJpaRepository customerTextValueJpaRepository;
@@ -88,25 +80,5 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
 //        customerJPARepository.saveAll(customers);
 //    }
 
-
-    @Override
-    public void deleteSingleCustomerAttribute(Long customerId, List<String> attributeCodes){
-        List<CustomerAttributes> customerAttributes = customerAttributeJpaRepository.findByCustomerIdAndAttributeCode(customerId, attributeCodes);
-        customerAttributes.forEach(this::deleteAssociatedValues);
-        customerAttributeJpaRepository.deleteCustomerAttributeByIdAndAttributeCode(customerId, attributeCodes);
-    }
-
-    @Override
-    public void deleteAttributesOfAllCustomer(List<String> attributeCodes) {
-        List<CustomerAttributes> customerAttributes = customerAttributeJpaRepository.findByAttributeCode(attributeCodes);
-        customerAttributes.forEach(this::deleteAssociatedValues);
-        customerAttributeJpaRepository.deleteCustomerAttributeByAttributeCode(attributeCodes);
-    }
-
-    private void deleteAssociatedValues(CustomerAttributes customerAttribute) {
-        customerTextValueJpaRepository.deleteAll(customerAttribute.getTextValues());
-        customerLongValueJpaRepository.deleteAll(customerAttribute.getIntValues());
-        customerDateValueJpaRepository.deleteAll(customerAttribute.getDateValues());
-    }//delete value for each customerAttributes
 
 }

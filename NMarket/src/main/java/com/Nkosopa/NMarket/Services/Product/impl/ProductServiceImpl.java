@@ -139,13 +139,25 @@ public class ProductServiceImpl implements iProductService {
 
                     switch (dataType) {
                         case STRING:
-                            productValueService.updateTextValues(product.getId(), attributeEAV.getId(), attributeDTO.getTextValues());
+                            if (attributeDTO.getTextValues().isEmpty()) {
+                                productValueService.deleteProductAttributeValue(productDTO.getId(), attributeDTO.getId());
+                            }else{
+                                productValueService.updateTextValues(attributeDTO.getTextValues());
+                            }
                             break;
                         case LONG:
-                            productValueService.updateLongValues(product.getId(), attributeEAV.getId(), attributeDTO.getIntValues());
+                            if (attributeDTO.getIntValues().isEmpty()) {
+                                productValueService.deleteProductAttributeValue(productDTO.getId(), attributeDTO.getId());
+                            }else{
+                                productValueService.updateLongValues(attributeDTO.getIntValues());
+                            }
                             break;
                         case DATE:
-                            productValueService.updateDateValues(product.getId(), attributeEAV.getId(), attributeDTO.getDateValues());
+                            if (attributeDTO.getDateValues().isEmpty()) {
+                                productValueService.deleteProductAttributeValue(productDTO.getId(), attributeDTO.getId());
+                            }else{
+                                productValueService.updateDateValues(attributeDTO.getDateValues());
+                            }
                             break;
                         default:
                             break;
