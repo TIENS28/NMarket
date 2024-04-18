@@ -12,9 +12,4 @@ public class CustomerTextValueDTO extends BaseDTO<CustomerTextValueDTO> {
 
     private String value;
 
-    private Long customerId;
-
-    private Long attributeId;
-
-
 }

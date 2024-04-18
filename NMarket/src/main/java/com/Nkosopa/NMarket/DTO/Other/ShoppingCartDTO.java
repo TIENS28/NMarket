@@ -17,7 +17,7 @@ public class ShoppingCartDTO extends BaseDTO<ShoppingCartDTO> {
 
     private Long customerId;
 
-    private List<ProductDTO> productDTOS;
-
     private Long totalPrice;
+
+    private List<CartProductDTO> productDTOList;
 }

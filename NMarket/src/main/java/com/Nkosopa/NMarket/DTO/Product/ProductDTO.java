@@ -17,7 +17,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String sku;
 
-    private int stock;
+    private Long stock;
 
     private Long price;
 

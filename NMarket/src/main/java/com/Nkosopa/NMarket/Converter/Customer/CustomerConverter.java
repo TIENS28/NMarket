@@ -1,5 +1,7 @@
 package com.Nkosopa.NMarket.Converter.Customer;
 
+import com.Nkosopa.NMarket.Converter.Other.CartConverter;
+import com.Nkosopa.NMarket.Converter.Other.OrderConverter;
 import com.Nkosopa.NMarket.DTO.Customer.*;
 import com.Nkosopa.NMarket.Entity.Customer.*;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerCommonValueRepository;
@@ -19,8 +21,15 @@ public class CustomerConverter {
 
     @Autowired
     private CustomerCommonValueRepository<CustomerDateValue, Long> dateValueRepository;
+
     @Autowired
     private CustomerAttributeEAVConverter customerAttributeEAVConverter;
+
+    @Autowired
+    private OrderConverter orderConverter;
+
+    @Autowired
+    private CartConverter cartConverter;
 
     public CustomerDTO mapEntityToDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
@@ -34,6 +43,12 @@ public class CustomerConverter {
             customerDTO.setEmail(customer.getEmail());
             customerDTO.setRole(customer.getRole().name());
             customerDTO.setAddress(customer.getAddress());
+//            if (customer.getOrders()!=null) {
+//                customerDTO.setOrderDTOList(orderConverter.mapToDTOs(customer.getOrders()));
+//            }
+            if (customer.getShoppingCart()!=null) {
+                customerDTO.setShopingCartDTO(cartConverter.mapEntityToDTO(customer.getShoppingCart()));
+            }
             if(customer.getAttributeEAVList()!=null) {
                 List<CustomerAttributeEAV> attributeEAVList = customer.getAttributeEAVList();
                 for (CustomerAttributeEAV attributeEAV : attributeEAVList) {
@@ -46,4 +61,6 @@ public class CustomerConverter {
         }
         return customerDTO;
     }
+
+
 }

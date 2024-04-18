@@ -26,6 +26,9 @@ public class OrderList extends BaseEntity<OrderList> {
 
     private Long totalPrice;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartProduct> cartProductList;
+
     private boolean isShipped = false;
 
     @ManyToOne(fetch = FetchType.LAZY)

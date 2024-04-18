@@ -1,6 +1,5 @@
 package com.Nkosopa.NMarket.Services.Customer;
 
-import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
 import jakarta.transaction.Transactional;

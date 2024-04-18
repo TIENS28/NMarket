@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,10 +20,7 @@ import java.util.List;
 @Builder
 @Data
 public class OrderDTO extends BaseDTO<OrderDTO> {
-
-    private CustomerDTO customerDTO;
-
-    private List<ProductDTO> productDTOS;
-
+    private List<CartProductDTO> cartProductDTOS;
     private Long totalPrice;
+    private LocalDateTime orderDate;
 }

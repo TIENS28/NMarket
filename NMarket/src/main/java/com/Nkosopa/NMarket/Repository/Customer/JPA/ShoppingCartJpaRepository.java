@@ -14,4 +14,7 @@ public interface ShoppingCartJpaRepository extends JpaRepository<ShoppingCart, L
             "Left join Customer c ON c.id = sc.customer.id " +
             "where sc.customer.id = :customerId")
     Optional<ShoppingCart> findByCustomerId(Long customerId);
+
+    @Query(value = "Delete from shopping_cart_cart_products_list where shopping_cart_id = :cartId", nativeQuery = true)
+    public void deleteCartProductsList(Long cartId);
 }

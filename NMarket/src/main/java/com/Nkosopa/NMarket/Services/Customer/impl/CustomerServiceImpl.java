@@ -95,27 +95,28 @@ public class CustomerServiceImpl implements iCustomerService {
 
                     attributeEAV.setDataType(attributeDTO.getDataType());
                     DataType dataType = attributeDTO.getDataType();
-
+                    Long customerDTOid = customerDTO.getId();
+                    Long attributeDTOid = attributeDTO.getId();
                     switch (dataType) {
                         case STRING:
                             if(attributeDTO.getTextValues().isEmpty()){
-                                customerValueService.deleteCustomerAttributeValue(customerDTO.getId(), attributeDTO.getId());
+                                customerValueService.deleteCustomerAttributeValue(customerDTOid, attributeDTOid);
                             }else {
-                                customerValueService.updateTextValues(attributeDTO.getTextValues());
+                                customerValueService.updateTextValues(customerDTOid, attributeDTOid, attributeDTO.getTextValues());
                             }
                             break;
                         case LONG:
                             if(attributeDTO.getLongValues().isEmpty()){
-                                customerValueService.deleteCustomerAttributeValue(customerDTO.getId(), attributeDTO.getId());
+                                customerValueService.deleteCustomerAttributeValue(customerDTOid, attributeDTOid);
                             }else {
-                                customerValueService.updateLongValues(attributeDTO.getLongValues());
+                                customerValueService.updateLongValues(customerDTOid, attributeDTOid, attributeDTO.getLongValues());
                             }
                             break;
                         case DATE:
                             if(attributeDTO.getDateValues().isEmpty()) {
-                                customerValueService.deleteCustomerAttributeValue(customerDTO.getId(), attributeDTO.getId());
+                                customerValueService.deleteCustomerAttributeValue(customerDTOid, attributeDTOid);
                             }else{
-                                customerValueService.updateDateValues(attributeDTO.getDateValues());
+                                customerValueService.updateDateValues(customerDTOid, attributeDTOid, attributeDTO.getDateValues());
                             }
                             break;
                         default:
@@ -139,21 +140,28 @@ public class CustomerServiceImpl implements iCustomerService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteCustomer(Long customerId){
-        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
-        customerValueService.deleteCustomerValue(customerId);
-        customerJPARepository.deleteCustomerAttribute(customerId);
-        if (customerOptional.isPresent()) {
-            customerJPARepository.deleteById(customerId);
-        }
-    }
+//    public void deleteCustomer(Long customerId){
+//        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
+//        customerValueService.deleteCustomerValue(customerId);
+//        customerJPARepository.deleteCustomerAttribute(customerId);
+//        if (customerOptional.isPresent()) {
+//            customerJPARepository.deleteById(customerId);
+//        }
+//    }
 
-    public CustomerDTO disableCustomer(Long customerId){
+    public CustomerDTO disableCustomer(Long customerId) {
         Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
-        return customerOptional.map(customer -> {
-                customer.setStatus(false);
-                return customerConverter.mapEntityToDTO(customer);
-        }).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+        if (customerOptional.isPresent()) {
+            Customer customer = customerOptional.get();
+            customer.setStatus(false);
+
+            customerJPARepository.save(customer);
+
+            return customerConverter.mapEntityToDTO(customer);
+        } else {
+            throw new EntityNotFoundException("Customer not found with ID: " + customerId);
+        }
     }
 
 }

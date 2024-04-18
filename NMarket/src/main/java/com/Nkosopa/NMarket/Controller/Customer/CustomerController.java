@@ -72,5 +72,16 @@ public class CustomerController {
         }
     }
 
-
+//    @PutMapping("/disable")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<?> disableCustomer(@RequestBody Long customerId) {
+//        try {
+//            CustomerDTO disabledCustomer = customerService.disableCustomer(customerId);
+//            return ResponseEntity.ok(disabledCustomer);
+//        } catch (EntityNotFoundException e) {
+//            return ResponseEntity.notFound().build();
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error disabling customer: " + e.getMessage());
+//        }
+//    }
 }

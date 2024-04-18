@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.DTO.Customer;
 
 import com.Nkosopa.NMarket.DTO.BaseDTO;
+import com.Nkosopa.NMarket.DTO.Other.OrderDTO;
 import com.Nkosopa.NMarket.DTO.Other.ShoppingCartDTO;
 import jakarta.annotation.Nullable;
 import lombok.*;
@@ -35,9 +36,9 @@ public class CustomerDTO extends BaseDTO<CustomerDTO> {
 
     private String email; //for account registration
 
-    private List<CustomerAttributeDTO> attributesDTO;
-
     private ShoppingCartDTO shopingCartDTO;
+
+    private List<OrderDTO> orderDTOList;
 
     private List<CustomerAttributeEAVDTO> attributeEAVDTOList;
 }

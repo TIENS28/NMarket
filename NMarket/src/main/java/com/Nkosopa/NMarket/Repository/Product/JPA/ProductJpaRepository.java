@@ -37,4 +37,14 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
     @Modifying
     @Query(value = "DELETE FROM product_attributeeavs where product_id = :productId", nativeQuery = true)
     void deleteProductAttribute(Long productId);
+
+//    @Query(value = "SELECT DISTINCT p " +
+//            "FROM Product p " +
+//            "JOIN p.attributeEAVS pa " +
+//            "LEFT JOIN ProductType pt ON pt.id = p.productType.id " +
+//            "LEFT JOIN pa.intValues lv ON lv.product.id = p.id " +
+//            "LEFT JOIN pa.textValues tv ON tv.product.id = p.id " +
+//            "LEFT JOIN pa.dateValues dv ON dv.product.id = p.id " +
+//            "WHERE (pa.intValues = ) ")
+//    public Page<Product> searchProductsWithFilter(@Param("query") String query, Pageable pageable);
 }

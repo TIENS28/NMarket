@@ -13,6 +13,5 @@ import java.util.Date;
 @Builder
 public class CustomerDateValueDTO extends BaseDTO<CustomerDateValueDTO> {
     private Date value;
-    private Long customerId;
-    private Long attributeId;
+
 }

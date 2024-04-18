@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.Services.Other;
 
+import com.Nkosopa.NMarket.DTO.Other.CartProductDTO;
 import com.Nkosopa.NMarket.DTO.Other.ShoppingCartDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Product.Product;
@@ -9,7 +10,8 @@ import java.util.List;
 
 public interface iShoppingCartService {
 
-    ShoppingCartDTO addProductsToCart(Long customerId, List<Long> productIds);
+
+    ShoppingCartDTO addProductsToCart(List<CartProductDTO> cartProductDTOList);
 
     ShoppingCartDTO removeProductFromShoppingCart(Long productId, Long cartId);
 

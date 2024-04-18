@@ -1,13 +1,14 @@
 package com.Nkosopa.NMarket.Services.Other.Impl;
 
-import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
 import com.Nkosopa.NMarket.Converter.Other.CartConverter;
+import com.Nkosopa.NMarket.DTO.Other.CartProductDTO;
 import com.Nkosopa.NMarket.DTO.Other.ShoppingCartDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
+import com.Nkosopa.NMarket.Entity.Other.CartProduct;
 import com.Nkosopa.NMarket.Entity.Other.ShoppingCart;
 import com.Nkosopa.NMarket.Entity.Product.Product;
-import com.Nkosopa.NMarket.Repository.Customer.JPA.CustomerJPARepository;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.ShoppingCartJpaRepository;
+import com.Nkosopa.NMarket.Repository.Other.JPA.ProductCartJpaRepository;
 import com.Nkosopa.NMarket.Repository.Product.JPA.ProductJpaRepository;
 import com.Nkosopa.NMarket.Services.Other.iShoppingCartService;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,20 +32,17 @@ public class ShoppingCartService implements iShoppingCartService {
     private CartConverter cartConverter;
 
     @Autowired
-    private CustomerJPARepository customerJPARepository;
-
-    @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private ProductCartJpaRepository productCartJpaRepository;
 
     @Override
-    public ShoppingCartDTO addProductsToCart(Long customerId, List<Long> productIds) {
-
-
+    public ShoppingCartDTO addProductsToCart(List<CartProductDTO> cartProductDTOList) {
         Customer customer = authenticationService.getCurrentCustomer();
 
         ShoppingCart cart;
 
-        Optional<ShoppingCart> existingCartOptional = shoppingCartJpaRepository.findByCustomerId(customerId);
+        Optional<ShoppingCart> existingCartOptional = shoppingCartJpaRepository.findByCustomerId(customer.getId());
 
         if (existingCartOptional.isPresent()) {
             cart = existingCartOptional.get();
@@ -52,30 +50,47 @@ public class ShoppingCartService implements iShoppingCartService {
             cart = new ShoppingCart();
             cart.setCustomer(customer);
             cart.setTotalPrice(0L);
+            cart.setCartProductsList(new ArrayList<>());
             shoppingCartJpaRepository.save(cart);
         }
-        List<Product> productList = new ArrayList<>();
-        for (Long productId : productIds) {
+
+        for (CartProductDTO cartProductDTO : cartProductDTOList) {
+            Long productId = cartProductDTO.getProductDTO().getId();
+            Long quantityToAdd = cartProductDTO.getQuantity();
+
             Optional<Product> productOptional = productJpaRepository.findById(productId);
 
             if (productOptional.isPresent()) {
                 Product product = productOptional.get();
 
-                if (product.getStock() > 0) {
-                    productList.add(product);
-                    cart.setProductList(productList);
-                    cart.setTotalPrice(cart.getTotalPrice() + product.getPrice());
+                CartProduct existingCartProduct = cart.getCartProductsList().stream()
+                        .filter(cp -> cp.getProduct().getId().equals(productId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (existingCartProduct != null) {
+                    existingCartProduct.setQuantity(existingCartProduct.getQuantity() + quantityToAdd);
+                    cart.setTotalPrice(cart.getTotalPrice() + (product.getPrice() * quantityToAdd));
                 } else {
-                    throw new RuntimeException("Product with ID " + productId + " is out of stock");
+                    CartProduct newCartProduct = new CartProduct();
+                    newCartProduct.setProduct(product);
+                    newCartProduct.setQuantity(quantityToAdd);
+                    newCartProduct.setCart(cart);
+                    productCartJpaRepository.save(newCartProduct);
+                    cart.getCartProductsList().add(newCartProduct);
+                    cart.setTotalPrice(cart.getTotalPrice() + (product.getPrice() * quantityToAdd));
                 }
             } else {
                 throw new EntityNotFoundException("Product with ID " + productId + " not found");
             }
         }
-        shoppingCartJpaRepository.save(cart);
-        return cartConverter.mapEntityToDTO(cart);
 
+        shoppingCartJpaRepository.save(cart);
+
+        return cartConverter.mapEntityToDTO(cart);
     }
+
+
 
     @Override
     public ShoppingCartDTO removeProductFromShoppingCart(Long productId, Long cartId) {

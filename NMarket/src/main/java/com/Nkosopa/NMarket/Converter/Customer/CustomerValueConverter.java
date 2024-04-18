@@ -25,8 +25,6 @@ public class CustomerValueConverter {
         CustomerTextValueDTO customerTextValueDTO = new CustomerTextValueDTO();
         customerTextValueDTO.setId(customerTextValue.getId());
         customerTextValueDTO.setValue(customerTextValue.getValue());
-        customerTextValueDTO.setCustomerId(customerTextValue.getCustomer().getId());
-        customerTextValueDTO.setAttributeId(customerTextValue.getAttribute().getId());
         return customerTextValueDTO;
     }
 
@@ -34,8 +32,6 @@ public class CustomerValueConverter {
         CustomerLongValueDTO customerLongValueDTO = new CustomerLongValueDTO();
         customerLongValueDTO.setId(customerLongValue.getId());
         customerLongValueDTO.setValue(customerLongValue.getValue());
-        customerLongValueDTO.setCustomerId(customerLongValue.getCustomer().getId());
-        customerLongValueDTO.setAttributeId(customerLongValue.getAttribute().getId());
         return customerLongValueDTO;
     }
 
@@ -43,8 +39,6 @@ public class CustomerValueConverter {
         CustomerDateValueDTO customerDateValueDTO = new CustomerDateValueDTO();
         customerDateValueDTO.setId(customerDateValue.getId());
         customerDateValueDTO.setValue(customerDateValue.getValue());
-        customerDateValueDTO.setCustomerId(customerDateValue.getCustomer().getId());
-        customerDateValueDTO.setAttributeId(customerDateValue.getAttribute().getId());
         return customerDateValueDTO;
     }
 
@@ -69,16 +63,12 @@ public class CustomerValueConverter {
     public CustomerTextValue mapToCustomerTextValue(CustomerTextValueDTO dto) {
         CustomerTextValue textValue = new CustomerTextValue();
         textValue.setValue(dto.getValue());
-        textValue.setAttribute(getAttribute(dto.getAttributeId()));
-        textValue.setCustomer(getCustomer(dto.getCustomerId()));
         return textValue;
     }
 
     public CustomerLongValue mapToCustomerLongValue(CustomerLongValueDTO dto) {
         CustomerLongValue longValue = new CustomerLongValue();
         longValue.setValue(dto.getValue());
-        longValue.setAttribute(getAttribute(dto.getAttributeId()));
-        longValue.setCustomer(getCustomer(dto.getCustomerId()));
         return longValue;
     }
 
@@ -86,8 +76,6 @@ public class CustomerValueConverter {
     public CustomerDateValue mapToCustomerDateValue(CustomerDateValueDTO dto) {
         CustomerDateValue dateValue = new CustomerDateValue();
         dateValue.setValue(dto.getValue());
-        dateValue.setAttribute(getAttribute(dto.getAttributeId()));
-        dateValue.setCustomer(getCustomer(dto.getCustomerId()));
         return dateValue;
     }
 

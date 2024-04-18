@@ -19,10 +19,10 @@ public class OrderController {
     @Autowired
     private OrderServiceImpl orderServiceImpl;
 
-    @PostMapping("/confirm")
+    @PostMapping("/placeOrder")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<OrderDTO> confirmOrder(@RequestParam("cartId") long cartId) {
-        OrderDTO orderDTO = orderServiceImpl.confirmOrder(cartId);
+    public ResponseEntity<OrderDTO> placeOrder(@RequestParam("cartId") long cartId) {
+        OrderDTO orderDTO = orderServiceImpl.placeOrder(cartId);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
     }
 

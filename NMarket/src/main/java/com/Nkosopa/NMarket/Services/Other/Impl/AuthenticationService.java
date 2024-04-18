@@ -98,7 +98,7 @@ public class AuthenticationService {
             // Check if the user is active before generating the token
             Customer customer = (Customer) authentication.getPrincipal();
             if (!customer.isStatus()) {
-                throw new RuntimeException("User account is not active. Please verify your email.");
+                throw new RuntimeException("User account is not active. Please verify your email or you have been banned.");
             }
 
             var jwtToken = jwtService.generateToken(customer);

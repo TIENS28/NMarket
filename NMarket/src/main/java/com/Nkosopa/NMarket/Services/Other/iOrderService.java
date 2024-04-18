@@ -4,7 +4,7 @@ import com.Nkosopa.NMarket.DTO.Other.OrderDTO;
 
 public interface iOrderService {
 
-    OrderDTO confirmOrder(long cartId);
+    OrderDTO placeOrder(long cartId);
 
     OrderDTO cancelOrder(long orderId);
 }

@@ -1,5 +1,6 @@
 package com.Nkosopa.NMarket.Controller.Other;
 
+import com.Nkosopa.NMarket.DTO.Other.CartProductDTO;
 import com.Nkosopa.NMarket.DTO.Other.ShoppingCartDTO;
 import com.Nkosopa.NMarket.Services.Other.Impl.ShoppingCartService;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,14 +26,15 @@ public class ShoppingCartController {
 
     @PostMapping("/addProducts")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<ShoppingCartDTO> addProductsToCart(@RequestParam("customerId") Long customerId, @RequestBody List<Long> productIds) {
+    public ResponseEntity<ShoppingCartDTO> addProductsToCart(@RequestBody List<CartProductDTO> cartProductDTOList) {
         try {
-            ShoppingCartDTO cartDTO = shoppingCartService.addProductsToCart(customerId, productIds);
+            ShoppingCartDTO cartDTO = shoppingCartService.addProductsToCart(cartProductDTOList);
             return ResponseEntity.status(HttpStatus.CREATED).body(cartDTO);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @DeleteMapping("/removeProduct")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
