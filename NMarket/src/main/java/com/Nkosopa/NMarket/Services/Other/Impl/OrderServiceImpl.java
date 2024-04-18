@@ -2,6 +2,7 @@ package com.Nkosopa.NMarket.Services.Other.Impl;
 
 import com.Nkosopa.NMarket.Converter.Other.OrderConverter;
 import com.Nkosopa.NMarket.DTO.Other.OrderDTO;
+import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Other.OrderList;
 import com.Nkosopa.NMarket.Entity.Other.ShoppingCart;
 import com.Nkosopa.NMarket.Entity.Product.Product;
@@ -12,6 +13,7 @@ import com.Nkosopa.NMarket.Services.Other.iOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +35,21 @@ public class OrderServiceImpl implements iOrderService {
     @Override
     public OrderDTO confirmOrder(long cartId) {
         Optional<ShoppingCart> cartOptional = shoppingCartJpaRepository.findById(cartId);
+
+
         if (cartOptional.isPresent()) {
             ShoppingCart cart = cartOptional.get();
 
             OrderList order = new OrderList();
+
+            
             order.setCustomer(cart.getCustomer());
-            order.setProductList(cart.getProductList());
+
+            List<Product> productList = new ArrayList<>(cart.getProductList());
+            order.setProductList(productList);
+
             order.setTotalPrice(cart.getTotalPrice());
 
-            List<Product> productList = cart.getProductList();
             for (Product product : productList) {
                 product.setStock(product.getStock() - 1);
                 productJpaRepository.save(product);

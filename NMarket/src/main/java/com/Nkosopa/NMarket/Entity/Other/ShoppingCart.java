@@ -31,5 +31,4 @@ public class ShoppingCart extends BaseEntity<ShoppingCart> {
 
     private Long totalPrice;
 
-
 }

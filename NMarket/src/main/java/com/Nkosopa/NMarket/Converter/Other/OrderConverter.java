@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderConverter {
 
+    @Autowired
     private CustomerConverter customerConverter;
 
     @Autowired

@@ -14,11 +14,12 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class  ShoppingCartService implements iShoppingCartService {
+public class ShoppingCartService implements iShoppingCartService {
 
     @Autowired
     private ProductJpaRepository productJpaRepository;
@@ -32,47 +33,48 @@ public class  ShoppingCartService implements iShoppingCartService {
     @Autowired
     private CustomerJPARepository customerJPARepository;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @Override
     public ShoppingCartDTO addProductsToCart(Long customerId, List<Long> productIds) {
-        Optional<Customer> customerOptional = customerJPARepository.findById(customerId);
 
-        if (customerOptional.isPresent()) {
-            Customer customer = customerOptional.get();
-            ShoppingCart cart;
 
-            Optional<ShoppingCart> existingCartOptional = shoppingCartJpaRepository.findByCustomer(customer);
+        Customer customer = authenticationService.getCurrentCustomer();
 
-            if (existingCartOptional.isPresent()) {
-                cart = existingCartOptional.get();
-            } else {
-                cart = new ShoppingCart();
-                cart.setCustomer(customer);
-                cart.setTotalPrice(0L);
-                shoppingCartJpaRepository.save(cart);
-            }
+        ShoppingCart cart;
 
-            for (Long productId : productIds) {
-                Optional<Product> productOptional = productJpaRepository.findById(productId);
+        Optional<ShoppingCart> existingCartOptional = shoppingCartJpaRepository.findByCustomerId(customerId);
 
-                if (productOptional.isPresent()) {
-                    Product product = productOptional.get();
-
-                    if (product.getStock() > 0) {
-
-                        cart.getProductList().add(product);
-                        cart.setTotalPrice(cart.getTotalPrice() + product.getPrice());
-                    } else {
-                        throw new RuntimeException("Product with ID " + productId + " is out of stock");
-                    }
-                } else {
-                    throw new EntityNotFoundException("Product with ID " + productId + " not found");
-                }
-            }
-            shoppingCartJpaRepository.save(cart);
-            return cartConverter.mapEntityToDTO(cart);
+        if (existingCartOptional.isPresent()) {
+            cart = existingCartOptional.get();
         } else {
-            throw new EntityNotFoundException("Customer with ID " + customerId + " not found");
+            cart = new ShoppingCart();
+            cart.setCustomer(customer);
+            cart.setTotalPrice(0L);
+            shoppingCartJpaRepository.save(cart);
         }
+        List<Product> productList = new ArrayList<>();
+        for (Long productId : productIds) {
+            Optional<Product> productOptional = productJpaRepository.findById(productId);
+
+            if (productOptional.isPresent()) {
+                Product product = productOptional.get();
+
+                if (product.getStock() > 0) {
+                    productList.add(product);
+                    cart.setProductList(productList);
+                    cart.setTotalPrice(cart.getTotalPrice() + product.getPrice());
+                } else {
+                    throw new RuntimeException("Product with ID " + productId + " is out of stock");
+                }
+            } else {
+                throw new EntityNotFoundException("Product with ID " + productId + " not found");
+            }
+        }
+        shoppingCartJpaRepository.save(cart);
+        return cartConverter.mapEntityToDTO(cart);
+
     }
 
     @Override

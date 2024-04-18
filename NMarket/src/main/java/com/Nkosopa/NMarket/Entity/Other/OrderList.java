@@ -3,15 +3,13 @@ package com.Nkosopa.NMarket.Entity.Other;
 import com.Nkosopa.NMarket.Entity.BaseEntity;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Product.Product;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -21,14 +19,17 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderList extends BaseEntity<OrderList> {
 
-    @OneToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Product> productList;
 
-    @OneToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private LocalDateTime oderDate;
 
     private Long totalPrice;
 
-    private String status;
+    private boolean isShipped = false;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
 }

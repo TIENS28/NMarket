@@ -1,6 +1,5 @@
 package com.Nkosopa.NMarket.Controller.Product;
 
-import com.Nkosopa.NMarket.DTO.Product.ProductAttributesDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.Services.Product.impl.ProductServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,9 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController

@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.Entity.Customer;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
+import com.Nkosopa.NMarket.Entity.Other.OrderList;
 import com.Nkosopa.NMarket.Entity.Other.ShoppingCart;
 import jakarta.persistence.*;
 import lombok.*;
@@ -56,7 +57,7 @@ public class Customer extends BaseEntity<Customer> implements UserDetails {
 	private CustomerType customerType;
 
 	@OneToMany(mappedBy = "customer")
-	private List<CustomerOrder> orders;
+	private List<OrderList> orders;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

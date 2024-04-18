@@ -1,17 +1,12 @@
 package com.Nkosopa.NMarket.Controller.Customer;
 
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
-import com.Nkosopa.NMarket.DTO.Customer.CustomerValueDTO;
-import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
 import com.Nkosopa.NMarket.Services.Customer.impl.CustomerServiceImpl;
-import com.Nkosopa.NMarket.Services.Customer.impl.CustomerValueServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -76,4 +71,6 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error disable customer: " + e.getMessage());
         }
     }
+
+
 }

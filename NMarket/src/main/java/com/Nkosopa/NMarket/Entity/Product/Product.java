@@ -1,6 +1,7 @@
 package com.Nkosopa.NMarket.Entity.Product;
 
 import com.Nkosopa.NMarket.Entity.BaseEntity;
+import com.Nkosopa.NMarket.Entity.Other.OrderList;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,4 +34,7 @@ public class Product extends BaseEntity<Product>{
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<AttributeEAV> attributeEAVS;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<OrderList> orderLists;
 }
