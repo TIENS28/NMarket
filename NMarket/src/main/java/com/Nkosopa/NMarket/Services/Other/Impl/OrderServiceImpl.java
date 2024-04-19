@@ -44,39 +44,42 @@ public class OrderServiceImpl implements iOrderService {
 
         if (cartOptional.isPresent()) {
             ShoppingCart cart = cartOptional.get();
+            if (cart.getCartProductsList().isEmpty()) {
+                return null;
+            } else {
+                OrderList order = new OrderList();
+                order.setCustomer(cart.getCustomer());
 
-            OrderList order = new OrderList();
-            order.setCustomer(cart.getCustomer());
+                List<CartProduct> cartProductsList = new ArrayList<>(cart.getCartProductsList());
+                List<Product> updatedProducts = new ArrayList<>();
 
-            List<CartProduct> cartProductsList = new ArrayList<>(cart.getCartProductsList());
-            List<Product> updatedProducts = new ArrayList<>();
+                for (CartProduct cartProduct : cartProductsList) {
+                    Product product = cartProduct.getProduct();
+                    Long quantity = cartProduct.getQuantity();
 
-            for (CartProduct cartProduct : cartProductsList) {
-                Product product = cartProduct.getProduct();
-                Long quantity = cartProduct.getQuantity();
+                    if (product.getStock() < quantity) {
+                        throw new RuntimeException("Product Id: " + product.getId() + " is out of stock");
+                    }
 
-                if (product.getStock() < quantity) {
-                    throw new RuntimeException("Product Id: " + product.getId() + " is out of stock");
+                    product.setStock(product.getStock() - quantity);
+                    updatedProducts.add(product);
                 }
+                productJpaRepository.saveAll(updatedProducts);
 
-                product.setStock(product.getStock() - quantity);
-                updatedProducts.add(product);
+                order.setCartProductList(cartProductsList);
+                order.setTotalPrice(cart.getTotalPrice());
+                order.setOderDate(LocalDateTime.now());
+                orderJpaRepository.save(order);
+
+                OrderDTO orderDTO = new OrderDTO();
+                orderDTO = orderConverter.mapEntityToDTO(order);
+
+                cartProductsList.clear();
+                shoppingCartJpaRepository.delete(cart);
+
+                return orderDTO;
             }
-            productJpaRepository.saveAll(updatedProducts);
-
-            order.setCartProductList(cartProductsList);
-            order.setTotalPrice(cart.getTotalPrice());
-            order.setOderDate(LocalDateTime.now());
-            orderJpaRepository.save(order);
-
-            OrderDTO orderDTO  = new OrderDTO();
-            orderDTO = orderConverter.mapEntityToDTO(order);
-
-            cartProductsList.clear();
-            shoppingCartJpaRepository.delete(cart);
-
-            return orderDTO;
-        } else {
+        }else {
             throw new RuntimeException("Shopping cart not found");
         }
     }
