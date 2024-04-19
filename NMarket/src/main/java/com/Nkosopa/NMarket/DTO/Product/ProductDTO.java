@@ -19,7 +19,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private Long stock;
 
-    private Long price;
+    private Double price;
 
     private String currency;
 

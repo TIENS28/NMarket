@@ -24,7 +24,7 @@ public class OrderList extends BaseEntity<OrderList> {
 
     private LocalDateTime oderDate;
 
-    private Long totalPrice;
+    private Double totalPrice;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartProduct> cartProductList;

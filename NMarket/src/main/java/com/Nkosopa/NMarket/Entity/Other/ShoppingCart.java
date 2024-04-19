@@ -28,6 +28,6 @@ public class ShoppingCart extends BaseEntity<ShoppingCart> {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    private Long totalPrice;
+    private Double totalPrice;
 
 }

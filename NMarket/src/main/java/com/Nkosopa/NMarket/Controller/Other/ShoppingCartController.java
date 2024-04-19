@@ -6,19 +6,15 @@ import com.Nkosopa.NMarket.Services.Other.Impl.ShoppingCartService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/cart")
+@RequestMapping(value = "/api/v1/cart", consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ShoppingCartController {
 
     @Autowired
@@ -38,8 +34,8 @@ public class ShoppingCartController {
 
     @DeleteMapping("/removeProduct")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<ShoppingCartDTO> removeProductFromShoppingCart(@RequestParam("productId") Long productId, @RequestParam("cartId") Long cartId) {
-        ShoppingCartDTO cartDTO = shoppingCartService.removeProductFromShoppingCart(productId, cartId);
+    public ResponseEntity<ShoppingCartDTO> removeProductFromShoppingCart(@RequestBody List<Long> productIds, @RequestParam Long cartId) {
+        ShoppingCartDTO cartDTO = shoppingCartService.removeProductFromShoppingCart(productIds, cartId);
         return ResponseEntity.ok(cartDTO);
     }
 
@@ -49,4 +45,5 @@ public class ShoppingCartController {
         ShoppingCartDTO cartDTO = shoppingCartService.cancelShoppingCart(cartId);
         return ResponseEntity.ok(cartDTO);
     }
+
 }

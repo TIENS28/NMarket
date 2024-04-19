@@ -49,7 +49,7 @@ public class ShoppingCartService implements iShoppingCartService {
         } else {
             cart = new ShoppingCart();
             cart.setCustomer(customer);
-            cart.setTotalPrice(0L);
+            cart.setTotalPrice(0.0);
             cart.setCartProductsList(new ArrayList<>());
             shoppingCartJpaRepository.save(cart);
         }
@@ -93,27 +93,35 @@ public class ShoppingCartService implements iShoppingCartService {
 
 
     @Override
-    public ShoppingCartDTO removeProductFromShoppingCart(Long productId, Long cartId) {
-        Optional<Product> productOptional = productJpaRepository.findById(productId);
+    public ShoppingCartDTO removeProductFromShoppingCart(List<Long> productIds, Long cartId) {
         Optional<ShoppingCart> cartOptional = shoppingCartJpaRepository.findById(cartId);
-
-        if (productOptional.isPresent() && cartOptional.isPresent()) {
-            Product product = productOptional.get();
+        if (cartOptional.isPresent()) {
             ShoppingCart cart = cartOptional.get();
+            for (Long productId : productIds) {
+                Optional<CartProduct> productOptional = productCartJpaRepository.findByProductId(productId);
 
-            if (cart.getProductList().contains(product)) {
-                cart.getProductList().remove(product);
-                cart.setTotalPrice(cart.getTotalPrice() - product.getPrice());
-
-                shoppingCartJpaRepository.save(cart);
-                return cartConverter.mapEntityToDTO(cart);
-            } else {
-                throw new RuntimeException("Product not found in the shopping cart");
+                if (productOptional.isPresent()) {
+                    CartProduct cartProduct = productOptional.get();
+                    if (cart.getCartProductsList().contains(cartProduct)) {
+                        cart.getCartProductsList().remove(cartProduct);
+                        double priceReduction = cartProduct.getProduct().getPrice() * cartProduct.getQuantity();
+                        cart.setTotalPrice(cart.getTotalPrice() - priceReduction);
+                    } else {
+                        throw new RuntimeException("Product not found in the shopping cart");
+                    }
+                }
             }
+            double roundedTotalPrice = Math.round(cart.getTotalPrice() * 100.0) / 100.0;
+            if (Math.abs(roundedTotalPrice) < 0.01) {
+                cart.setTotalPrice(0.0);
+            }
+            shoppingCartJpaRepository.save(cart);
+            return cartConverter.mapEntityToDTO(cart);
         } else {
-            throw new RuntimeException("Product or shopping cart not found");
+            throw new RuntimeException("Shopping cart not found");
         }
     }
+
 
     @Override
     public ShoppingCartDTO cancelShoppingCart(Long cartId) {
@@ -122,7 +130,7 @@ public class ShoppingCartService implements iShoppingCartService {
         if (cartOptional.isPresent()) {
             ShoppingCart cart = cartOptional.get();
             cart.getProductList().clear();
-            cart.setTotalPrice(0L);
+            cart.setTotalPrice(0.0);
 
             shoppingCartJpaRepository.delete(cart);
             return cartConverter.mapEntityToDTO(cart);

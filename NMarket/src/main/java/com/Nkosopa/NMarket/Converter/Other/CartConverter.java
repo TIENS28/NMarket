@@ -23,7 +23,9 @@ public class CartConverter {
         dto.setId(cart.getId());
         dto.setTotalPrice(cart.getTotalPrice());
         dto.setCustomerId(cart.getCustomer().getId());
-        dto.setProductDTOList(cartProductConverter.mapToDTOs(cart.getCartProductsList()));
+        if(cart.getProductList() != null) {
+            dto.setProductDTOList(cartProductConverter.mapToDTOs(cart.getCartProductsList()));
+        }
         return dto;
     }
 

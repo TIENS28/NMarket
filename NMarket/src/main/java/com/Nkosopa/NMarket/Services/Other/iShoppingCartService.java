@@ -13,7 +13,7 @@ public interface iShoppingCartService {
 
     ShoppingCartDTO addProductsToCart(List<CartProductDTO> cartProductDTOList);
 
-    ShoppingCartDTO removeProductFromShoppingCart(Long productId, Long cartId);
+    ShoppingCartDTO removeProductFromShoppingCart(List<Long> productId, Long cartId);
 
     ShoppingCartDTO cancelShoppingCart(Long cartId);
 }

@@ -26,7 +26,7 @@ public class Product extends BaseEntity<Product>{
 
 	private Long stock;
 
-	private Long price;
+	private Double price;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")

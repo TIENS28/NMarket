@@ -21,6 +21,6 @@ import java.util.List;
 @Data
 public class OrderDTO extends BaseDTO<OrderDTO> {
     private List<CartProductDTO> cartProductDTOS;
-    private Long totalPrice;
+    private Double totalPrice;
     private LocalDateTime orderDate;
 }

@@ -35,8 +35,6 @@ public class OrderServiceImpl implements iOrderService {
 
     @Autowired
     private ProductJpaRepository productJpaRepository;
-    @Autowired
-    private ProductCartJpaRepository productCartJpaRepository;
 
 
     @Override
