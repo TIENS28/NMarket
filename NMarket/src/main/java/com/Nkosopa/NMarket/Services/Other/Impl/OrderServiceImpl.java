@@ -108,4 +108,13 @@ public class OrderServiceImpl implements iOrderService {
         }
     }
 
+    public OrderDTO getOrderById(Long orderId){
+        Optional<OrderList> orderOptional = orderJpaRepository.findById(orderId);
+        if (orderOptional.isPresent()) {
+            OrderList order = orderOptional.get();
+            OrderDTO orderDTO = orderConverter.mapEntityToDTO(order);
+            return orderDTO;
+        }
+        return null;
+    }
 }

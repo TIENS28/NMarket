@@ -37,4 +37,13 @@ public class Product extends BaseEntity<Product>{
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<OrderList> orderLists;
+
+	@OneToMany(mappedBy = "product")
+	private List<ProductTextValue> textValues;
+
+	@OneToMany(mappedBy = "product")
+	private List<ProductLongValue> intValues;
+
+	@OneToMany(mappedBy = "product")
+	private List<ProductDateValue> dateValues;
 }

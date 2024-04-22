@@ -25,9 +25,9 @@ public abstract class BaseRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID
 	protected final QCustomerDateValue customerDateValue = QCustomerDateValue.customerDateValue;
 	
 	protected final QProduct product = QProduct.product;
-	protected final QProductLongValue productLongValue = QProductLongValue.productLongValue;
-	protected final QProductTextValue productTextValue = QProductTextValue.productTextValue;
-	protected final QProductDateValue productDateValue =  QProductDateValue.productDateValue;
+	protected QProductLongValue productLongValue = QProductLongValue.productLongValue;
+	protected QProductTextValue productTextValue = QProductTextValue.productTextValue;
+	protected QProductDateValue productDateValue =  QProductDateValue.productDateValue;
 	
 	
 	public BaseRepositoryImpl(Class<T> domainClass, EntityManager entityManager) {
@@ -41,4 +41,7 @@ public abstract class BaseRepositoryImpl<T,ID> extends SimpleJpaRepository<T, ID
 		return null;
 	}
 
+	protected EntityManager getEntityManager() {
+		return entityManager;
+	}
 }

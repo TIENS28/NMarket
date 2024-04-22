@@ -16,11 +16,13 @@ import com.Nkosopa.NMarket.Services.Product.iProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -177,6 +179,18 @@ public class ProductServiceImpl implements iProductService {
         productValueService.deleteProductValue(productId);
         productJpaRepository.deleteProductAttribute(productId);
         productOptional.ifPresent(product -> productJpaRepository.delete(product));
+    }
+
+    public Page<ProductDTO> searchWithFilter(String searchTerm, Map<String, String> attributeFilters, Pageable pageable) {
+        List<Product> products = productRepository.searchWithFilter(searchTerm, attributeFilters);
+
+        List<ProductDTO> productDTOs = products.stream()
+                .map(product -> {
+                    return productConverter.mapEntityToDTO(product);
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(productDTOs, pageable, productDTOs.size());
     }
 
 }

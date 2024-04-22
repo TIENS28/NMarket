@@ -2,8 +2,10 @@ package com.Nkosopa.NMarket.Services.Product.impl;
 
 import com.Nkosopa.NMarket.Converter.Product.AttributeConverter;
 import com.Nkosopa.NMarket.Converter.Product.ProductConverter;
+import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
 import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.DTO.Product.ProductDTO;
+import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributeEAV;
 import com.Nkosopa.NMarket.Entity.Product.AttributeEAV;
 import com.Nkosopa.NMarket.Entity.Product.Product;
 import com.Nkosopa.NMarket.Repository.Product.JPA.AttributeJPARepository;
@@ -13,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,15 +65,36 @@ public class AttributeServiceImpl implements iAttributeService {
         return productConverter.mapEntityToDTO(product);
     }
 
+    public List<AttributeDTO> getAllAttribute(){
+        List<AttributeDTO> attributeDTOList =  new ArrayList<>();
+        List<AttributeEAV> attributeEAVS = attributeJPARepository.findAll();
+        for (AttributeEAV attributeEAV : attributeEAVS){
+            AttributeDTO attributeDTO = AttributeDTO.builder()
+                    .attributeName(attributeEAV.getName())
+                    .dataType(attributeEAV.getDataType())
+                    .build();
+            attributeDTO.setId(attributeEAV.getId());
+            attributeDTOList.add(attributeDTO);
+        }
+        return attributeDTOList;
+    }
 
     @Transactional
-    public void addAttributeToAllProducts(AttributeDTO attributeDTO) {
-        List<Product> productList = productJpaRepository.findAll();
+    public AttributeDTO addAttributeToAllProducts(AttributeDTO attributeDTO) {
         AttributeEAV attributeEAV = attributeConverter.mapToEntity(attributeDTO);
-        attributeEAV = attributeJPARepository.save(attributeEAV);
+        Optional<AttributeEAV> existingAttributeOpt = attributeJPARepository.findByName(attributeEAV.getName());
+        if (existingAttributeOpt.isPresent()) {
+            attributeEAV = existingAttributeOpt.get();
+        } else {
+            attributeEAV = attributeJPARepository.save(attributeEAV);
+        }
+        List<Product> productList = productJpaRepository.findAll();
         for (Product product : productList) {
-            product.getAttributeEAVS().add(attributeEAV);
+            if (!product.getAttributeEAVS().contains(attributeEAV)) {
+                product.getAttributeEAVS().add(attributeEAV);
+            }
         }
         productJpaRepository.saveAll(productList);
+        return attributeConverter.mapToDTO(attributeEAV);
     }
 }

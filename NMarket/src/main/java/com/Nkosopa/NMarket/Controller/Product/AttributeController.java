@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/attribute")
+@RequestMapping("/api/v1/product/attribute")
 public class AttributeController {
 
     @Autowired
     private AttributeServiceImpl attributeService;
 
     @PostMapping("/addAttribute")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<ProductDTO> addAttributeToProduct(@RequestBody ProductDTO productDTO) {
         try {
             Long productId = productDTO.getId();
@@ -34,13 +34,17 @@ public class AttributeController {
     }
 
     @PostMapping("/addToAllProduct")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    public ResponseEntity<String> addAttributeToAllProducts(@RequestBody AttributeDTO attributeDTO) {
-        try {
-            attributeService.addAttributeToAllProducts(attributeDTO);
-            return new ResponseEntity<>("Attribute added to all products successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<AttributeDTO> addAttributeToAllProducts(@RequestBody AttributeDTO attributeDTO) {
+        AttributeDTO attributeDTO1 = attributeService.addAttributeToAllProducts(attributeDTO);
+        return ResponseEntity.ok(attributeDTO1);
     }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<List<AttributeDTO>> getAllAttributes() {
+        List<AttributeDTO> attributeDTOList = attributeService.getAllAttribute();
+        return ResponseEntity.ok(attributeDTOList);
+    }
+
 }

@@ -1,9 +1,11 @@
 package com.Nkosopa.NMarket.Services.Customer.impl;
 
+import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerAttributeEAVConverter;
 import com.Nkosopa.NMarket.Converter.Customer.CustomerConverter;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerAttributeEAVDTO;
 import com.Nkosopa.NMarket.DTO.Customer.CustomerDTO;
+import com.Nkosopa.NMarket.DTO.Product.AttributeDTO;
 import com.Nkosopa.NMarket.Entity.Customer.Customer;
 import com.Nkosopa.NMarket.Entity.Customer.CustomerAttributeEAV;
 import com.Nkosopa.NMarket.Repository.Customer.JPA.*;
@@ -12,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,23 +22,14 @@ import java.util.Optional;
 public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
 
     @Autowired
-    private CustomerTextValueJpaRepository customerTextValueJpaRepository;
-
-    @Autowired
-    private CustomerLongValueJpaRepository customerLongValueJpaRepository;
-
-    @Autowired
-    private CustomerDateValueJpaRepository customerDateValueJpaRepository;
-
-    @Autowired
     private CustomerJPARepository customerJPARepository;
 
-    @Autowired
-    private CustomerAttributeEAVConverter customerAttributeEAVConverter;
     @Autowired
     private CustomerAttributeEAVJPARepository customerAttributeEAVJPARepository;
     @Autowired
     private CustomerConverter customerConverter;
+    @Autowired
+    private CustomerAttributeConverter customerAttributeConverter;
 
     @Override
     @Transactional
@@ -68,6 +62,19 @@ public class CustomerAttributeServiceImpl implements iCustomerAttributeService {
         return customerConverter.mapEntityToDTO(customer);
     }
 
+    public List<CustomerAttributeEAVDTO> getAllAttribute(){
+        List<CustomerAttributeEAVDTO> customerAttributeEAVDTOs =  new ArrayList<>();
+        List<CustomerAttributeEAV> customerAttributeEAVS = customerAttributeEAVJPARepository.findAll();
+        for (CustomerAttributeEAV customerAttributeEAV : customerAttributeEAVS){
+            CustomerAttributeEAVDTO attributeDTO = CustomerAttributeEAVDTO.builder()
+                    .attributeName(customerAttributeEAV.getAttributeName())
+                    .dataType(customerAttributeEAV.getDataType())
+                    .build();
+            attributeDTO.setId(customerAttributeEAV.getId());
+            customerAttributeEAVDTOs.add(attributeDTO);
+        }
+        return customerAttributeEAVDTOs;
+    }
 //
 //    @Transactional
 //    public void addAttributeToAllCustomer(CustomerAttributeEAVDTO attributeDTO) {

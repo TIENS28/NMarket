@@ -6,12 +6,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -88,6 +91,22 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductDTO>> searchProducts(
+            @RequestParam String searchTerm,
+            @RequestParam Map<String, String> allRequestParams,
+            Pageable pageable) {
+        Map<String, String> attributeFilters = new HashMap<>(allRequestParams);
+        attributeFilters.remove("searchTerm");
+        try {
+            Page<ProductDTO> productPage = productServiceImple.searchWithFilter(searchTerm, attributeFilters, pageable);
+            return ResponseEntity.ok(productPage);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 }
 

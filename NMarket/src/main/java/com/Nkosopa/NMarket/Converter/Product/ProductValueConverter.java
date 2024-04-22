@@ -23,27 +23,33 @@ public class ProductValueConverter {
     @Autowired
     private ProductJpaRepository productJpaRepository;
 
-    public ProductTextValueDTO mapTextValueToDTO(ProductTextValue productTextValue){
+    public ProductTextValueDTO mapTextValueToDTO(ProductTextValue productTextValue) {
         ProductTextValueDTO productTextValueDTO = new ProductTextValueDTO();
-        productTextValueDTO.setId(productTextValue.getId());
+        if (productTextValueDTO.getId() != null) {
+            productTextValueDTO.setId(productTextValue.getId());
+        }
         productTextValueDTO.setValue(productTextValue.getValue());
         productTextValueDTO.setProductId(productTextValue.getProduct().getId());
         productTextValueDTO.setAttributeId(productTextValue.getAttribute().getId());
         return productTextValueDTO;
     }
 
-    public ProductLongValueDTO mapLongValueToDTO(ProductLongValue productLongValue){
+    public ProductLongValueDTO mapLongValueToDTO(ProductLongValue productLongValue) {
         ProductLongValueDTO productLongValueDTO = new ProductLongValueDTO();
-        productLongValueDTO.setId(productLongValue.getId());
+        if (productLongValue.getId() != null) {
+            productLongValueDTO.setId(productLongValue.getId());
+        }
         productLongValueDTO.setValue(productLongValue.getValue());
         productLongValueDTO.setProductId(productLongValue.getProduct().getId());
         productLongValueDTO.setAttributeId(productLongValue.getAttribute().getId());
         return productLongValueDTO;
     }
 
-    public ProductDateValueDTO mapDateValueToDTO(ProductDateValue productDateValue){
+    public ProductDateValueDTO mapDateValueToDTO(ProductDateValue productDateValue) {
         ProductDateValueDTO productDateValueDTO = new ProductDateValueDTO();
-        productDateValueDTO.setId(productDateValue.getId());
+        if (productDateValue.getId() != null) {
+            productDateValueDTO.setId(productDateValue.getId());
+        }
         productDateValueDTO.setValue(productDateValue.getValue());
         productDateValueDTO.setProductId(productDateValue.getProduct().getId());
         productDateValueDTO.setAttributeId(productDateValue.getAttribute().getId());
@@ -121,5 +127,5 @@ public class ProductValueConverter {
         return productJpaRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
     }
-    
+
 }
